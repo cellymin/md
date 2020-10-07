@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="/public/static/js/date.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/static/js/nongli.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/mbscom.css">
+</head>
+<body>
+<style>
+
+
+</style>
+<div class="">
+    <div class="modal-content">
+        <div class="modal-body">
+            <form>
+                <div class="form-group">
+
+                    <label>名称：</label>
+                    <input type="text" class="chain_name" value="{$chaininfo.name ?? ''}" placeholder="">
+                </div>
+                <div class="form-group">
+
+                    <label>电话：</label>
+                    <input type="text" class="tel" value="{$chaininfo.tel ?? ''}" placeholder="">
+                </div>
+
+                <div class="form-group">
+
+                    <label><span>状态：</span></label>
+                    <span>
+                        <select name="status" class="user_chain status">
+                            <option value="1" {if condition="(isset($chaininfo) && $chaininfo.status == 1)" }selected="selected" {/if} >开启</option>
+                            <option value="2" {if condition="(isset($chaininfo) && $chaininfo.status != 1)" }selected="selected" {/if} >停止</option>
+                        </select>
+                    </span>
+                </div>
+                <div class="from-group">
+
+                    <div id="sjld" style="width:520px;position:relative;">
+                        <span style="float: left">
+                              地址：
+                        </span>
+
+
+                        <div class="m_zlxg" id="shenfen">
+
+                            <p title="{$chaininfo.province ?? ''}">{$chaininfo.province ?? '选择省份'}</p>
+
+                            <div class="m_zlxg2">
+
+                                <ul></ul>
+
+                            </div>
+
+                        </div>
+
+                        <div class="m_zlxg" id="chengshi">
+
+                            <p title="{$chaininfo.city ?? ''}">{$chaininfo.city ?? '选择城市'}</p>
+
+                            <div class="m_zlxg2">
+
+                                <ul></ul>
+
+                            </div>
+
+                        </div>
+
+                        <div class="m_zlxg" id="quyu">
+
+                            <p title="{$chaininfo.area ?? ''}">{$chaininfo.area ?? '选择区域'}</p>
+
+                            <div class="m_zlxg2">
+
+                                <ul></ul>
+
+                            </div>
+
+                        </div>
+
+                        <input id="sfdq_num" type="hidden" value="" />
+
+                        <input id="csdq_num" type="hidden" value="" />
+
+                        <input id="sfdq_tj" type="hidden" value="" />
+
+                        <input id="csdq_tj" type="hidden" value="" />
+
+                        <input id="qydq_tj" type="hidden" value="" />
+
+                    </div>
+
+
+                </div>
+                <div class="form-group" style="clear: both;padding-top: 8px">
+                    <label><span>详细地址：</span></label>
+                    <span><input type="text" class="address" value="{$chaininfo.address ?? ''}"
+                                 placeholder=""></span>
+                </div>
+
+                <div class="form-group">
+
+                    <label>院长：</label>
+                    <select name="dean_id" class="user_chain dean_id">
+                        {foreach $deanlist as $k=>$v}
+                        <option value="{$v.id}" attid=""  {if condition="(isset($chaininfo) && $chaininfo.dean_id == $v.id)" }selected="selected" {/if}>{$v.name}</option>
+                        {/foreach}
+
+                    </select>
+                </div>
+
+            </form>
+        </div>
+        <div class="modal-footer" style="margin-top: 40px;">
+            <div class="confim_btn" style="float: left">
+                <button attrid="{$chaininfo.id ?? ''}" onclick="confim_ok(this);">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/public/static/js/address.js"></script>
+<script>
+    $(function(){
+        var shenfen = $('#shenfen p').attr('title').replace(/(^\s*)|(\s*$)/g, "");
+        var chengshi = $('#chengshi p').attr('title').replace(/(^\s*)|(\s*$)/g, "");
+        var quyu = $('#quyu p').attr('title').replace(/(^\s*)|(\s*$)/g, "");
+        $("#sjld").sjld("#shenfen","#chengshi","#quyu");
+        $('#shenfen p').attr('title',shenfen);
+        $('#shenfen p').text(shenfen);
+        $('#chengshi p').attr('title',chengshi)
+        $('#chengshi p').text(chengshi);
+        $('#quyu p').attr('title',quyu)
+        $('#quyu p').text(quyu);
+
+    });
+    function checkContactNumber(mobile) {
+        var isMobile = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(14[0-9]{1}))+\d{8})$/;
+        var isPhone = /^(?:(?:0\d{2,3})-)?(?:\d{7,8})(-(?:\d{3,}))?$/;;
+        var reg = /^400[0-9]{7}/;
+
+        //如果为1开头则验证手机号码
+        if (mobile.substring(0, 1) == 1) {
+            if (!isMobile.exec(mobile) && mobile.length != 11) {
+                return false;
+            }
+        }
+        //如果为0开头则验证固定电话号码
+        else if (mobile.substring(0, 1) == 0 ) {
+            if (!isPhone.test(mobile)) {
+                return false;
+            }
+        }
+        else if( mobile.substring(0, 1) == 4){
+            console.log(2222);
+            if (!reg.test(mobile)) {
+                return false;
+            }
+        }
+        //否则全部不通过
+        else {
+            return false;
+        }
+        return true;
+    }
+
+    function confim_ok(e) {
+        var id = parseInt($(e).attr('attrid'));
+        $(e).attr('disabled', 'disabled');
+        var chain_info = '';
+        var chain_name = $('.chain_name').val().replace(/(^\s*)|(\s*$)/g, "");
+        var status =  parseInt($(".status").find("option:selected").val());
+        var address = $('.address').val().replace(/(^\s*)|(\s*$)/g, "");
+        // var pannel_menu = $('.pannel_menu').val().replace(/(^\s*)|(\s*$)/g, "");
+        var dean_id = parseInt($(".dean_id").find("option:selected").val());
+        var shenfen = $('#shenfen p').text().replace(/(^\s*)|(\s*$)/g, "");
+        var chengshi = $('#chengshi p').text().replace(/(^\s*)|(\s*$)/g, "");
+        var quyu =$('#quyu p').text().replace(/(^\s*)|(\s*$)/g, "");
+        var tel = $('.tel').val().replace(/(^\s*)|(\s*$)/g, "");
+        var istel = checkContactNumber(tel);
+        if(!istel){
+            alert('电话格式不正确！');
+            return false;
+        }
+        chain_info = 'name*' + chain_name + ','
+            + 'tel*' +tel
+            + ',status*' + status
+            + ',address*' + address
+            + ',province*' + shenfen
+            + ',city*' + chengshi
+            + ',area*' + quyu
+            + ',dean_id*' + dean_id;
+        $.ajax({
+            url: '/index.php/index/chain/save_chain?id=' + id,// 获取自己系统后台用户信息接口
+            data: {"chain_info": chain_info},
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    var data = JSON.parse(data);
+                    if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
+                        $(e).removeAttr('disabled');
+                        close_open();
+                        window.parent.location.reload();
+                    } else {
+                        alert(data.msg);
+                        $(e).removeAttr('disabled');
+                        return false;
+                    }
+                }
+            },
+            error: function (data) {
+                $(e).removeAttr('disabled');
+                console.log(data.message);
+            }
+        });
+
+    }
+
+    var d = new DateJs({
+        inputEl: '#inputdate',
+        el: '#date'
+    })
+
+    function close_open() {
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index);
+    }
+
+</script>
+</html>

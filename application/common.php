@@ -26,6 +26,12 @@ function getmenulist($uid='')
     $module =  model('MenuList')->getmodule();
     return ['menu'=>$menu_list,'module'=>$module];
 }
+function getmenulistall()
+{
+    $menu_list =  model('MenuList')->getmenulistall();
+    $module =  model('MenuList')->getmodule();
+    return ['menu'=>$menu_list,'module'=>$module];
+}
 function getuser_no(){
     list($usec, $sec) = explode(" ", microtime());
     $msec=round($usec*1000);

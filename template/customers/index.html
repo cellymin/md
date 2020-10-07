@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Bootstrap Admin</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/public/static/lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/public/static/lib/font-awesome/css/font-awesome.css">
+
+    <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="/public/static/layer/layer.js"></script>
+    <script src="/public/static/js/date.js" type="text/javascript" charset="utf-8"></script>
+
+    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/theme.css">
+    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/premium.css">
+    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/mbscom.css">
+
+</head>
+<body class=" theme-blue">
+
+
+<!--Use of these features requires a premium license.-->
+<!--See http://www.portnine.com/bootstrap-themes for details.-->
+<!--After purchasing a premium license, the full source code will be available for download.-->
+
+
+{include file="template/navbar.html"}
+{include file="template/sidebar.html"}
+
+<style>
+
+    .sousuo {
+        width: 83%;
+        min-width: 360px;
+        margin: 0 auto;
+    }
+
+    .sousuo .sousuo_form {
+        width: 240px;
+        margin: 5px 5px;
+        float: left;
+    }
+
+    .add_user {
+        cursor: pointer;
+        font-size: 16px;
+        width: 100px;
+        height: 20px;
+        background: #ccc;
+        line-height: 20px;
+        text-align: center;
+        height: 3px;
+        border-top: none;
+    }
+
+    .sousuo .form_sub {
+
+    }
+    .sousuo .form_sub input{
+        width:245px;
+        height: 30px;
+        border: 1px solid #ccc;
+    }
+    .sousuo .form_sub:focus {
+        outline: none;
+        border-color: #ccc;
+        box-shadow: 0 0 10px #ccc;
+    }
+
+    .sousuo .confirm_sub {
+        clear: both;
+    }
+
+    .sousuo .confirm_sub p {
+        height: 30px;
+        color: #333;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    .sousuo .confirm_sub p span {
+        background: #ccc;
+        width: 80px;
+        letter-spacing: 1px;
+        padding: 0 5px;
+        text-align: center;
+        margin: 20px 10px;
+    }
+
+    .caozuo {
+        cursor: pointer;
+    }
+    .anniu{
+        clear: both;
+        width: 83%;
+        min-width: 360px;
+        margin: 0 auto;
+    }
+    .anniu p{
+        height: 40px;
+        line-height: 40px;
+    }
+    .anniu p span{
+        background: #637392;
+        color: #fff;
+        padding:5px 8px;
+    }
+</style>
+<div class="content">
+    <div class="sousuo">
+        <form action="" method="get">
+            <div class="form_sub">
+<!--                <div class="sousuo_form">-->
+<!--                    门店： <input type="text" name="chain_name">-->
+<!--                </div>-->
+                <div class="sousuo_form">
+                    用户名：<br/><input type="text" value="{$Think.get.user_name}" name="user_name" autocomplete="off">
+                </div>
+                <div class="sousuo_form">
+                    电话：<br/><input type="text" value="{$Think.get.phone}" name="phone" autocomplete="off">
+                </div>
+                <div class="sousuo_form">
+                    订单编号：<br/><input type="text" value="{$Think.get.server_no}" name="server_no" autocomplete="off">
+                </div>
+                <div class="sousuo_form">
+                    创建时间：<br/>
+                     <span id='date'>
+			                  <input type="text" value="{$Think.get.create_time}" class="user_birth" name="create_time" placeholder="点击选择时间" id='inputdate' autocomplete="off" />
+                     </span>
+                </div>
+                <div class="sousuo_form">
+                    技师名称：<br/><input type="text" value="{$Think.get.server_name}" name="server_name" autocomplete="off">
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div class="anniu" style="clear: both;">
+        <p>
+            <span onclick="onconfirm();">搜索</span>
+            <span onclick="openedit();">添加客户</span>
+        </p>
+    </div>
+    <div class="main-content" style="clear: both;">
+        <!--                <h1 class="page">用户列表</h1>-->
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <table class="dataintable table">
+                    <thead>
+                    <tr>
+                        <th style="width: 50px;"></th>
+                        <th>姓名</th>
+                        <th>来源</th>
+                        <th>电话</th>
+                        <th>服务单</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach $userlist as $k }
+                    <tr>
+                        <td></td>
+                        <td>{$k.name}<span class="text-sm" style="margin-left: 10px"> <a href="javascript:void(0)"
+                                                                                         attrid="{$k.id}"
+                                                                                         onclick="openedit(this);"
+                                                                                         data-toggle="modal"
+                                                                                         class="padding-right-small"><i
+                                class="fa fa-pencil "></i> Edit</a> <a
+                                href="javascript:void(0)" attrid="{$k.id}"
+                                data-toggle="modal" onclick="deleteuser(this)"><i class="fa fa-trash-o "></i> Delete</a></span>
+                        </td>
+                        <td>{$k.source_from}</td>
+                        <td>{$k.phone}</td>
+                        <td class="caozuo">
+                            {if condition="(empty($k.sid)) || $k.ostatus!=1 " }
+                            <span onclick="addserver(this);" attrid="{$k.id}"> 添加</span>
+                            {/if}
+                            {if condition="(!empty($k.sid)) && $k.ostatus==1 " }
+                            <span onclick="viewserver(this);" attrid="{$k.sid}"> 查看</span>
+                            {if condition="(isset($sign) && ($sign == '1' || $sign == '2') || $k.ser_id == $uid)"} <span
+                                onclick="editserver(this);" attrid="{$k.sid}"> |编辑</span>{/if}
+                            {if condition="(isset($sign) && $sign == '1')"}
+                            <span onclick="delserver(this);" attrid="{$k.sid}"> |删除</span>{/if}
+                            {/if}
+                        </td>
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var d = new DateJs({
+        inputEl: '#inputdate',
+        el: '#date'
+    })
+    $('.date-js').css('margin-left','0')
+    function openedit(e) {
+        var id = parseInt($(e).attr('attrid'));
+        layer.ready(function () {
+            layer.open({
+                type: 2,
+                title: '编辑用户',
+                maxmin: true,
+                area: ['60%', '46%'],
+                content: '/index.php/index/customers/edituser?id=' + id
+            });
+        });
+    }
+
+    function addserver(e) {
+        var id = $(e).attr('attrid');
+        layer.ready(function () {
+            layer.open({
+                type: 2,
+                title: '祛斑跟踪表',
+                maxmin: true,
+                area: ['700px', '90%'],
+                content: '/index.php/index/customers/addserver?id=' + id
+            })
+        })
+    }
+
+    function editserver(e) {
+        var id = $(e).attr('attrid');
+        layer.ready(function () {
+            layer.open({
+                type: 2,
+                title: '编辑-祛斑跟踪表',
+                maxmin: true,
+                area: ['700px', '90%'],
+                content: '/index.php/index/customers/editserver?id=' + id
+            })
+        })
+    }
+
+    function viewserver(e) {
+        var id = $(e).attr('attrid');
+        layer.ready(function () {
+            layer.open({
+                type: 2,
+                title: '查看-祛斑跟踪表',
+                maxmin: true,
+                area: ['700px', '90%'],
+                content: '/index.php/index/customers/viewserver?id=' + id
+            })
+        })
+    }
+
+    function delserver(e) {
+        var id = $(e).attr('attrid');
+        var msg = "您真的确定要删除吗？\n\n请确认！";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '/index.php/index/customers/delserver',// 获取自己系统后台用户信息接口
+                data: {"sid": id},
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        var data = JSON.parse(data);
+                        if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
+                            $(e).removeAttr('disabled');
+                            window.location.reload();
+                        } else {
+                            alert(data.msg);
+                            $(e).removeAttr('disabled');
+                            return false;
+                        }
+                    }
+                },
+                error: function (data) {
+                    $(e).removeAttr('disabled');
+                    console.log(data.message);
+                }
+            });
+        } else {
+            return false;
+        }
+    }
+
+    function onconfirm() {
+        $('form').submit();
+    }
+
+    function deleteuser(e) {
+        var id = parseInt($(e).attr('attrid'));
+        var msg = "您真的确定要删除吗？\n\n请确认！";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '/index.php/index/customers/delete',// 获取自己系统后台用户信息接口
+                data: {"uid": id},
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        var data = JSON.parse(data);
+                        if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
+                            $(e).removeAttr('disabled');
+                            window.location.reload();
+                        } else {
+                            alert(data.msg);
+                            $(e).removeAttr('disabled');
+                            return false;
+                        }
+                    }
+                },
+                error: function (data) {
+                    $(e).removeAttr('disabled');
+                    console.log(data.message);
+                }
+            });
+        } else {
+            return false;
+        }
+
+
+    }
+</script>
+{include file="template/footer.html"}

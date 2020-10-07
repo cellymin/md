@@ -34,23 +34,32 @@ class MenuList extends Model
      */
     public function getmenulist($uid = '')
     {
+
         $uid = intval($uid);
-        $menu_num = Db::table('vich_user')
+        $menu_num = Db::table('mbs_user')
             ->alias('a')
-            ->join('vich_user_group b', 'a.user_group = b.group_id')
-            ->where('a.user_id', $uid)
+            ->join('mbs_user_group b', 'a.user_group = b.group_id')
+            ->where('a.id', $uid)
             ->column('group_role');
         $menunum = array_unique(array_filter(explode(',', implode($menu_num))));
 
-        $menu_list = Db::table('vich_menu_url')
+        $menu_list = Db::table('mbs_menu_url')
             ->where('menu_id', 'in', $menunum)
             ->where('is_show',1)
             ->where('online',1)
             ->select();
         return $menu_list;
     }
+    public function getmenulistall($uid = '')
+    {
+        $menu_list = Db::table('mbs_menu_url')
+            ->where('is_show',1)
+            ->where('online',1)
+            ->select();
+        return $menu_list;
+    }
     public function getmodule(){
-        $menu_list = Db::table('vich_module')
+        $menu_list = Db::table('mbs_module')
             ->where('online',1)
             ->order('module_sort asc')
             ->select();

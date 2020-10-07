@@ -12,8 +12,8 @@ class Login extends Controller
 
     public function index()
     {
-        if(isset($_SESSION['UID']) && intval($_SESSION['UID'])>0){
-            return  redirect('/');
+        if (isset($_SESSION['UID']) && intval($_SESSION['UID']) > 0) {
+            return redirect('/');
         }
         return $this->view->fetch('template/login.html');
     }
@@ -23,38 +23,38 @@ class Login extends Controller
 
         $username = trim($_POST['accountName']);
         $password = trim($_POST['password']);
-        if(!empty($username) && !empty($password)) {
-            $re = Db::table('vich_user')
-                ->where('user_name',$username)
+        if (!empty($username) && !empty($password)) {
+            $re = Db::table('mbs_user')
+                ->where('name', $username)
                 ->find();
-            if(!empty($re)){
-                if(!empty($password)){
-                    if(md5($password) == $re['password']){
-                        $_SESSION['UID']=$re['user_id'];
-                        $_SESSION['UNAME'] =$re['user_name'];
+
+            if (!empty($re)) {
+                if (!empty($password)) {
+                    if (md5($password) == $re['password']) {
+                        $_SESSION['UID'] = $re['id'];
+                        $_SESSION['UNAME'] = $re['name'];
+                        $_SESSION['GID'] = $re['grade_id'];
+                        $_SESSION['CID'] = $re['chain_id'];
                         $data['code'] = 200;
                         $data['msg'] = '登录成功';
                         return json_encode($data);
                     }
                 }
-
-            }else{
+            } else {
                 $data['code'] = -1;
                 $data['msg'] = '账户名不存在';
                 return json_encode($data);
             }
-            echo $re['password'];
-            var_dump($re);
-            exit();
-        }else{
+        } else {
             $data['code'] = -1;
             $data['msg'] = '账户名或密码不能为空';
-           return json_encode($data);
+            return json_encode($data);
         }
     }
-    public function logout(){
-        session_start();
-        if(!empty($_SESSION['UID'])){
+
+    public function logout()
+    {
+        if (!empty($_SESSION['UID'])) {
             $_SESSION['UID'] = '';
             $_SESSION['UNAME'] = '';
         }

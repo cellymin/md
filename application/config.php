@@ -236,4 +236,13 @@ return [
         'var_page'  => 'page',
         'list_rows' => 15,
     ],
+    'grade'               => [
+        'admin'         =>'1',//超级管理员
+        'chief_dean'      => '4',//总院长
+        'dean'  => '2'//院长
+    ],
+    'group'               => [
+        'jishi'      => '5',//技师
+        'dean'      => '4',//院长
+    ],
 ];

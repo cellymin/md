@@ -32,7 +32,7 @@
     }
 
     .form-group input {
-        width: 80%;
+        width: 75%;
         height: 30px;
         border: 1px solid #ccc;
     }
@@ -87,25 +87,24 @@
         cursor: pointer;
     }
 
-    .user_grade, .user_chain, .user_group {
+    .source_from{
         width: 50%;
         height: 30px;
         border: 1px solid #ccc;
     }
 
-    .user_sex .user_sex_la input {
-        border: none;
-    }
-
-
-    .user_grade:focus, .user_chain:focus, .user_group:focus {
+    .source_from:focus{
         outline: none;
         border-color: #ccc;
         box-shadow: 0 0 10px #ccc;
     }
-
-    .user_sex .user_sex_la input:focus {
-        border: none;
+    .user_grade:focus, .user_chain:focus, .user_group:focus{
+        outline: none;
+        border-color: #ccc;
+        box-shadow: 0 0 10px #ccc;
+    }
+    .user_sex .user_sex_la input:focus{
+        border:none;
         outline: none;
         border-color: #fff;
         box-shadow: 0 0 10px #fff;
@@ -233,64 +232,32 @@
         color: #fff;
     }
 
+
 </style>
 <div class="">
     <div class="modal-content">
         <div class="modal-body">
             <form>
                 <div class="form-group">
-                    <div class="left_form">
                         <label>名称：</label>
                         <input type="text" class="user_name" value="{$userinfo.name ?? ''}" placeholder="请输入姓名">
-                    </div>
-                    <div class="right_form">
-                        <label><span>昵称：</span></label>
-                        <span><input type="text" class="user_nick_name" value="{$userinfo.nickname ?? ''}"
-                                     placeholder="请输入昵称"></span>
-                    </div>
-
                 </div>
                 <div class="form-group">
                     <div class="left_form">
                         <label><span>生日：</span></label>
-                        <span id='date'>
-			                  <input type="text" value="{$userinfo.birth ?? ''}" class="user_birth" placeholder="点击选择时间" id='inputdate' autocomplete="off" />
-                        </span>
+                        <span id="date"><input type="text" class="user_birth" value="{$userinfo.birth ?? ''}" placeholder="请输入生日" id="inputdate" autocomplete="off"></span>
                     </div>
                     <div class="right_form user_sex">
                         <label><span>性别：</span></label>
-                        <label class="user_sex_la"><input style="width: 20px;height: 11px;" {if
-                                                          condition="(isset($userinfo) && $userinfo.sex == 1)" }checked
-                                                          {/if} type="radio" name="sex" value="1">男
-                            <input style="width: 20px;height: 11px;" type="radio" name="sex" {if
-                                   condition="(isset($userinfo) && $userinfo.sex == 2)" }checked {/if}
-                            value="2">女</label>
+                        <label class="user_sex_la"><input style="width: 20px;height: 11px;" type="radio" name="sex" {if condition="(isset($userinfo) && $userinfo.sex == 1)"}checked {/if} value="1">男
+                            <input style="width: 20px;height: 11px;" type="radio"  name="sex" {if condition="(isset($userinfo) && $userinfo.sex == 2)"}checked {/if} value="2">女</label>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="left_form">
-                        <label><span>职位：</span></label>
-                        <span><input type="text" class="user_job" value="{$userinfo.job_name ?? ''}"
-                                     placeholder="请输入职位"></span>
-                    </div>
-                    <div class="right_form">
-                        <label>职级：</label>
-                        <select name="user_grade" class="user_grade">
-                            {volist name="gradelist" id="v"}
-                            <option value="{$v.title}" attid="{$v.id}"
-                                    {if condition="(isset($userinfo) && $userinfo.grade_id == $v.id)" }selected="selected" {/if} >
-                            {$v.title}
-                            </option>
-                            {/volist}
-                        </select>
 
-
-                    </div>
                 </div>
                 <div class="form-group">
                     <div class="left_form">
                         <label>电话：</label>
-                        <input type="text" class="user_phone" value="{$userinfo.phone ?? ''}" placeholder="请输入电话" onchange="if_unique(this);">
+                        <input type="text" class="user_phone" value="{$userinfo.phone ?? ''}" placeholder="请输入电话" onchange="if_unique(this);" >
                     </div>
                     <div class="right_form">
                         <label>邮箱：</label>
@@ -302,34 +269,21 @@
                     <input type="text" class="user_address" value="{$userinfo.address ?? ''}" placeholder="请输入地址">
                 </div>
                 <div class="form-group">
-                    <label>所属门店：</label>
-                    <select name="user_chain" class="user_chain">
-                        {volist name="chainlist" id="v"}
-                        <option value="{$v.name}" attid="{$v.id}"
-                                {if condition="(isset($userinfo) && $userinfo.chain_id == $v.id)" }selected="selected" {/if}>
-                        {$v.name}
-                        </option>
-                        {/volist}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>所属分组：</label>
-                    <select name="user_group" class="user_group">
-                        {volist name="grouplist" id="v"}
-                        <option value="{$v.group_name}" attid="{$v.group_id}"
-                                {if condition="(isset($userinfo) && $userinfo.user_group == $v.group_id)" }selected="selected" {/if} >
-                        {$v.group_name}
-                        </option>
-                        {/volist}
+                    <label>来源：</label>
+                    <select name="source_from" class="source_from">
+                        <option value="广告" {if condition="(isset($userinfo) && $userinfo.source_from == '广告')"}selected="selected" {/if}>抖音</option>
+                        <option value="介绍" {if condition="(isset($userinfo) && $userinfo.source_from == '介绍')"}selected="selected" {/if}>美团</option>
+                        <option value="路过" {if condition="(isset($userinfo) && $userinfo.source_from == '路过')"}selected="selected" {/if}>广告</option>
+                        <option value="其他" {if condition="(isset($userinfo) && $userinfo.source_from == '其他')"}selected="selected" {/if}>朋友介绍</option>
                     </select>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <div class="cancle_btn">
+            <div class="cancle_btn" >
                 <button onclick="close_open();">Cancel</button>
             </div>
-            <div class="confim_btn">
+            <div class="confim_btn" >
                 <button attrid="{$userinfo.id ?? ''}" onclick="confim_ok(this);">Save</button>
             </div>
         </div>
@@ -337,85 +291,37 @@
 </div>
 </body>
 <script>
-    function if_unique(e) {
-        var phone = $(e).val();
-        $.ajax({
-            url: '/index.php/index/user/if_exist',// 获取自己系统后台用户信息接口
-            data: {"phone": phone},
-            type: "POST",
-            dataType: "json",
-            success: function (data) {
-                if (data) {
-                    var data = JSON.parse(data);
-                    if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
-                        $(e).removeAttr('disabled');
-                    } else {
-                        alert(data.msg);
-                        $(e).removeAttr('disabled');
-                        return false;
-                    }
-                }
-            },
-            error: function (data) {
-                $(e).removeAttr('disabled');
-                console.log(data.message);
-            }
-        });
+    function close_open() {
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index);
     }
+
     function confim_ok(e) {
         var id = parseInt($(e).attr('attrid'));
-        $(e).attr('disabled', 'disabled');
+        $(e).attr('disabled','disabled');
         var user_info = '';
         var user_name = $('.user_name').val().replace(/(^\s*)|(\s*$)/g, "");
-        var user_nick_name = $('.user_nick_name').val().replace(/(^\s*)|(\s*$)/g, "");
         var user_birth = $('.user_birth').val().replace(/(^\s*)|(\s*$)/g, "");
         var user_phone = $('.user_phone').val().replace(/(^\s*)|(\s*$)/g, "");
-        var user_job = $('.user_job').val().replace(/(^\s*)|(\s*$)/g, "");
-        var user_grade = $('.user_grade').val().replace(/(^\s*)|(\s*$)/g, "");
         var user_email = $('.user_email').val().replace(/(^\s*)|(\s*$)/g, "");
         var user_address = $('.user_address').val().replace(/(^\s*)|(\s*$)/g, "");
-        var user_chain = $('.user_chain').val().replace(/(^\s*)|(\s*$)/g, "");
-        var user_group = $('.user_group').val().replace(/(^\s*)|(\s*$)/g, "");
-        var user_grade_id = parseInt($(".user_grade").find("option:selected").attr("attid"));
-        var user_chain_id = parseInt($(".user_chain").find("option:selected").attr("attid"));
-        var user_group_id = parseInt($(".user_group").find("option:selected").attr("attid"));
+        var source_from = $('.source_from').val().replace(/(^\s*)|(\s*$)/g, "");
         var user_sex = parseInt($('input[name="sex"]:checked').val());
-        if (!(/^1[3456789]\d{9}$/.test(user_phone))) {
+
+        if(!(/^1[3456789]\d{9}$/.test(user_phone))){
             alert("手机号码有误，请重填");
             $(e).removeAttr('disabled');
             return false;
         }
-        if(!user_sex >0){
-            alert("请选择性别！");
-            $(e).removeAttr('disabled');
-            return false;
-        }
-        if(user_email !='' && user_email!=null && user_email!=undefined){
-            var myreg = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
-            if(!myreg.test(user_email)){
-                alert("请输入正确邮箱地址");
-                $(e).removeAttr('disabled');
-                return false;
-            }
-        }
-
-
         user_info = 'username*' + user_name + ','
-            + 'usernick*' + user_nick_name
-            + ',userchain*' + user_chain
             + ',userbirth*' + user_birth
             + ',sex*' + user_sex
             + ',userphone*' + user_phone
-            + ',userjob*' + user_job
-            + ',usergrade*' + user_grade
             + ',useremail*' + user_email
             + ',useraddress*' + user_address
-            + ',usergroup*' + user_group
-            + ',usergradeid*' + user_grade_id
-            + ',userchainid*' + user_chain_id
-            + ',usergroupid*' + user_group_id;
+            + ',sourcefrom*' + source_from;
         $.ajax({
-            url: '/index.php/index/user/save_user?id=' + id,// 获取自己系统后台用户信息接口
+            url: '/index.php/index/customers/save_user?id='+id,// 获取自己系统后台用户信息接口
             data: {"user_info": user_info},
             type: "POST",
             dataType: "json",
@@ -438,18 +344,37 @@
                 console.log(data.message);
             }
         });
-
     }
-
+    function if_unique(e) {
+        var phone = $(e).val();
+        $.ajax({
+            url: '/index.php/index/customers/if_exist',// 获取自己系统后台用户信息接口
+            data: {"phone": phone},
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    var data = JSON.parse(data);
+                    if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
+                        $(e).removeAttr('disabled');
+                    } else {
+                        alert(data.msg);
+                        $(e).removeAttr('disabled');
+                        return false;
+                    }
+                }
+            },
+            error: function (data) {
+                $(e).removeAttr('disabled');
+                console.log(data.message);
+            }
+        });
+    }
     var d = new DateJs({
         inputEl: '#inputdate',
         el: '#date'
     })
-
-    function close_open() {
-        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-        parent.layer.close(index);
-    }
+    console.log(d)
 
 </script>
 </html>

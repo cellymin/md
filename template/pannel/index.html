@@ -23,23 +23,81 @@
 </head>
 <body class=" theme-blue">
 
+<!-- Demo page code -->
+
+<script type="text/javascript">
+    $(function() {
+        var match = document.cookie.match(new RegExp('color=([^;]+)'));
+        if(match) var color = match[1];
+        if(color) {
+            $('body').removeClass(function (index, css) {
+                return (css.match (/\btheme-\S+/g) || []).join(' ')
+            })
+            $('body').addClass('theme-' + color);
+        }
+
+        $('[data-popover="true"]').popover({html: true});
+
+    });
+</script>
+<style type="text/css">
+    #line-chart {
+        height:300px;
+        width:800px;
+        margin: 0px auto;
+        margin-top: 1em;
+    }
+    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+        color: #fff;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function() {
+        var uls = $('.sidebar-nav > ul > *').clone();
+        uls.addClass('visible-xs');
+        $('#main-menu').append(uls.clone());
+    });
+</script>
 
 <!--Use of these features requires a premium license.-->
 <!--See http://www.portnine.com/bootstrap-themes for details.-->
 <!--After purchasing a premium license, the full source code will be available for download.-->
 
 <style>
-
+    .main-content{
+        width: 100%;
+        margin: 0 auto ;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: #fff;
+    }
+    .content .main-content .col-md-offset-1 {
+        width: 100%;
+        margin-left: 0px;
+    }
+    .main-content .page{
+        margin-top: 0px;
+        margin-block-start:0;
+        margin-block-end: 0;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        text-align: left;
+        margin-left: 15px;
+        color: #333;
+    }
 </style>
 {include file="template/navbar.html"}
 {include file="template/sidebar.html"}
 <div class="content">
     <div class="main-content">
-        <h1 class="page">功能列表</h1>
+
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
-               <div class="add_user" onclick="openedit();" style="cursor:pointer;font-size: 25px;width: 35px;height: 35px;background: #ccc;line-height: 35px;text-align: center;">+</div>
-
+                <div style="background: #e5e5e5 ;">
+                    <div class="add_user" onclick="openedit();" style="float:right;cursor:pointer;font-size: 25px;width: 35px;height: 35px;margin-right:15px;line-height: 40px;text-align: center;margin-bottom: 2px">+</div>
+                    <h1 class="page">功能列表</h1>
+                </div>
                 <table class="dataintable">
                     <thead>
                     <tr>
@@ -65,7 +123,7 @@
                         <td>{$k.menu_desc}</td>
                         <td><a href="javascript:void(0)" attrid="{$k.menu_id}" onclick="openedit(this);"
                                data-toggle="modal"
-                               class="padding-right-small"><i class="fa fa-pencil "></i> Edit</a></td>
+                               class="padding-right-small"><i class="fa fa-pencil "></i> 修改</a></td>
                     </tr>
                     {/foreach}
                     </tbody>

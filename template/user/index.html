@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Bootstrap Admin</title>
+    <title>Miaoboshi</title>
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -21,8 +21,66 @@
     <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/mbscom.css">
 
 </head>
-<body class=" theme-blue">
+<body class=" theme-blue" style="background: #f3f8fb;">
 
+<!-- Demo page code -->
+
+<script type="text/javascript">
+    $(function() {
+        var match = document.cookie.match(new RegExp('color=([^;]+)'));
+        if(match) var color = match[1];
+        if(color) {
+            $('body').removeClass(function (index, css) {
+                return (css.match (/\btheme-\S+/g) || []).join(' ')
+            })
+            $('body').addClass('theme-' + color);
+        }
+
+        $('[data-popover="true"]').popover({html: true});
+
+    });
+</script>
+<style type="text/css">
+    #line-chart {
+        height:300px;
+        width:800px;
+        margin: 0px auto;
+        margin-top: 1em;
+    }
+    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+        color: #fff;
+    }
+    .main-content{
+        width: 100%;
+        margin: 0 auto ;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: #fff;
+    }
+   .content .main-content .col-md-offset-1 {
+       width: 100%;
+       margin-left: 0px;
+   }
+    .main-content .page{
+        margin-top: 0px;
+        margin-block-start:0;
+        margin-block-end: 0;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+       text-align: left;
+        margin-left: 15px;
+        color: #333;
+    }
+
+</style>
+
+<script type="text/javascript">
+    $(function() {
+        var uls = $('.sidebar-nav > ul > *').clone();
+        uls.addClass('visible-xs');
+        $('#main-menu').append(uls.clone());
+    });
+</script>
 
 <!--Use of these features requires a premium license.-->
 <!--See http://www.portnine.com/bootstrap-themes for details.-->
@@ -31,37 +89,40 @@
 
 {include file="template/navbar.html"}
 {include file="template/sidebar.html"}
-<div class="content">
+<div class="content" style="background: #f3f8fb;">
     <div class="main-content">
-        <h1 class="page">用户列表</h1>
-        <h3 class="page-tagline"></h3>
         <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-               <div class="add_user" onclick="openedit();" style="cursor:pointer;font-size: 25px;width: 35px;height: 35px;background: #ccc;line-height: 35px;text-align: center;margin-bottom: 2px">+</div>
 
+            <div class="col-md-10 col-md-offset-1">
+                <div style="background: #e5e5e5 ;">
+                    <div class="add_user" onclick="openedit();" style="float:right;cursor:pointer;font-size: 25px;width: 35px;height: 35px;margin-right:15px;line-height: 40px;text-align: center;margin-bottom: 2px">+</div>
+                    <h1 class="page">用户列表</h1>
+                </div>
                 <table class="dataintable table">
                     <thead>
                       <tr>
-                        <th style="width: 50px;"></th>
+                        <th style="width: 50px;">#</th>
                         <th>姓名</th>
                         <th>职位</th>
                         <th>电话</th>
-                        <th>Messages</th>
+                        <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
                     {foreach $userlist as $k }
                     <tr>
-                        <td></td>
-                        <td>{$k.name}<span class="text-sm" style="margin-left: 10px"> <a href="javascript:void(0)" attrid="{$k.id}" onclick="openedit(this);"
-                                                                       data-toggle="modal"
-                                                                       class="padding-right-small"><i
-                                class="fa fa-pencil "></i> Edit</a> <a
-                                href="javascript:void(0)" attrid="{$k.id}" onclick="deleteuser(this);"
-                                data-toggle="modal"><i class="fa fa-trash-o "></i> Delete</a></span></td>
+                        <td>{$k.id}</td>
+                        <td>{$k.name}
                         <td>{$k.job_name}</td>
                         <td>{$k.phone}</td>
-                        <td><i class="fa fa-bell text-danger"></i>4 messages
+                        <td>
+<!--                            <i class="fa fa-bell text-danger"></i>4 messages-->
+                            <span class="text-sm" style="margin-left: 10px"> <a href="javascript:void(0)" attrid="{$k.id}" onclick="openedit(this);"
+                                                                                data-toggle="modal"
+                                                                                class="padding-right-small"><i
+                                    class="fa fa-pencil "></i> 修改</a> <a
+                                    href="javascript:void(0)" attrid="{$k.id}" onclick="deleteuser(this);"
+                                    data-toggle="modal"><i class="fa fa-trash-o "></i> 删除</a></span></td>
                         </td>
                     </tr>
                     {/foreach}

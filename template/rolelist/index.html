@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Bootstrap Admin</title>
+    <title>Miaoboshi</title>
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -45,6 +45,42 @@
 <body class=" theme-blue">
 
 
+<!-- Demo page code -->
+
+<script type="text/javascript">
+    $(function() {
+        var match = document.cookie.match(new RegExp('color=([^;]+)'));
+        if(match) var color = match[1];
+        if(color) {
+            $('body').removeClass(function (index, css) {
+                return (css.match (/\btheme-\S+/g) || []).join(' ')
+            })
+            $('body').addClass('theme-' + color);
+        }
+
+        $('[data-popover="true"]').popover({html: true});
+
+    });
+</script>
+<style type="text/css">
+    #line-chart {
+        height:300px;
+        width:800px;
+        margin: 0px auto;
+        margin-top: 1em;
+    }
+    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+        color: #fff;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function() {
+        var uls = $('.sidebar-nav > ul > *').clone();
+        uls.addClass('visible-xs');
+        $('#main-menu').append(uls.clone());
+    });
+</script>
 <!--Use of these features requires a premium license.-->
 <!--See http://www.portnine.com/bootstrap-themes for details.-->
 <!--After purchasing a premium license, the full source code will be available for download.-->

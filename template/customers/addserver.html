@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/theme.css">
     <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/premium.css">
     <script src="/public/static/layer/layer.js"></script>
+
     <script src="/public/static/plugins/cover_js/iscroll-zoom.js" type="text/javascript" charset="utf-8"></script>
     <script src="/public/static/plugins/cover_js/hammer.js" type="text/javascript" charset="utf-8"></script>
     <script src="/public/static/plugins/cover_js/lrz.all.bundle.js" type="text/javascript" charset="utf-8"></script>
@@ -375,7 +376,7 @@
         cursor: pointer;
     }
 </style>
-<div class="content">
+<div class="content" id="ddd">
     <div class="base_base mbs_header">
         <!--        <p class="mbs_title">祛斑跟踪表</p>-->
         <p class="mbs_no" attruid="{$cusinfo.id}" >
@@ -690,9 +691,15 @@
           <label>{$cusinfo.source_from}</label>
         </p>
         <p class="submit_ok" onclick="confirm_sub(this)"><span>确认</span></p>
+        <input type="button" onclick="aa()" value="打印"/>
+
     </div>
 </div>
+<script language="javascript" src="/public/static/js/jquery.jqprint-0.3.js"></script>
 <script>
+    function aa(){
+        $("#ddd").jqprint();
+    }
     function ser_peo_ok(e) {
         $(e).addClass('select_ser');
         console.log($(e).attr('class'));

@@ -8,374 +8,34 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="/public/static/lib/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="/public/static/lib/font-awesome/css/font-awesome.css">
+    <link media="print"  href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link media="print"  rel="stylesheet" type="text/css" href="/public/static/lib/bootstrap/css/bootstrap.css">
+    <link media="print"  rel="stylesheet" href="/public/static/lib/font-awesome/css/font-awesome.css">
     <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/theme.css">
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/premium.css">
+    <link media="print"  rel="stylesheet" type="text/css" href="/public/static/stylesheets/theme.css">
+    <link media="print"  rel="stylesheet" type="text/css" href="/public/static/stylesheets/premium.css">
     <script src="/public/static/layer/layer.js"></script>
+    <script language="javascript" src="/public/static/js/jquery.jqprint-0.3.js"></script>
     <script src="/public/static/plugins/cover_js/iscroll-zoom.js" type="text/javascript" charset="utf-8"></script>
     <script src="/public/static/plugins/cover_js/hammer.js" type="text/javascript" charset="utf-8"></script>
     <script src="/public/static/plugins/cover_js/lrz.all.bundle.js" type="text/javascript" charset="utf-8"></script>
     <script src="/public/static/plugins/cover_js/jquery.photoClip.min.js" type="text/javascript"
             charset="utf-8"></script>
+
 </head>
 <body>
 <style>
-    .base_base {
-        width: 90%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 500;
-        color: #333;
-    }
 
-    .mbs_header .mbs_title {
-        font-size: 28px;
-        font-weight: 500;
-        text-align: center;
-        letter-spacing: 1px;
-        color: #333;
-    }
-
-    .mbs_header .mbs_no {
-        font-size: 18px;
-        font-weight: 500;
-        text-align: left;
-        color: #333;
-    }
-
-    .base_info {
-        font-size: 18px;
-        color: #333;
-        line-height: 1.5;
-    }
-
-    .base_info input, .solution input, .sign input, .if_did input {
-        border: none;
-        width: 35px;
-        outline: none;
-        margin-bottom: 3px;
-    }
-
-    .base_info input:focus, .solution input:focus, .sign input:focus, .if_did input:focus {
-        outline: none;
-        border-color: #ccc;
-        box-shadow: 0 0 10px #ccc;
-    }
-
-    .if_did .wz_detail:focus, .if_did .surgery_detail:focus {
-        width: 200px;
-        outline: none;
-        border-color: #ccc;
-        box-shadow: 0 0 10px #ccc;
-    }
-
-    .base_info .if_marry input:focus, .if_did input:focus, .source_from input:focus {
-        box-shadow: none;
-        background: #fff;
-    }
-
-    .base_info p {
-        text-align: left;
-    }
-
-    .base_info em, .solution em, .sign em {
-        margin: 0 2px;
-        font-style: normal;
-    }
-
-    .base_info .base_phone input {
-        width: 250px;
-    }
-
-    .base_info .base_job input {
-        width: 200px;
-    }
-
-    .base_left {
-        width: 70%;
-        float: left
-    }
-
-    .base_right {
-        width: 25%;
-        float: right
-    }
-
-    .pifu_base {
-        width: 100%;
-    }
-
-    .pifu_base .pifu_left {
-        width: 70%;
-        float: left;
-    }
-
-    .pifu_base .pifu_right {
-        width: 25%;
-        float: right;
-    }
-
-    .pifu_base .pifu_right img {
-        height: 257px;
-        width: auto;
-        margin-left: 5px;
-    }
-
-    .fu_select {
-        width: 100%;
-    }
-
-    .fu_select .skin_cate, .health_info, .experience, .stain_type {
-        height: 40px;
-        border-bottom: 1px solid #333;
-    }
-
-    .skin_des {
-        clear: both;
-    }
-
-    .skin_des .fu_select {
-        border: 1px solid #333;
-        height: 257px;
-    }
-
-    .skin_des .fu_select .skin_title {
-        text-align: center;
-        width: 100px;
-        border-right: 1px solid #333;
-    }
-
-    .skin_des .fu_select .skin_select {
-        padding-left: 10px;
-        text-align: left;
-        font-size: 16px;
-    }
-
-    .skin_des .fu_select .skin_select em {
-        margin: 0 2px;
-        font-style: normal;
-    }
-
-    .fu_select label {
-        margin-top: 3px;
-        margin-bottom: 3px;
-    }
-
-    .submit_ok {
-        width: 100px;
-        background: #333;
-        padding: 2px 10px;
-        text-align: center;
-        color: #fff;
-    }
-
-    .sign_quren {
-        height: 40px;
-        line-height: 40px;
-    }
-
-    .sign_quren img {
-        height: 30px;
-        width: 200px;
-        vertical-align: middle
-    }
-
-    .cover-wrap {
-        display: none;
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 10000000;
-        text-align: center;
-    }
-
-    .cover-wrap .cece {
-        width: 600px;
-        height: 600px;
-        margin: 100px auto;
-        background-color: #FFFFFF;
-        overflow: hidden;
-        border-radius: 4px;
-    }
-
-    #clipArea {
-        margin: 10px;
-        height: 520px;
-    }
-
-    .cece_1 {
-        height: 56px;
-        line-height: 36px;
-        text-align: center;
-        padding-top: 8px;
-    }
-
-    #clipBtn {
-        width: 120px;
-        height: 36px;
-        border-radius: 4px;
-        background-color: #ff8a00;
-        color: #FFFFFF;
-        font-size: 14px;
-        text-align: center;
-        line-height: 36px;
-        outline: none;
-    }
-
-    #view {
-        width: 166px;
-        height: 172px;
-    }
-
-    .cece_2 {
-        width: 166px;
-        height: 172px;
-        color: #FFFFFF;
-        font-size: 14px;
-        text-align: center;
-        outline: none;
-        position: absolute;
-        margin-top: -170px;
-    }
-
-    #file {
-        cursor: pointer;
-        opacity: 0;
-        filter: alpha(opacity=0);
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-
-    .cus_sign_ok, .dean_sign_ok {
-        cursor: pointer;
-    }
-
-    .content {
-        background: url("/public/static/images/bg.png") center no-repeat;
-        background-size: 80%;
-    }
-
-    .service_record {
-        width: 90%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 500;
-        text-align: left;
-        color: #333;
-    }
-
-    ul, li {
-        padding: 0;
-        margin: 0;
-        list-style: none
-    }
-
-    .service_record ul {
-        width: 100%;
-        clear: both;
-    }
-
-    .service_record ul li {
-        overflow: hidden;
-        width: 18%;
-        float: left;
-        height: 30px;
-        margin: 3px 0;
-        line-height: 30px;
-    }
-
-    .service_record ul li input {
-        width: 80%;
-        margin: 0 auto;
-
-    }
-
-    .service_record ul .creat_time {
-        height: 40px;
-        width: 15%;
-        font-size: 16px;
-        text-align: center;
-    }
-
-    .service_record ul .server_demo {
-        height: 40px;
-        width: 18%;
-    }
-
-    .service_record ul .server_detail {
-        height: 40px;
-        width: 25%;
-    }
-
-    .service_record ul .server_pro {
-        height: 40px;
-        width: 20%;
-
-    }
-
-    .service_record ul .server_sign {
-        height: 40px;
-        width: 13%;
-    }
-
-    .service_record ul li input {
-        border: 1px solid #ccc;
-        height: 36px;
-        width: 98%;
-        outline: none;
-        margin-bottom: 3px;
-        font-size: 16px;
-    }
-
-    .service_record ul li input:focus {
-        outline: none;
-        border-color: #ccc;
-        box-shadow: 0 0 10px #ccc;
-    }
-
-    .service_record ul .cazuo {
-        width: 8%;
-        line-height: 40px;
-    }
-
-    .service_record ul .cazuo span {
-        height: 40px;
-        font-size: 16px;
-        margin-left: 9%;
-        padding: 0 10%;
-    }
-
-    .service_record ul .cazuo .add_service {
-        width: 40%;
-        background: #ccc;
-        color: #333;
-        cursor: pointer;
-    }
-
-    .service_record ul .cazuo .ok_service {
-        padding: 0 5px;
-        background: #3c8a3c;
-        color: #ccc;
-        cursor: pointer;
-    }
-
-    .confim_info .del_server {
-        padding: 0 6px;
-        background: #ccc;
-        color: #333;
-        cursor: pointer;
-    }
 </style>
-<div class="content">
+<script>
+    document.writeln("<link href=\"/public/static/stylesheets/server.css\" rel=\"stylesheet\"/>");
+    document.writeln("<link media='print' href=\"/public/static/stylesheets/server.css\" rel=\"stylesheet\"/>");
+    function aa(){
+        $("#ddd").jqprint();
+    }
+</script>
+<div class="content" id="ddd">
+
     <div class="base_base mbs_header">
         <!--        <p class="mbs_title">祛斑跟踪表</p>-->
         <p class="mbs_no" attruid="{$serinfo.id}" >
@@ -416,9 +76,8 @@
                 </div>
                 <div id="view" style="" title="请上传 198*172 的头像"></div>
                 <div style="height:10px;"></div>
-                <div class="cece_2" style="background-image: url('{$serinfo.srcsource}');background-size: 100%;">
-                    <input type="file" id="file" style="" onclick="return false;">
-                </div>
+                <img class="cece_2" src="{$serinfo.srcsource}" />
+
             </div>
         </div>
     </div>
@@ -558,7 +217,7 @@
         <p><span><em>接待人：</em><input style="width: 150px" type="text" name="wz_detail" id="who_meet" readonly
                                      value="{$reception}"></span>
             <span><em>咨询日期：</em><input style="width: 150px" type="text" name="wz_detail" id="when"
-                                       value="{$serinfo.ask_time}" readonly></span>
+                                       value="{$serinfo.ask_time|substr=0,10}" readonly></span>
         </p>
         <p>
             <span style="position: relative"><em>分配技师：</em>
@@ -569,10 +228,15 @@
             <em>途径：</em>
             <label>{$serinfo.source_from}</label>
         </p>
-<!--        <p class="submit_ok" onclick="confirm_sub(this)"><span>确认</span></p>-->
+
     </div>
 </div>
+<div style="width: 90%;margin: 0 auto">
+    <p class="submit_ok" onclick="aa()"><span>打印</span></p>
+</div>
+
 <script>
+
     function ser_peo_ok(e) {
         $(e).addClass('select_ser');
         console.log($(e).attr('class'));

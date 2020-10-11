@@ -33,18 +33,19 @@ class Customers extends Base
             $this->assign('sign', 2);
         }
         $map = array();
+        $ormap = array();
 
 //        if (!empty($_GET['name'])) {
 //            $map['o.chain_name'] = ['like', '%' . $_GET['chain_name'] . '%'];
 //        }
-        if (!empty($_GET['user_name'])) {
-            $map['a.name'] = ['like', '%' . $_GET['user_name'] . '%'];
+        if (!empty($_GET['keywords'])) {
+            $ormap['a.name'] = ['like', '%' . $_GET['keywords'] . '%'];
         }
-        if (!empty($_GET['phone'])) {
-            $map['a.phone'] = ['like', '%' . $_GET['phone'] . '%'];
+        if (!empty($_GET['keywords'])) {
+            $ormap['a.phone'] = ['like', '%' . $_GET['keywords'] . '%'];
         }
-        if (!empty($_GET['server_no'])) {
-            $map['o.server_no'] = ['like', '%' . $_GET['server_no'] . '%'];
+        if (!empty($_GET['keywords'])) {
+            $ormap['o.server_no'] = ['like', '%' . $_GET['keywords'] . '%'];
         }
         if (!empty($_GET['create_time'])) {
             $create_time = strtotime($_GET['create_time']);
@@ -52,14 +53,16 @@ class Customers extends Base
             $end_t = date('Y-m-d 23:59:59', $create_time);
             $map['o.create_time'] = ['between time', [$star_t, $end_t]];
         }
-        if (!empty($_GET['server_name'])) {
-            $map['o.server_name'] = ['like', '%' . $_GET['server_name'] . '%'];
+        if (!empty($_GET['keywords'])) {
+            $ormap['o.server_name'] = ['like', '%' . $_GET['keywords'] . '%'];
         }
         $map['a.status'] = 1;
         $re = Db::table('mbs_customers')
             ->alias('a')
             ->join('mbs_all_assessment o', 'a.id=o.customer_id', 'LEFT')
             ->field('a.*,o.id sid,o.status ostatus,o.server_id ser_id')
+
+            ->whereOr($ormap)
             ->where($map)
             ->select();
 //        $res = Db::table('mbs_customers')->getLastSql();

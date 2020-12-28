@@ -49,6 +49,7 @@ class Chain extends Base
     }
     public function editchain(){
         $id = intval($_GET['id']);
+
         if($id>0){
             $re = Db::table('mbs_chain')
                 ->field('c.*,u.name uname')
@@ -58,7 +59,6 @@ class Chain extends Base
                 ->find();
             $this->assign('chaininfo',$re);
         }
-
         $deanlist = $this->deanlist();
 //        echo '<pre/>';var_dump($deanlist);die();
         $this->assign('deanlist',$deanlist);

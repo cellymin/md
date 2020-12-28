@@ -20,3 +20,4 @@
 //    ],
 //
 //];
+//\think\Route::get('wxindex','index/Blog/index');

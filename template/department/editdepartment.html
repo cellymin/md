@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="/public/static/js/date.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/static/js/nongli.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/mbscom.css">
+</head>
+<body>
+<style>
+
+
+</style>
+<div class="">
+    <div class="modal-content">
+        <div class="modal-body">
+            <form>
+                <div class="form-group">
+
+                    <label>名称：</label>
+                    <input type="text" class="departmentName" value="{$departinfo.departmentName ?? ''}" placeholder="">
+                </div>
+
+                <div class="form-group">
+                    <p style="position: relative;">
+                        <label>主管：</label>
+
+                        <select style="width: 250px" class="search_select" id="selectInput" name="wz_detail"
+                                autocomplete="off">
+                            {foreach $zglist as $k }
+                            <option value="{$k.name}" dd="{$k.quanpin}" es="{$k.jianxie}" ss="{$k.id}" taxrate=""
+                                    {if condition="(!empty($departinfo) && $departinfo.zhuguanid == $k.id)" }
+                                    selected="selected" {/if}>{$k.name}</option>
+                            {/foreach}
+                        </select>
+                        <input class="zgid" value="{$departinfo.zhuguanid ?? ''}" type="hidden">
+                    </p>
+                </div>
+                <div class="form-group">
+
+                    <label><span>描述：</span></label>
+                    <span><textarea rows="3" class="remark" value=""
+                                    placeholder="">{$departinfo.remark ?? ''}</textarea></span>
+                </div>
+
+            </form>
+        </div>
+        <div class="modal-footer" style="margin-top: 40px;">
+            <div class="confim_btn" style="float: left">
+                <button attrid="{$departinfo.departmentId ?? ''}" onclick="confim_ok(this);">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/public/static/js/address.js"></script>
+<script>
+
+    function confim_ok(e) {
+        var id = parseInt($(e).attr('attrid'));
+        $(e).attr('disabled', 'disabled');
+        var depart_info = '';
+        var departmentName = $('.departmentName').val().replace(/(^\s*)|(\s*$)/g, "");
+        var remark = $('.remark').val().replace(/(^\s*)|(\s*$)/g, "");
+        var zhuguanid = parseInt($('.selectssss').val());
+        if(!zhuguanid>0){
+            zhuguanid = parseInt($('.zgid').val());
+        }
+        depart_info = 'departmentName*' + departmentName + ','
+            + 'zhuguanid*' + zhuguanid
+            + ',remark*' + remark;
+        $.ajax({
+            url: '/index.php/index/department/save_department?id=' + id,// 获取自己系统后台用户信息接口
+            data: {"depart_info": depart_info},
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    var data = JSON.parse(data);
+                    if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
+                        $(e).removeAttr('disabled');
+                        close_open();
+                        window.parent.location.reload();
+                    } else {
+                        alert(data.msg);
+                        $(e).removeAttr('disabled');
+                        return false;
+                    }
+                }
+            },
+            error: function (data) {
+                $(e).removeAttr('disabled');
+                console.log(data.message);
+            }
+        });
+
+    }
+
+    var d = new DateJs({
+        inputEl: '#inputdate',
+        el: '#date'
+    })
+
+    function close_open() {
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index);
+    }
+
+</script>
+<script src="/public/static/js/searchSelectzhuguan.js"></script>
+</html>

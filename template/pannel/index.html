@@ -47,9 +47,6 @@
         margin: 0px auto;
         margin-top: 1em;
     }
-    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
-        color: #fff;
-    }
 </style>
 
 <script type="text/javascript">
@@ -65,11 +62,15 @@
 <!--After purchasing a premium license, the full source code will be available for download.-->
 
 <style>
+    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+        color: #fff;
+    }
     .main-content{
+        clear: both;
         width: 100%;
         margin: 0 auto ;
         border: 1px solid #ccc;
-        border-radius: 8px;
+        border-radius: 2px;
         background: #fff;
     }
     .content .main-content .col-md-offset-1 {
@@ -87,9 +88,10 @@
         color: #333;
     }
 </style>
-{include file="template/navbar.html"}
+
 {include file="template/sidebar.html"}
 <div class="content">
+    {include file="template/navbar.html"}
     <div class="main-content">
 
         <div class="row">
@@ -138,9 +140,9 @@
         layer.ready(function () {
             layer.open({
                 type: 2,
-                title: '编辑用户',
+                title: '编辑部门',
                 maxmin: true,
-                area: ['40%', '40%'],
+                area: ['85%', '70%'],
                 content: '/index.php/index/pannel/editpannel?id='+id
             });
         });

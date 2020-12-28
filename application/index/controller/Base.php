@@ -101,6 +101,8 @@ class Base extends Controller
                 if (isset($_SESSION['UID']) && intval($_SESSION['UID']>0)) {
                     $menulist = $this->get_menu();
                     $this->assign('list',$menulist);
+                    $uinfo  = getuserinfo();
+                    $this->assign('uinfo',$uinfo);
                 } else {
                     $this->redirect('/index.php/index/login');
                 }
@@ -110,4 +112,8 @@ class Base extends Controller
 
 
     }
+//    public function getUseInfo(){
+//        $uinfo  = getuserinfo();
+//        $this->assign('uinfo',$uinfo);
+//    }
 }

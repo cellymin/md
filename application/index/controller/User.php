@@ -26,7 +26,6 @@ class User extends Base
         $cheif = $config['chief_dean'];
         //院长
         $dean = intval($config['dean']);
-
         if (!empty($_SESSION['CID'])) {
             if ($_SESSION['GID'] == $cheif || $_SESSION['GID'] == 1) {//总院长
 
@@ -122,6 +121,7 @@ class User extends Base
         $data['chain_name'] = $new['userchainid'];
         $data['user_group'] = $new['usergroupid'];
         $data['chain_name'] = $new['userchain'];
+        $data['usrsrc'] = $_POST['usrsrc'];
 
         Loader::import('pinyin.PinYin', EXTEND_PATH, '.class.php');
         $pinyin = new \pinyin();
@@ -133,6 +133,11 @@ class User extends Base
 
         if (isset($_GET['id']) && intval($_GET['id']) > 0) {
             $data['update_time'] = date('Y-m-d h:i:s', time());
+
+
+            $re = Db::table('mbs_user')
+                ->where('id', intval($_GET['id']))
+                ->update($data);
             //启动事务
             Db::startTrans();
             try {
@@ -182,6 +187,7 @@ class User extends Base
     public function delete()
     {
         $id = intval($_POST['uid']);
+
         if ($id > 0) {
             $re = Db::table('mbs_user')
                 ->where('id', $id)

@@ -72,6 +72,28 @@
     .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
         color: #fff;
     }
+    .main-content{
+        clear: both;
+        width: 100%;
+        margin: 0px auto ;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        background: #fff;
+    }
+    .content .main-content .col-md-offset-1 {
+        width: 100%;
+        margin-left: 0px;
+    }
+    .main-content .page{
+        margin-top: 0px;
+        margin-block-start:0;
+        margin-block-end: 0;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        text-align: left;
+        margin-left: 15px;
+        color: #333;
+    }
 </style>
 
 <script type="text/javascript">
@@ -86,7 +108,9 @@
 <!--After purchasing a premium license, the full source code will be available for download.-->
 
 <style>
+
     .user_group{
+        clear: both;
         width: 220px;
         height: 30px;
         border: 1px solid #ccc;
@@ -98,9 +122,10 @@
     }
 
 </style>
-{include file="template/navbar.html"}
+
 {include file="template/sidebar.html"}
 <div class="content">
+    {include file="template/navbar.html"}
     <select name="group_id" class="user_group" onchange="javascript:location.replace(&#39;?group_id=&#39;+this.options[this.selectedIndex].value)" style="margin:5px 0px 0px">
         {foreach $grouplist as $k=>$v }
         <option value="{$v.group_id}" {if condition="$v.group_id == $Think.get.group_id"}selected="selected" {/if}>{$v.group_name}</option>

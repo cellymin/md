@@ -249,7 +249,9 @@
         });
 
     }
-
+    function show_all(e) {
+        $(e).attr('title', $(e).text());
+    }
     function if_show(e) {
         var attrval = parseInt($(e).val());
         // console.log(attrval);

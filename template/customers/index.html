@@ -51,10 +51,11 @@
         color: #fff;
     }
     .main-content{
+        clear: both;
         width: 100%;
-        margin: 0 auto ;
+        margin: 0px auto ;
         border: 1px solid #ccc;
-        border-radius: 8px;
+        border-radius: 2px;
         background: #fff;
     }
     .content .main-content .col-md-offset-1 {
@@ -68,7 +69,7 @@
         margin-inline-start: 0px;
         margin-inline-end: 0px;
         text-align: left;
-        margin-left:  15px;
+        margin-left: 15px;
         color: #333;
     }
 </style>
@@ -84,16 +85,15 @@
 <!--See http://www.portnine.com/bootstrap-themes for details.-->
 <!--After purchasing a premium license, the full source code will be available for download.-->
 
-
-{include file="template/navbar.html"}
 {include file="template/sidebar.html"}
 
 <style>
 
     .sousuo {
+        clear: both;
         height: 40px;
         min-width: 360px;
-        margin: 0 auto;
+        margin: 0px auto;
         margin-bottom: 10px;
     }
 
@@ -157,25 +157,16 @@
         min-width: 360px;
         margin: 0 auto;
     }
-    .anniu p{
-        height: 40px;
-        line-height: 40px;
-        float: left;
-    }
-    .anniu p span{
-        background: #637392;
-        color: #fff;
-        padding:5px 8px;
-    }
     .sousuo_form .suosou_btn{
         height: 30px;
         line-height: 30px;
         letter-spacing: 5px;
-        
+
     }
 </style>
 <div class="content">
-    <div class="sousuo">
+    {include file="template/navbar.html"}
+    <div class="sousuo" >
         <form action="" method="get">
             <div class="form_sub">
 <!--                <div class="sousuo_form">-->
@@ -195,7 +186,7 @@
 			                  <input type="text" value="{$Think.get.create_time}" class="user_birth" name="create_time" placeholder="点击选择时间" id='inputdate' autocomplete="off" />
                      </span>
                 </div>
-                <div class="sousuo_form" style="width: 80px;text-align: center;margin-left: 10px;background: #5a6987;color: #fff;cursor:pointer; ">
+                <div class="sousuo_form" style="width: 80px;text-align: center;margin-left: 10px;background: #39435C;color: #fff;cursor:pointer; ">
                     <span class="suosou_btn" onclick="onconfirm();">搜索</span>
                 </div>
 <!--                <div class="sousuo_form">-->
@@ -228,7 +219,11 @@
                     {foreach $userlist as $k }
                     <tr>
                         <td></td>
-                        <td>{$k.name}<span class="text-sm" style="margin-left: 10px"> <a href="javascript:void(0)"
+                        <td>
+                            {if condition="($k.name != '') "} {$k.name}
+                            {elseif condition="$k.nickname !='' "/}{$k.nickname}
+                            {/if}
+                        <span class="text-sm" style="margin-left: 10px"> <a href="javascript:void(0)"
                                                                                          attrid="{$k.id}"
                                                                                          onclick="openedit(this);"
                                                                                          data-toggle="modal"
@@ -237,8 +232,12 @@
                                 href="javascript:void(0)" attrid="{$k.id}"
                                 data-toggle="modal" onclick="deleteuser(this)"><i class="fa fa-trash-o "></i> 删除</a></span>
                         </td>
-                        <td>{$k.source_from}</td>
-                        <td>{$k.phone}</td>
+                        <td> {if condition="($k.name != '') "} {$k.source_from}
+                            {elseif condition="$k.nickname !='' "/}微信
+                            {/if}</td>
+                        <td>{if condition="($k.name != '') "} {$k.phone}
+                            {elseif condition="$k.nickname !='' "/}无
+                            {/if}</td>
                         <td class="caozuo">
                             {if condition="(empty($k.sid)) || $k.ostatus!=1 " }
                             <span onclick="addserver(this);" attrid="{$k.id}"> 添加</span>
@@ -272,7 +271,7 @@
                 type: 2,
                 title: '编辑用户',
                 maxmin: true,
-                area: ['60%', '46%'],
+                area: ['85%', '70%'],
                 content: '/index.php/index/customers/edituser?id=' + id
             });
         });
@@ -285,7 +284,7 @@
                 type: 2,
                 title: '祛斑跟踪表',
                 maxmin: true,
-                area: ['700px', '90%'],
+                area: ['85%', '90%'],
                 content: '/index.php/index/customers/addserver?id=' + id
             })
         })
@@ -298,7 +297,7 @@
                 type: 2,
                 title: '编辑-祛斑跟踪表',
                 maxmin: true,
-                area: ['700px', '90%'],
+                area: ['85%', '90%'],
                 content: '/index.php/index/customers/editserver?id=' + id
             })
         })
@@ -311,7 +310,7 @@
                 type: 2,
                 title: '查看-祛斑跟踪表',
                 maxmin: true,
-                area: ['700px', '90%'],
+                area: ['85%', '90%'],
                 content: '/index.php/index/customers/viewserver?id=' + id
             })
         })

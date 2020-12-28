@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="telephone=no" name="format-detection">
+    <!--首页seo标题-->
+    <title>预约列表</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <link href="favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+    <link rel="stylesheet" type="text/css" href="/public/static/lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/wxindex.css">
+    <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/component.css"/>
+    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/animations.css"/>
+</head>
+<style>
+    body {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    ul, ol {
+        list-style: none;
+    }
+
+    li {
+        list-style: none;
+    }
+
+</style>
+<body>
+<div class="content">
+    <div class="header">
+        <p><span>预约</span></p>
+    </div>
+    <div class="" id="pt-main">
+
+        <div class="pt-page pt-page-1">
+            <div class="barlist">
+                <div class="barcon">
+                    <div class="img am-clickable"></div>
+                    <a href="" class="call"></a>
+                    <div class="addcontent" id="iterateEffects">
+                        <div class="name">{$chaininfo.name}</div>
+                        <div class="adress">{$chaininfo.ccity}{$chaininfo.cadd}</div>
+                        <div class="tel">{$chaininfo.ctel}</div>
+                        <!--                <input class="age-input" type="text" name="" id="age-input" value="" placeholder="请选择" readonly/>-->
+                    </div>
+
+                    <div class="barberList_bg"></div>
+                </div>
+            </div>
+            <div class="jslist">
+
+                {foreach $chainuser as $k }
+                <li class="am-clickable">
+                    <div class="l1">
+                        <div class="img am-clickable"><img style="background-color: rgb(204, 204, 204);"
+                                                           src="{$k.usrsrc}">
+                        </div>
+                        <div class="name">{$k.name}</div>
+                        <div class="level">{$k.job_name}</div>
+                    </div>
+                    <div class="l2">
+                        <label></label><a href="resertime?sign={$k.id}" target="_self">
+                        <div class="reservation_btn am-clickable">预约</div>
+                    </a>
+                        <div class="tags" style="display: block;">点击头像可以了解更多信息哦~</div>
+                        <div class="numbers">
+                            <div class="comment">
+                                <div class="n">好评率:
+                                    <span class="num">0%</span>
+                                </div>
+                            </div>
+                            <div class="rvCount">
+                                <div class="n">已被约:
+                                    <span class="num">24</span>
+                                </div>
+                            </div>
+                            <div class="archiveCount">
+                                <div class="n">作品集:
+                                    <span class="num">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {/foreach}
+                </li>
+            </div>
+        </div>
+
+        <div class="pt-page pt-page-2">
+            {foreach $chains as $k }
+            <div class="barlist">
+                <div class="barcon">
+                    <div class="img am-clickable"></div>
+                    <a href="" class="call"></a>
+                    <div class="addcontent" id="">
+                        <div class="name">{$k.name}</div>
+                        <div class="adress">{$k.city}{$k.address}</div>
+                        <div class="tel">{$k.tel}</div>
+                        <!--                <input class="age-input" type="text" name="" id="age-input" value="" placeholder="请选择" readonly/>-->
+                    </div>
+                </div>
+            </div>
+            {/foreach}
+            <script src="/public/static/js/transition.js"></script>
+
+            <script>
+                var translate = new transition({
+                    $main: $('#pt-main'),
+                    loop: true,
+                    callback: function (index) {
+                        console.log(index);
+                        if (index > 4) {
+                            var className = 'pt-page-' + Math.ceil(Math.random() * 2);
+                            var html = '<div class="pt-page ' + className + '"><h1><span>Append new page</span>页面切换效果</h1></div>';
+
+                            translate.appendAfter(html);
+                        }
+                    }
+                });
+
+                var x = 0;
+                $('#iterateEffects').click(function () {
+                    // if (x < 67) {
+                    if (x < 2) {
+                        x++;
+                    } else {
+                        x = 1;
+                    }
+                    //var x = Math.ceil(Math.random() * 67);
+                    translate.nextPage(x);
+                });
+            </script>
+
+        </div>
+        {include file="template/footermob.html"}
+    </div>
+</div>
+</body>
+</html>

@@ -39,6 +39,16 @@ function getuser_no(){
     $no =  'MBS'.time().$msec.$round;
     return $no;
 }
+function getuserinfo(){
+    if(isset($_SESSION['UID']) && intval($_SESSION['UID'])>0){
+        $uid = intval($_SESSION['UID']);
+    }
+    if($uid>0) {
+        return model('User')->getUserinfo($uid);
+    }else{
+        return redirect('/login');
+    }
+}
 function make_password( $length = 8 )
 {
     // 密码字符集，可任意添加你需要的字符
@@ -52,4 +62,10 @@ function make_password( $length = 8 )
         $password .= $chars[$keys[$i]];
     }
     return $password;
+}
+function chaininfo(){
+     return model('Chain')->getOne();
+}
+function chains(){
+    return model('Chain')->getAll();
 }

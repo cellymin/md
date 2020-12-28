@@ -21,7 +21,7 @@
     <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/mbscom.css">
 
 </head>
-<body class=" theme-blue" style="background: #f3f8fb;">
+<body class=" theme-blue" >
 
 <!-- Demo page code -->
 
@@ -51,10 +51,11 @@
         color: #fff;
     }
     .main-content{
+        clear: both;
         width: 100%;
-        margin: 0 auto ;
+        margin: 0px auto ;
         border: 1px solid #ccc;
-        border-radius: 8px;
+        border-radius: 2px;
         background: #fff;
     }
    .content .main-content .col-md-offset-1 {
@@ -87,9 +88,10 @@
 <!--After purchasing a premium license, the full source code will be available for download.-->
 
 
-{include file="template/navbar.html"}
+
 {include file="template/sidebar.html"}
 <div class="content" style="background: #f3f8fb;">
+    {include file="template/navbar.html"}
     <div class="main-content">
         <div class="row">
 
@@ -117,7 +119,7 @@
                         <td>{$k.phone}</td>
                         <td>
 <!--                            <i class="fa fa-bell text-danger"></i>4 messages-->
-                            <span class="text-sm" style="margin-left: 10px"> <a href="javascript:void(0)" attrid="{$k.id}" onclick="openedit(this);"
+                            <span class="text-sm" style=""> <a href="javascript:void(0)" attrid="{$k.id}" onclick="openedit(this);"
                                                                                 data-toggle="modal"
                                                                                 class="padding-right-small"><i
                                     class="fa fa-pencil "></i> 修改</a> <a
@@ -140,7 +142,7 @@
                 type: 2,
                 title: '编辑用户',
                 maxmin: true,
-                area: ['50%', '65%'],
+                area: ['85%', '70%'],
                 content: '/index.php/index/user/edituser?id='+id
             });
         });

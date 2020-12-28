@@ -65,11 +65,15 @@
 <!--After purchasing a premium license, the full source code will be available for download.-->
 
 <style>
+    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+        color: #fff;
+    }
     .main-content{
+        clear: both;
         width: 100%;
-        margin: 0 auto ;
+        margin: 0px auto ;
         border: 1px solid #ccc;
-        border-radius: 8px;
+        border-radius: 2px;
         background: #fff;
     }
     .content .main-content .col-md-offset-1 {
@@ -87,9 +91,10 @@
         color: #333;
     }
 </style>
-{include file="template/navbar.html"}
+
 {include file="template/sidebar.html"}
 <div class="content">
+    {include file="template/navbar.html"}
     <div class="main-content">
         <div class="row">
             <div class="col-md-10 col-md-offset-1">

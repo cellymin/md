@@ -35,6 +35,7 @@ class Login extends Controller
                         $_SESSION['UNAME'] = $re['name'];
                         $_SESSION['GID'] = $re['grade_id'];
                         $_SESSION['CID'] = $re['chain_id'];
+                        $_SESSION['USRC'] = $re['usrsrc'];
                         $data['code'] = 200;
                         $data['msg'] = '登录成功';
                         return json_encode($data);

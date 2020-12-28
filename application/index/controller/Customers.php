@@ -64,14 +64,35 @@ class Customers extends Base
 
             ->whereOr($ormap)
             ->where($map)
+            ->order('id')
             ->select();
-//        $res = Db::table('mbs_customers')->getLastSql();
-//        echo '<pre/>';
-//        var_dump($_SESSION['UID']);
-//        var_dump($re['ser_id']);
-//        var_dump($res);die();
+
+        foreach ($re as $k=>$v){
+            $cusno[] = $v['id'];
+            $ree[$v['id']] = $v;
+        }
+        //顾客id集合
+        $str = implode(',',$cusno);
+
+        $sermap['status']=1;
+        $sermap['customer_id'] = array('in', $str);
+        //有效服务单
+        $serinfo =  Db::table('mbs_all_assessment')
+            ->alias('o')
+            ->field('o.id sid,o.status ostatus,o.server_id ser_id,customer_id')
+            ->where($sermap)
+            ->order('id')
+            ->select();
+
+        foreach ($serinfo as $k=>$v) {
+                $ree[$v['customer_id']]['sid'] = $v['sid'];
+                $ree[$v['customer_id']]['ostatus'] = $v['ostatus'];
+                $ree[$v['customer_id']]['ser_id'] = $v['ser_id'];
+        }
+        //释放
+        unset($serinfo);
         $this->assign('uid', $_SESSION['UID']);
-        $this->assign('userlist', $re);
+        $this->assign('userlist', $ree);
 
         return $this->view->fetch();
     }
@@ -264,8 +285,8 @@ class Customers extends Base
         $addinfo['freckle_experience'] = $_POST['freckle_experience'];
         $addinfo['stains_cate'] = $_POST['stains_cate'];
 
-
         if ($server_id > 0) {
+            echo 1;die();
             $addinfo['update_time'] = date('Y-m-d', time());
             //        启动事务
             Db::startTrans();
@@ -312,7 +333,8 @@ class Customers extends Base
         } else {
 
             $if_exist = Db::table('mbs_all_assessment')
-                ->where("id", $addinfo['customer_id'])
+                ->where("customer_id", $addinfo['customer_id'])
+                ->where("status", 1)
                 ->find();
             if ($if_exist) {
                 $data['code'] = 0;

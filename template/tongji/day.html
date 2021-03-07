@@ -550,7 +550,7 @@
                     {if condition="(isset($chainarr))"}
                     {foreach $chainarr as $k }
                     {if condition="(isset($dschain[$k.id]['package']))"}
-                    <tr class="mrysec">
+                    <tr class="mrssec">
                         <td colspan="4">其他门店</td>
                         <td colspan="4">{$k.name}</td>
                         <td class="jsquban" colspan="4">{$dschain[$k.id]['package'][$pakid.quban]['total'] ?? 0}</td>
@@ -678,14 +678,14 @@
                     dd.attr('colspan',Number(dd.attr('colspan'))-1);
                     var kk = $('.hjsec').children().eq(l);
                     kk.attr('colspan',Number(kk.attr('colspan'))-1);
+                    $('.mrssec').each(function () {
+                        var ll = $(this).children().eq(l);
+                        ll.attr('colspan',Number(ll.attr('colspan'))-1);
+                    })
                     var hh =  $('.mrsfir').children().eq(l+1);
                     hh.attr('colspan',Number(hh.attr('colspan'))-1);
-                    var ll = $('.mrssec').children().eq(l);
-                    ll.attr('colspan',Number(ll.attr('colspan'))-1);
                     var tt =  $('.mryfir').children().eq(l+1);
                     tt.attr('colspan',Number(tt.attr('colspan'))-1);
-                    var pp = $('.mrysec').children().eq(l);
-                    pp.attr('colspan',Number(pp.attr('colspan'))-1);
                 }
             }else{
                 for(var l =0;l<b;l++){
@@ -695,12 +695,12 @@
                     kk.attr('colspan',Number(kk.attr('colspan'))-1-c);
                     var hh =  $('.mrsfir').children().eq(l+1);
                     hh.attr('colspan',Number(hh.attr('colspan'))-1-c);
-                    var ll = $('.mrssec').children().eq(l);
-                    ll.attr('colspan',Number(ll.attr('colspan'))-1-c);
                     var tt =  $('.mryfir').children().eq(l+1);
                     tt.attr('colspan',Number(tt.attr('colspan'))-1-c);
-                    var pp = $('.mrysec').children().eq(l);
-                    pp.attr('colspan',Number(pp.attr('colspan'))-1-c);
+                    $('.mrssec').each(function () {
+                        var ll = $(this).children().eq(l);
+                        ll.attr('colspan',Number(ll.attr('colspan'))-1-c);
+                    })
                 }
                 for(var m =b;m<9;m++){
                     var dd =  $('.hjfir').children().eq(m+1);
@@ -709,12 +709,12 @@
                     kk.attr('colspan',Number(kk.attr('colspan'))-c);
                     var hh =  $('.mrsfir').children().eq(m+1);
                     hh.attr('colspan',Number(hh.attr('colspan'))-c);
-                    var ll = $('.mrssec').children().eq(m);
-                    ll.attr('colspan',Number(ll.attr('colspan'))-c);
                     var tt =  $('.mryfir').children().eq(m+1);
                     tt.attr('colspan',Number(tt.attr('colspan'))-c);
-                    var pp = $('.mrysec').children().eq(m);
-                    pp.attr('colspan',Number(pp.attr('colspan'))-c);
+                    $('.mrssec').each(function () {
+                        var ll = $(this).children().eq(m);
+                        ll.attr('colspan',Number(ll.attr('colspan'))-c);
+                    })
                 }
             }
         }

@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Miaoboshi</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="{$Think.const.STATIC_URL}lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{$Think.const.STATIC_URL}lib/font-awesome/css/font-awesome.css">
+
+    <script src="{$Think.const.STATIC_URL}lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="{$Think.const.STATIC_URL}layer/layer.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
+</head>
+<body class=" theme-blue">
+
+
+<!-- Demo page code -->
+
+<script type="text/javascript">
+    $(function () {
+        var match = document.cookie.match(new RegExp('color=([^;]+)'));
+        if (match) var color = match[1];
+        if (color) {
+            $('body').removeClass(function (index, css) {
+                return (css.match(/\btheme-\S+/g) || []).join(' ')
+            })
+            $('body').addClass('theme-' + color);
+        }
+
+        $('[data-popover="true"]').popover({html: true});
+
+    });
+</script>
+<style type="text/css">
+    #line-chart {
+        height: 300px;
+        width: 800px;
+        margin: 0px auto;
+        margin-top: 1em;
+    }
+
+    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+        color: #fff;
+    }
+
+    .main-content {
+        clear: both;
+        width: 100%;
+        margin: 0px auto;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        background: #fff;
+    }
+
+    .content .main-content .col-md-offset-1 {
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    .main-content .page {
+        margin-top: 0px;
+        margin-block-start: 0;
+        margin-block-end: 0;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        text-align: left;
+        margin-left: 15px;
+        color: #333;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function () {
+        var uls = $('.sidebar-nav > ul > *').clone();
+        uls.addClass('visible-xs');
+        $('#main-menu').append(uls.clone());
+    });
+</script>
+<!--Use of these features requires a premium license.-->
+<!--See http://www.portnine.com/bootstrap-themes for details.-->
+<!--After purchasing a premium license, the full source code will be available for download.-->
+
+{include file="template/sidebar.html"}
+
+<style>
+
+    .sousuo {
+        clear: both;
+        height: 40px;
+        min-width: 360px;
+        margin: 0px auto;
+        margin-bottom: 10px;
+    }
+
+    .sousuo .sousuo_form {
+        width: 240px;
+        margin: 5px 5px;
+        float: left;
+    }
+
+    .add_user {
+        cursor: pointer;
+        font-size: 16px;
+        width: 100px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        height: 3px;
+        border-top: none;
+    }
+
+    .sousuo .form_sub {
+
+    }
+
+    .sousuo .form_sub input, .sousuo .form_sub select {
+        width: 245px;
+        height: 30px;
+        border: 1px solid #ccc;
+    }
+
+    .sousuo .form_sub:focus, .sousuo .form_sub select:focus {
+        outline: none;
+        border-color: #ccc;
+        box-shadow: 0 0 10px #ccc;
+    }
+
+    .sousuo .confirm_sub {
+        clear: both;
+    }
+
+    .sousuo .confirm_sub b {
+        height: 30px;
+        color: #333;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    .sousuo .confirm_sub p span {
+        background: #ccc;
+        width: 80px;
+        letter-spacing: 1px;
+        padding: 0 5px;
+        text-align: center;
+        margin: 20px 10px;
+    }
+
+    .caozuo {
+        cursor: pointer;
+    }
+
+    .anniu {
+        width: 83%;
+        min-width: 360px;
+        margin: 0 auto;
+    }
+
+    .sousuo_form .suosou_btn {
+        height: 30px;
+        line-height: 30px;
+        letter-spacing: 5px;
+
+    }
+</style>
+<div class="content">
+    {include file="template/navbar.html"}
+    <div class="sousuo">
+        <form action="" method="get">
+            <div class="form_sub">
+                <!--                <div class="sousuo_form">-->
+                <!--                    门店： <input type="text" name="chain_name">-->
+                <!--                </div>-->
+                <div class="sousuo_form">
+                     <span>
+                           <select style="" class="chain_id" name="chain_id" autocomplete="off">
+                                <option value="" >请选择门店
+                               </option>
+                               {foreach $chain as $k }
+                               <option value="{$k.id}" {if condition="(!empty($chain_id) && ($k.id == $chain_id))" } selected {/if}>{$k.name}
+                               </option>
+                               {/foreach}
+                           </select>
+                     </span>
+                </div>
+                <!--                <div class="sousuo_form">-->
+                <!--                    电话：<br/><input type="text" value="{$Think.get.phone}" name="phone" autocomplete="off">-->
+                <!--                </div>-->
+                <!--                <div class="sousuo_form">-->
+                <!--                    订单编号：<br/><input type="text" value="{$Think.get.server_no}" name="server_no" autocomplete="off">-->
+                <!--                </div>-->
+                <div class="sousuo_form">
+                     <span id='date'>
+			                  <input type="text" value="{$Think.get.create_time}" class="user_birth" name="create_time"
+                                     placeholder="点击选择截止时间" id='inputdate' autocomplete="off"/>
+                     </span>
+                </div>
+                <div class="sousuo_form"
+                     style="width: 80px;text-align: center;margin-left: 10px;background: #39435C;color: #fff;cursor:pointer; ">
+                    <span class="suosou_btn" onclick="onconfirm();">搜索</span>
+                </div>
+                <!--                <div class="sousuo_form">-->
+                <!--                    技师名称：<br/><input type="text" value="{$Think.get.server_name}" name="server_name" autocomplete="off">-->
+                <!--                </div>-->
+            </div>
+        </form>
+
+    </div>
+
+    <div class="main-content" style="clear: both;margin-top: 10px;">
+        <!--                <h1 class="page">用户列表</h1>-->
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div style="background: #e5e5e5 ;">
+                    <h1 class="page">消费操作表</h1>
+                </div>
+                <table class="dataintable">
+                    <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>操作人</th>
+                        <th>客户</th>
+                        <!--                        <th>操作类型</th>-->
+                        <th>操作内容</th>
+                        <th>操作金额</th>
+                        <th>时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach $loglist as $k }
+                    <tr>
+                        <td>{$k.logId}</td>
+                        <td>{$k.uname}</td>
+                        <td>{$k.custname}</td>
+                        <!--                        <td></td>-->
+                        <td>{$k.logContent}</td>
+                        <td>{$k.money}</td>
+                        <td>{$k.createTime}</td>
+
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var d = new DateJs({
+        inputEl: '#inputdate',
+        el: '#date'
+    })
+    $('.date-js').css('margin-left', '0')
+
+    function onconfirm() {
+        $('form').submit();
+    }
+
+</script>
+<!--<script>-->
+<!--    var tableToExcel = (function () {-->
+<!--        var uri = 'data:application/vnd.ms-excel;base64,',-->
+<!--            template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head>&lt;!&ndash;[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]&ndash;&gt;</head><body><table>{table}</table></body></html>',-->
+<!--            base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) },-->
+<!--            format = function (s, c) {-->
+<!--                return s.replace(/{(\w+)}/g,-->
+<!--                    function (m, p) { return c[p]; })-->
+<!--            }-->
+
+<!--        return function (table, name) {-->
+<!--            if (!table.nodeType) table = document.getElementById(table)-->
+<!--            var ctx = { worksheet: name || 'Worksheet', table: table.innerHTML }-->
+<!--            return uri + base64(format(template, ctx))/////-->
+<!--            window.location.href = uri + base64(format(template, ctx))-->
+<!--        }-->
+<!--    })()-->
+<!--    dl.href= tableToExcel('tb','hello')-->
+<!--</script>-->
+{include file="template/footer.html"}

@@ -9,16 +9,16 @@
     <meta name="author" content="">
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="/public/static/lib/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="/public/static/lib/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.STATIC_URL}lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{$Think.const.STATIC_URL}lib/font-awesome/css/font-awesome.css">
 
-    <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
-    <script src="/public/static/layer/layer.js"></script>
+    <script src="{$Think.const.STATIC_URL}lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="{$Think.const.STATIC_URL}layer/layer.js"></script>
 
 
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/theme.css">
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/premium.css">
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/mbscom.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
 
 </head>
 <body class=" theme-blue" >
@@ -90,7 +90,7 @@
 
 
 {include file="template/sidebar.html"}
-<div class="content" style="background: #f3f8fb;">
+<div class="content" style="background: #f3f8fb;"  onLoad="goPage(1,10);">
     {include file="template/navbar.html"}
     <div class="main-content">
         <div class="row">
@@ -100,7 +100,7 @@
                     <div class="add_user" onclick="openedit();" style="float:right;cursor:pointer;font-size: 25px;width: 35px;height: 35px;margin-right:15px;line-height: 40px;text-align: center;margin-bottom: 2px">+</div>
                     <h1 class="page">用户列表</h1>
                 </div>
-                <table class="dataintable table">
+                <table class="dataintable table" id="idData">
                     <thead>
                       <tr>
                         <th style="width: 50px;">#</th>
@@ -130,6 +130,11 @@
                     {/foreach}
                     </tbody>
                 </table>
+                <table style="margin-left: 2%" align="left">
+                    <tr><td style="padding-bottom: 8px;">{$page}</td></tr>
+                </table>
+
+                </div>
             </div>
         </div>
     </div>
@@ -143,7 +148,7 @@
                 title: '编辑用户',
                 maxmin: true,
                 area: ['85%', '70%'],
-                content: '/index.php/index/user/edituser?id='+id
+                content: '{$Think.const.DQURL}index/user/edituser?id='+id
             });
         });
     }
@@ -153,7 +158,7 @@
         var msg = "您真的确定要删除吗？\n\n请确认！";
         if (confirm(msg) == true) {
             $.ajax({
-                url: '/index.php/index/user/delete',// 获取自己系统后台用户信息接口
+                url: '{$Think.const.DQURL}index/user/delete',// 获取自己系统后台用户信息接口
                 data: {"uid": id},
                 type: "POST",
                 dataType: "json",
@@ -181,5 +186,6 @@
 
 
     }
+
 </script>
 {include file="template/footer.html"}

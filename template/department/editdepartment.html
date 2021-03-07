@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
-    <script src="/public/static/js/date.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/public/static/js/nongli.js" type="text/javascript" charset="utf-8"></script>
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/mbscom.css">
+    <script src="{$Think.const.STATIC_URL}lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="{$Think.const.JS_URL}date.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{$Think.const.JS_URL}nongli.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
 </head>
 <body>
 <style>
@@ -55,7 +55,7 @@
     </div>
 </div>
 </body>
-<script type="text/javascript" src="/public/static/js/address.js"></script>
+<script type="text/javascript" src="{$Think.const.JS_URL}address.js"></script>
 <script>
 
     function confim_ok(e) {
@@ -72,7 +72,7 @@
             + 'zhuguanid*' + zhuguanid
             + ',remark*' + remark;
         $.ajax({
-            url: '/index.php/index/department/save_department?id=' + id,// 获取自己系统后台用户信息接口
+            url: '{$Think.const.DQURL}index/department/save_department?id=' + id,// 获取自己系统后台用户信息接口
             data: {"depart_info": depart_info},
             type: "POST",
             dataType: "json",
@@ -109,5 +109,5 @@
     }
 
 </script>
-<script src="/public/static/js/searchSelectzhuguan.js"></script>
+<script src="{$Think.const.JS_URL}searchSelectzhuguan.js"></script>
 </html>

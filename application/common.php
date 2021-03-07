@@ -69,3 +69,6 @@ function chaininfo(){
 function chains(){
     return model('Chain')->getAll();
 }
+function getChainname($cid){
+    return model('Chain')->getName($cid);
+}

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Miaoboshi</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="{$Think.const.STATIC_URL}lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{$Think.const.STATIC_URL}lib/font-awesome/css/font-awesome.css">
+
+    <script src="{$Think.const.STATIC_URL}lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="{$Think.const.STATIC_URL}layer/layer.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
+
+</head>
+<body class=" theme-blue" >
+
+<!-- Demo page code -->
+
+<script type="text/javascript">
+    $(function() {
+        var match = document.cookie.match(new RegExp('color=([^;]+)'));
+        if(match) var color = match[1];
+        if(color) {
+            $('body').removeClass(function (index, css) {
+                return (css.match (/\btheme-\S+/g) || []).join(' ')
+            })
+            $('body').addClass('theme-' + color);
+        }
+
+        $('[data-popover="true"]').popover({html: true});
+
+    });
+</script>
+<style type="text/css">
+    #line-chart {
+        height:300px;
+        width:800px;
+        margin: 0px auto;
+        margin-top: 1em;
+    }
+    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+        color: #fff;
+    }
+    .main-content{
+        clear: both;
+        width: 100%;
+        margin: 0px auto ;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        background: #fff;
+    }
+   .content .main-content .col-md-offset-1 {
+       width: 100%;
+       margin-left: 0px;
+   }
+    .main-content .page{
+        margin-top: 0px;
+        margin-block-start:0;
+        margin-block-end: 0;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+       text-align: left;
+        margin-left: 15px;
+        color: #333;
+    }
+
+</style>
+
+<script type="text/javascript">
+    $(function() {
+        var uls = $('.sidebar-nav > ul > *').clone();
+        uls.addClass('visible-xs');
+        $('#main-menu').append(uls.clone());
+    });
+</script>
+
+<!--Use of these features requires a premium license.-->
+<!--See http://www.portnine.com/bootstrap-themes for details.-->
+<!--After purchasing a premium license, the full source code will be available for download.-->
+
+
+
+{include file="template/sidebar.html"}
+<div class="content" style="background: #f3f8fb;">
+    {include file="template/navbar.html"}
+    <div class="main-content">
+        <div class="row">
+
+            <div class="col-md-10 col-md-offset-1">
+                <div style="background: #e5e5e5 ;">
+                    <div class="add_user" onclick="openedit();" style="float:right;cursor:pointer;font-size: 25px;width: 35px;height: 35px;margin-right:15px;line-height: 40px;text-align: center;margin-bottom: 2px">+</div>
+                    <h1 class="page">用户组列表</h1>
+                </div>
+                <table class="dataintable table">
+                    <thead>
+                      <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>名称</th>
+                        <th>创建人</th>
+                        <th>描述</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach $grouplist as $k }
+                    <tr>
+                        <td>{$k.group_id}</td>
+                        <td>{$k.group_name}
+                        <td>{$k.name}</td>
+                        <td>{$k.group_desc}</td>
+                        <td>
+<!--                            <i class="fa fa-bell text-danger"></i>4 messages-->
+                            <span class="text-sm" style=""> <a href="javascript:void(0)" attrid="{$k.group_id}" onclick="openedit(this);"
+                                                                                data-toggle="modal"
+                                                                                class="padding-right-small"><i
+                                    class="fa fa-pencil "></i> 修改</a> <a
+                                    href="javascript:void(0)" attrid="{$k.group_id}" onclick="deleteuser(this);"
+                                    data-toggle="modal"><i class="fa fa-trash-o "></i> 删除</a></span></td>
+                        </td>
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function openedit(e) {
+        var id = parseInt($(e).attr('attrid'));
+        layer.ready(function () {
+            layer.open({
+                type: 2,
+                title: '编辑用户',
+                maxmin: true,
+                area: ['40rem', '30rem'],
+                content: '{$Think.const.DQURL}index/usergroup/editgroup?id='+id
+            });
+        });
+    }
+
+    function deleteuser(e) {
+        var id = parseInt($(e).attr('attrid'));
+        var msg = "您真的确定要删除吗？\n\n请确认！";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '{$Think.const.DQURL}index/usergroup/delete',// 获取自己系统后台用户信息接口
+                data: {"uid": id},
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        var data = JSON.parse(data);
+                        if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
+                            $(e).removeAttr('disabled');
+                            window.location.reload();
+                        } else {
+                            alert(data.msg);
+                            $(e).removeAttr('disabled');
+                            return false;
+                        }
+                    }
+                },
+                error: function (data) {
+                    $(e).removeAttr('disabled');
+                    console.log(data.message);
+                }
+            });
+        } else {
+            return false;
+        }
+
+
+    }
+</script>
+{include file="template/footer.html"}

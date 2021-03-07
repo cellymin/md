@@ -28,6 +28,7 @@ class Login extends Controller
                 ->where('name', $username)
                 ->find();
 
+
             if (!empty($re)) {
                 if (!empty($password)) {
                     if (md5($password) == $re['password']) {

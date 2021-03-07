@@ -9,17 +9,17 @@
     <meta name="author" content="">
 
     <link media="print"  href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link media="print"  rel="stylesheet" type="text/css" href="/public/static/lib/bootstrap/css/bootstrap.css">
-    <link media="print"  rel="stylesheet" href="/public/static/lib/font-awesome/css/font-awesome.css">
-    <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
-    <link media="print"  rel="stylesheet" type="text/css" href="/public/static/stylesheets/theme.css">
-    <link media="print"  rel="stylesheet" type="text/css" href="/public/static/stylesheets/premium.css">
-    <script src="/public/static/layer/layer.js"></script>
-    <script language="javascript" src="/public/static/js/jquery.jqprint-0.3.js"></script>
-    <script src="/public/static/plugins/cover_js/iscroll-zoom.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/public/static/plugins/cover_js/hammer.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/public/static/plugins/cover_js/lrz.all.bundle.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/public/static/plugins/cover_js/jquery.photoClip.min.js" type="text/javascript"
+    <link media="print"  rel="stylesheet" type="text/css" href="{$Think.const.STATIC_URL}lib/bootstrap/css/bootstrap.css">
+    <link media="print"  rel="stylesheet" href="{$Think.const.STATIC_URL}lib/font-awesome/css/font-awesome.css">
+    <script src="{$Think.const.STATIC_URL}lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <link media="print"  rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
+    <link media="print"  rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
+    <script src="{$Think.const.STATIC_URL}layer/layer.js"></script>
+    <script language="javascript" src="{$Think.const.JS_URL}jquery.jqprint-0.3.js"></script>
+    <script src="{$Think.const.STATIC_URL}plugins/cover_js/iscroll-zoom.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{$Think.const.STATIC_URL}plugins/cover_js/hammer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{$Think.const.STATIC_URL}plugins/cover_js/lrz.all.bundle.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{$Think.const.STATIC_URL}plugins/cover_js/jquery.photoClip.min.js" type="text/javascript"
             charset="utf-8"></script>
 
 </head>
@@ -28,8 +28,8 @@
 
 </style>
 <script>
-    document.writeln("<link href=\"/public/static/stylesheets/server.css\" rel=\"stylesheet\"/>");
-    document.writeln("<link media='print' href=\"/public/static/stylesheets/server.css\" rel=\"stylesheet\"/>");
+    document.writeln("<link href=\"{$Think.const.CSS_URL}server.css\" rel=\"stylesheet\"/>");
+    document.writeln("<link media='print' href=\"{$Think.const.CSS_URL}server.css\" rel=\"stylesheet\"/>");
     function aa(){
         $("#ddd").jqprint();
     }
@@ -142,7 +142,7 @@
             </div>
 
             <div class="pifu_right">
-                <img src="/public/static/images/addinfo.jpg">
+                <img src="{$Think.const.IMG_URL}addinfo.jpg">
             </div>
         </div>
 
@@ -245,7 +245,7 @@
             title: '签名',
             maxmin: true,
             area: ['500px', '400px'],
-            content: '/template/sign.html?sign=service'
+            content: '{$Think.const.SITEURL}/template/sign.html?sign=service'
         });
 
     }
@@ -270,7 +270,7 @@
             title: '签名',
             maxmin: true,
             area: ['500px', '400px'],
-            content: '/template/sign.html?sign=cus'
+            content: '{$Think.const.SITEURL}/template/sign.html?sign=cus'
         });
     });
     $('.dean_sign_start .dean_sign_ok').on('click', function () {
@@ -279,7 +279,7 @@
             title: '签名',
             maxmin: true,
             area: ['500px', '400px'],
-            content: '/template/sign.html?sign=dean'
+            content: '{$Think.const.SITEURL}/template/sign.html?sign=dean'
         });
     });
 

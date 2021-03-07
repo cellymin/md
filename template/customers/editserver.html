@@ -9,16 +9,16 @@
     <meta name="author" content="">
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="/public/static/lib/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="/public/static/lib/font-awesome/css/font-awesome.css">
-    <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/theme.css">
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/premium.css">
-    <script src="/public/static/layer/layer.js"></script>
-    <script src="/public/static/plugins/cover_js/iscroll-zoom.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/public/static/plugins/cover_js/hammer.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/public/static/plugins/cover_js/lrz.all.bundle.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/public/static/plugins/cover_js/jquery.photoClip.min.js" type="text/javascript"
+    <link rel="stylesheet" type="text/css" href="{$Think.const.STATIC_URL}lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{$Think.const.STATIC_URL}lib/font-awesome/css/font-awesome.css">
+    <script src="{$Think.const.STATIC_URL}lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
+    <script src="{$Think.const.STATIC_URL}layer/layer.js"></script>
+    <script src="{$Think.const.STATIC_URL}plugins/cover_js/iscroll-zoom.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{$Think.const.STATIC_URL}plugins/cover_js/hammer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{$Think.const.STATIC_URL}plugins/cover_js/lrz.all.bundle.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{$Think.const.STATIC_URL}plugins/cover_js/jquery.photoClip.min.js" type="text/javascript"
             charset="utf-8"></script>
 </head>
 <body>
@@ -485,7 +485,7 @@
             </div>
 
             <div class="pifu_right">
-                <img src="/public/static/images/addinfo.jpg">
+                <img src="{$Think.const.IMG_URL}addinfo.jpg">
             </div>
         </div>
 
@@ -638,7 +638,7 @@
                     var msg = "您真的确定要删除吗？\n\n请确认！";
                     if (confirm(msg) == true) {
                         $.ajax({
-                            url: '/index.php/index/customers/delserverrecord',// 获取自己系统后台用户信息接口
+                            url: '{$Think.const.DQURL}index/customers/delserverrecord',// 获取自己系统后台用户信息接口
                             data: {'rid':id},
                             type: "POST",
                             dataType: "json",
@@ -728,7 +728,7 @@
             title: '签名',
             maxmin: true,
             area: ['500px', '400px'],
-            content: '/template/sign.html?sign=service'
+            content: '{$Think.const.SITEURL}/template/sign.html?sign=service'
         });
 
     }
@@ -751,7 +751,7 @@
             title: '签名',
             maxmin: true,
             area: ['500px', '400px'],
-            content: '/template/sign.html?sign=cus'
+            content: '{$Think.const.SITEURL}/template/sign.html?sign=cus'
         });
     });
     $('.dean_sign_start .dean_sign_ok').on('click', function () {
@@ -760,7 +760,7 @@
             title: '签名',
             maxmin: true,
             area: ['500px', '400px'],
-            content: '/template/sign.html?sign=dean'
+            content: '{$Think.const.SITEURL}/template/sign.html?sign=dean'
         });
     });
 
@@ -949,7 +949,7 @@
         });
 
         $.ajax({
-            url: '/index.php/index/customers/save_server',// 获取自己系统后台用户信息接口
+            url: '{$Think.const.DQURL}index/customers/save_server',// 获取自己系统后台用户信息接口
             data: {"serid":serid,"customers":customers,"cussrc":cussrc,
                 "sserinfo": sserinfo,"skin_cate":check_skin_cate,"health":check_health,
                 "freckle_experience":check_freckle_experience,"stains_cate":check_stains_cate,'addinfo':addinfo},
@@ -1011,6 +1011,6 @@
     //clipArea.destroy();
 
 </script>
-<script src="/public/static/js/searchSelectNew.js"></script>
+<script src="{$Think.const.JS_URL}searchSelectNew.js"></script>
 </body>
 </html>

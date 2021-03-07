@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
-    <script src="/public/static/js/date.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/public/static/js/nongli.js" type="text/javascript" charset="utf-8"></script>
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/mbscom.css">
+    <script src="{$Think.const.STATIC_URL}lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="{$Think.const.JS_URL}date.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{$Think.const.JS_URL}nongli.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
 </head>
 <body>
 <style>
@@ -101,7 +101,7 @@
             + ',menu_desc*' + menu_desc
             + ',is_show*' + if_show;
         $.ajax({
-            url: '/index.php/index/pannel/save_pannel?id=' + id,// 获取自己系统后台用户信息接口
+            url: '{$Think.const.DQURL}index/pannel/save_pannel?id=' + id,// 获取自己系统后台用户信息接口
             data: {"pannel_info": pannel_info},
             type: "POST",
             dataType: "json",

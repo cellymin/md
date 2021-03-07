@@ -9,16 +9,16 @@
     <meta name="author" content="">
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="/public/static/lib/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="/public/static/lib/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.STATIC_URL}lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{$Think.const.STATIC_URL}lib/font-awesome/css/font-awesome.css">
 
-    <script src="/public/static/lib/jquery-1.11.1.min.js" type="text/javascript"></script>
-    <script src="/public/static/layer/layer.js"></script>
+    <script src="{$Think.const.STATIC_URL}lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="{$Think.const.STATIC_URL}layer/layer.js"></script>
 
 
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/theme.css">
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/premium.css">
-    <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/mbscom.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
 
 </head>
 <body class=" theme-blue">
@@ -139,7 +139,7 @@
                 title: '编辑用户',
                 maxmin: true,
                 area: ['50%', '47%'],
-                content: '/index.php/index/department/editdepartment?id='+id
+                content: '{$Think.const.DQURL}index/department/editdepartment?id='+id
             });
         });
     }
@@ -149,7 +149,7 @@
         var msg = "您真的确定要删除吗？\n\n请确认！";
         if (confirm(msg) == true) {
             $.ajax({
-                url: '/index.php/index/user/delete',// 获取自己系统后台用户信息接口
+                url: '{$Think.const.DQURL}index/user/delete',// 获取自己系统后台用户信息接口
                 data: {"uid": id},
                 type: "POST",
                 dataType: "json",

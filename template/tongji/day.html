@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Miaoboshi</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="{$Think.const.STATIC_URL}lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{$Think.const.STATIC_URL}lib/font-awesome/css/font-awesome.css">
+
+    <script src="{$Think.const.STATIC_URL}lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="{$Think.const.STATIC_URL}layer/layer.js"></script>
+    <script src="{$Think.const.JS_URL}date.js" type="text/javascript" charset="utf-8"></script>
+
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}xiaofei.css">
+    <link rel="stylesheet" href="{$Think.const.CSS_URL}other.css">
+    <script src="{$Think.const.JS_URL}other.js"></script>
+</head>
+<body class=" theme-blue">
+
+
+<!-- Demo page code -->
+
+<script type="text/javascript">
+    $(function () {
+        var match = document.cookie.match(new RegExp('color=([^;]+)'));
+        if (match) var color = match[1];
+        if (color) {
+            $('body').removeClass(function (index, css) {
+                return (css.match(/\btheme-\S+/g) || []).join(' ')
+            })
+            $('body').addClass('theme-' + color);
+        }
+
+        $('[data-popover="true"]').popover({html: true});
+
+    });
+</script>
+<style type="text/css">
+    #line-chart {
+        height: 300px;
+        width: 800px;
+        margin: 0px auto;
+        margin-top: 1em;
+    }
+
+    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+        color: #fff;
+    }
+
+    .main-content {
+        clear: both;
+        width: 100%;
+        margin: 0px auto;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        background: #fff;
+    }
+
+    .content .main-content .col-md-offset-1 {
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    .main-content .page {
+        margin-top: 0px;
+        margin-block-start: 0;
+        margin-block-end: 0;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        text-align: left;
+        margin-left: 15px;
+        color: #333;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function () {
+        var uls = $('.sidebar-nav > ul > *').clone();
+        uls.addClass('visible-xs');
+        $('#main-menu').append(uls.clone());
+    });
+</script>
+<!--Use of these features requires a premium license.-->
+<!--See http://www.portnine.com/bootstrap-themes for details.-->
+<!--After purchasing a premium license, the full source code will be available for download.-->
+
+{include file="template/sidebar.html"}
+
+<style>
+
+    .sousuo {
+        clear: both;
+        height: 40px;
+        min-width: 360px;
+        margin: 0px auto;
+        margin-bottom: 10px;
+    }
+
+    .sousuo .sousuo_form {
+        width: 240px;
+        margin: 5px 5px;
+        float: left;
+    }
+
+    .add_user {
+        cursor: pointer;
+        font-size: 16px;
+        width: 100px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        height: 3px;
+        border-top: none;
+    }
+
+    .sousuo .form_sub {
+
+    }
+
+    .sousuo .form_sub input, .sousuo .form_sub select {
+        width: 245px;
+        height: 30px;
+        border: 1px solid #ccc;
+    }
+
+    .sousuo .form_sub:focus, .sousuo .form_sub select:focus {
+        outline: none;
+        border-color: #ccc;
+        box-shadow: 0 0 10px #ccc;
+    }
+
+    .sousuo .confirm_sub {
+        clear: both;
+    }
+
+    .sousuo .confirm_sub b {
+        height: 30px;
+        color: #333;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    .sousuo .confirm_sub p span {
+        background: #ccc;
+        width: 80px;
+        letter-spacing: 1px;
+        padding: 0 5px;
+        text-align: center;
+        margin: 20px 10px;
+    }
+
+    .caozuo {
+        cursor: pointer;
+    }
+
+    .anniu {
+        width: 83%;
+        min-width: 360px;
+        margin: 0 auto;
+    }
+
+    .sousuo_form .suosou_btn {
+        height: 30px;
+        line-height: 30px;
+        letter-spacing: 5px;
+
+    }
+
+    .main-content .row .col-md-10 .dataintable {
+        text-align: center;
+        border: 1px solid #211d1d;
+    }
+
+    .main-content .row .col-md-10 .dataintable .sectr td, .main-content .row .col-md-10 .dataintable .threetr td, .main-content .row .col-md-10 .dataintable .fourtr td,
+    .main-content .row .col-md-10 .dataintable .fivtr td, .main-content .row .col-md-10 .dataintable .lasttr td,.main-content .row .col-md-10 .dataintable .hjfir td ,
+    .main-content .row .col-md-10 .dataintable .hjsec td, .main-content .row .col-md-10 .dataintable .hjthr td,.main-content .row .col-md-10 .dataintable .mrsfir td ,
+    .main-content .row .col-md-10 .dataintable .mrssec td, .main-content .row .col-md-10 .dataintable .mrsthr td,.main-content .row .col-md-10 .dataintable .mryfir td ,
+    .main-content .row .col-md-10 .dataintable .mrysec td{
+        border-top: 1px solid #211d1d;
+        border-left: 1px solid #211d1d;
+        border-right: 1px solid #211d1d;
+        border-bottom: 1px solid #211d1d;
+        vertical-align: middle;
+    }
+</style>
+<div class="content">
+    {include file="template/navbar.html"}
+    <div class="sousuo">
+        <form action="" method="get">
+            <div class="form_sub">
+                <!--                <div class="sousuo_form">-->
+                <!--                    门店： <input type="text" name="chain_name">-->
+                <!--                </div>-->
+                <div class="sousuo_form">
+                     <span>
+                           <select style="" class="chain_id" name="chain_id" autocomplete="off">
+                                <option value="" >请选择门店
+                               </option>
+                               {foreach $chain as $k }
+                               <option value="{$k.id}" {if condition="($k.id == $cid)" } selected {/if}>{$k.name}
+                               </option>
+                               {/foreach}
+                           </select>
+                     </span>
+                </div>
+                <!--                <div class="sousuo_form">-->
+                <!--                    电话：<br/><input type="text" value="{$Think.get.phone}" name="phone" autocomplete="off">-->
+                <!--                </div>-->
+                <!--                <div class="sousuo_form">-->
+                <!--                    订单编号：<br/><input type="text" value="{$Think.get.server_no}" name="server_no" autocomplete="off">-->
+                <!--                </div>-->
+                <div class="sousuo_form">
+                     <span id='date'>
+			                  <input type="text" value="{$Think.get.create_time}" class="user_birth" name="create_time"
+                                     placeholder="点击选择时间" id='inputdate' autocomplete="off"/>
+                     </span>
+                </div>
+                <div class="sousuo_form"
+                     style="width: 80px;text-align: center;margin-left: 10px;background: #39435C;color: #fff;cursor:pointer; ">
+                    <span class="suosou_btn" onclick="onconfirm();">搜索</span>
+                </div>
+                <!--                <div class="sousuo_form">-->
+                <!--                    技师名称：<br/><input type="text" value="{$Think.get.server_name}" name="server_name" autocomplete="off">-->
+                <!--                </div>-->
+            </div>
+        </form>
+
+    </div>
+
+    <div class="main-content" style="clear: both;margin-top: 10px;">
+        <!--                <h1 class="page">用户列表</h1>-->
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div style="background: #e5e5e5 ;">
+                    <h1 class="page">门店日报表</h1>
+                </div>
+                <table id="data_list" class="dataintable table" style="font-size: 14px">
+                    <thead>
+                    <tr class="firtr">
+                        <td colspan="35">{if condition="($cid>0)"}{$chainlist[$cid]['name']}{else /}门店{/if}日报表</td>
+                    </tr>
+                    <tr class="sectr">
+                        <td rowspan="3">序号</td>
+                        <td rowspan="3">初诊</td>
+                        <td rowspan="3">复诊</td>
+                        <td rowspan="3">顾客姓名</td>
+                        <td rowspan="3">来源</td>
+                        <td rowspan="3">诊疗项目</td>
+                        <td rowspan="3">消费明细</td>
+                        <td rowspan="3">开发金额</td>
+                        <td colspan="19" class="xfjine">收款金额</td>
+                        <td rowspan="3">欠款</td>
+                        <td colspan="6" class="hkjine">还款</td>
+                        <td rowspan="3">治疗师姓名</td>
+                    <tr class="threetr">
+                        <td rowspan="2" class="xfxj">现金</td>
+                        <td rowspan="2" class="xfsk">刷卡</td>
+                        <td rowspan="2" class="xfjsm">建设码</td>
+                        <td rowspan="2" class="xfzfbkb">支付宝口碑</td>
+                        <td rowspan="2" class="xfnbm">宁波吗</td>
+                        <td rowspan="2" class="xfjfq">即分期</td>
+                        <td rowspan="2" class="xfms">民生</td>
+                        <td rowspan="2" class="xfymjfq">易美健分期</td>
+                        <td rowspan="2" class="xfmhfq">美好分期</td>
+                        <td rowspan="2" class="xfmsfq">马上分期</td>
+                        <td rowspan="2" class="xfjxfq">捷信分期</td>
+                        <td colspan="5" class="jdjine">借用其他店二维码收款</td>
+                        <td rowspan="2" class="xfbbfq">帮帮分期</td>
+                        <td rowspan="2" class="xfqt1">其他1</td>
+                        <td rowspan="2" class="xfqt2">其他2</td>
+                        <td rowspan="2" class="hkxj">现金</td>
+                        <td rowspan="2" class="hksk">刷卡</td>
+                        <td rowspan="2" class="hkjsm">建设码</td>
+                        <td rowspan="2" class="hkzfbkb">支付宝口碑</td>
+                        <td rowspan="2" class="hknbm">宁波码</td>
+                        <td rowspan="2" class="hkqt">其他</td>
+                    </tr>
+                    <tr class="fourtr">
+                        <td>门店</td>
+                        <td class="jdjsm">建设码</td>
+                        <td class="jdsk">刷卡</td>
+                        <td class="jdylewm">银联二维码</td>
+                        <td class="jdnbm">宁波码</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach $customers as $k }
+                    {if condition="isset($custxflist[$k['id']])"}
+                    {foreach $custxflist[$k['id']] as $kk }
+                    <tr class="fivtr contenttr" xfpayid="{$kk.xfpayway_id}" hkpayid="{$kk.hkpayway_id}"  jdpayid="{$kk.jdpayway_id ?? ''}"
+                        xf="{$kk.xiaofei}" hk="{$kk.huankuan}" jd="{$kk.jdxiaofei ?? ''}">
+                        <td class="xuhao"></td>
+                        <td class="chuzhen">{if condition="($kk.firvisit==1)"}√{/if}</td>
+                        <td class="fuzhen">{if condition="($kk.firvisit==2)"}√{/if}</td>
+                        <td class="custname">{$k.name}</td>
+                        <td class="laiyuan">{$k.source_from}</td>
+                        <td class="xiangmu">{$package[$kk.package_id]['package_name'] ?? ''}</td>
+                        <td class="mingxi"></td>
+                        {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
+                        <td class="kfje">{$kk.kfje}</td>
+                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+                        <td class="kfje" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}> {$xfcount[$kk.xiaofei_id]['kfje'][$kk.xiaofei_id]['kfje'] ?? ''}
+                        </td>
+                        {/if}
+                        <!--                        <td class="jine">{$kk.xiaofei}</td>-->
+                        {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
+                        <td class="xf_{$xfpay.xj} xfxj"></td>
+                        <td class="xf_{$xfpay.sk} xfsk"></td>
+                        <td class="xf_{$xfpay.jsm} xfjsm"></td>
+                        <td class="xf_{$xfpay.zfbkb} xfzfbkb"></td>
+                        <td class="xf_{$xfpay.nbm} xfnbm"></td>
+                        <td class="xf_{$xfpay.jfq} xfjfq"></td>
+                        <td class="xf_{$xfpay.ms} xfms"></td>
+                        <td class="xf_{$xfpay.ymjfq} xfymjfq"></td>
+                        <td class="xf_{$xfpay.mhfq} xfmhfq"></td>
+                        <td class="xf_{$xfpay.msfq} xfmsfq"></td>
+                        <td class="xf_{$xfpay.jxfq} xfjxfq"></td>
+                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+                        <td class="xf_{$xfpay.xj} xfxj" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        <td class="xf_{$xfpay.sk} xfsk" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        <td class="xf_{$xfpay.jsm} xfjsm" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        <td class="xf_{$xfpay.zfbkb} xfzfbkb" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        <td class="xf_{$xfpay.nbm} xfnbm" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        <td class="xf_{$xfpay.jfq} xfjfq" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        <td class="xf_{$xfpay.ms} xfms" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        <td class="xf_{$xfpay.ymjfq} xfymjfq" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        <td class="xf_{$xfpay.mhfq} xfmhfq" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        <td class="xf_{$xfpay.msfq} xfmsfq" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        <td class="xf_{$xfpay.jxfq} xfjxfq" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        </td>
+                        {/if}
+                        {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
+                        <td class="xiaofeichain">{if condition="($kk.xfchain_id != $kk.serchain_id)"}{$chainlist[$kk.xfchain_id]['name'] ?? ''}{/if}</td>
+                        <td class="jd_{$jdpay.jsm} jdjsm"></td>
+                        <td class="jd_{$jdpay.sk} jdsk"></td>
+                        <td class="jd_{$jdpay.ylewm} jdylewm"></td>
+                        <td class="jd_{$jdpay.nbm} jdnbm"></td>
+                        <td class="xf_{$xfpay.bbfq} xfbbfq"></td>
+                        <td class="xf_{$xfpay.qt1} xfqt1"></td>
+                        <td class="xf_{$xfpay.qt2} xfqt2"></td>
+                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+                        <td class="xiaofeichain" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
+                        {if condition="($kk.xfchain_id != $kk.serchain_id)"} {$chainlist[$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['xfchain_id']]['name'] ?? ''}{/if}</td>
+                        <td class="jd_{$jdpay.jsm} jdjsm" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}></td>
+                        <td class="jd_{$jdpay.sk} jdsk" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}></td>
+                        <td class="jd_{$jdpay.ylewm} jdylewm" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}></td>
+                        <td class="jd_{$jdpay.nbm} jdnbm" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}></td>
+                        <td class="xf_{$xfpay.bbfq} xfbbfq" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}></td>
+                        <td class="xf_{$xfpay.qt1} xfqt1" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}></td>
+                        <td class="xf_{$xfpay.qt2} xfqt2" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}></td>
+                        {/if}
+
+                        {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
+                        <td class="qiankuan">{$customowe[$k.id][$kk.xiaofei_id]['owe'] ?? ''}</td>
+                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+                        <td class="qiankuan" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['owe'] ?? ''}</td>
+                        {/if}
+                        <td class="hk_{$hkpay.xj} hkxj"></td>
+                        <td class="hk_{$hkpay.sk} hksk"></td>
+                        <td class="hk_{$hkpay.jsm} hkjsm"></td>
+                        <td class="hk_{$hkpay.zfbkb} hkzfbkb"></td>
+                        <td class="hk_{$hkpay.nbm} hknbm"></td>
+                        <td class="hk_{$hkpay.qt} hkqt"></td>
+                        <td>{$kk.jishi_name}</td>
+                    </tr>
+                    {/foreach}
+                    {/if}
+
+                    {if condition="isset($custtflist[$k['id']])"}
+                    {foreach $custtflist[$k['id']] as $kk }
+                    <tr class="fivtr contenttr" xfpayid="{$kk.xfpayway_id}"   xf="-{$kk.xiaofei}">
+                        <td class="xuhao">{$k.id}</td>
+                        <td class="chuzhen">{if condition="($kk.firvisit==1)"}√{/if}</td>
+                        <td class="fuzhen">{if condition="($kk.firvisit==2)"}√{/if}</td>
+                        <td class="custname">{$k.name}</td>
+                        <td class="laiyuan">{$k.source_from}</td>
+                        <td class="xiangmu">退款</td>
+                        <td class="mingxi"></td>
+                        <td class="kfje"></td>
+                        <td class="xf_{$xfpay.xj} xfxj"></td>
+                        <td class="xf_{$xfpay.sk} xfsk"></td>
+                        <td class="xf_{$xfpay.jsm} xfjsm"></td>
+                        <td class="xf_{$xfpay.zfbkb} xfzfbkb"></td>
+                        <td class="xf_{$xfpay.nbm} xfnbm"></td>
+                        <td class="xf_{$xfpay.jfq} xfjfq"></td>
+                        <td class="xf_{$xfpay.ms} xfms"></td>
+                        <td class="xf_{$xfpay.ymjfq} xfymjfq"></td>
+                        <td class="xf_{$xfpay.mhfq} xfmhfq"></td>
+                        <td class="xf_{$xfpay.msfq} xfmsfq"></td>
+                        <td class="xf_{$xfpay.jxfq} xfjxfq"></td>
+                        <td class="xiaofeichain">{$chainlist[$kk.xfchain_id]['name'] ?? ''}</td>
+                        <td class="jd_{$jdpay.jsm} jdjsm"></td>
+                        <td class="jd_{$jdpay.sk} jdsk"></td>
+                        <td class="jd_{$jdpay.ylewm} jdylewm"></td>
+                        <td class="jd_{$jdpay.nbm} jdnbm"></td>
+                        <td class="xf_{$xfpay.bbfq} xfbbfq"></td>
+                        <td class="xf_{$xfpay.qt1} xfqt1"></td>
+                        <td class="xf_{$xfpay.qt2} xfqt2"></td>
+                        <td class="qiankuan"></td>
+                        <td class="hk_{$hkpay.xj} hkxj"></td>
+                        <td class="hk_{$hkpay.sk} hksk"></td>
+                        <td class="hk_{$hkpay.jsm} hkjsm"></td>
+                        <td class="hk_{$hkpay.zfbkb} hkzfbkb"></td>
+                        <td class="hk_{$hkpay.nbm} hknbm"></td>
+                        <td class="hk_{$hkpay.qt} hkqt"></td>
+                        <td>{$kk.jishi_name}</td>
+                    </tr>
+                    {/foreach}
+                    {/if}
+
+                    {/foreach}
+                    <tr class="lasttr">
+                        <td colspan="7">合计</td><td class="kfjeall"></td><td class="xfxjall"></td><td class="xfskall"></td><td class="xfjsmall"></td>
+                        <td class="xfzfbkball"></td><td class="xfnbmall"></td><td class="xfjfqall"></td><td class="xfmsall"></td><td class="xfymjfqall"></td>
+                        <td class="xfmhfqall"></td><td class="xfmsfqall"></td><td class="xfjxfqall"></td><td class="md"></td><td class="jdjsmall"></td>
+                        <td class="jdskall"></td><td class="jdylewmall"></td><td class="jdnbmall"></td><td class="xfbbfqall"></td><td class="xfqt1all"></td>
+                        <td class="xfqt2all"></td><td class="qiankuanall"></td><td class="hkxjall"></td><td class="hkskall"></td><td class="hkjsmall"></td>
+                        <td class="hkzfbkball"></td><td class="hknbmall"></td><td class="hkqtall"></td><td class=""></td>
+                    </tr>
+                    <tr></tr>
+                    <tr class="hjfir" style="font-weight: 600">
+                        <td colspan="5" rowspan="3">当日总收入</td>
+                        <td colspan="4">疗程销售收入</td>
+                        <td colspan="4" class="daylcxssr">{$paktotal[$pakid.liaochengyeji]['total'] ?? 0}</td>
+                        <td colspan="4">产品收入</td>
+                        <td  colspan="4" class="daycpsr" >{$paktotal[$pakid.chanpinyeji]['total'] ?? 0}</td>
+                        <td colspan="4">体验卡收入</td>
+                        <td class="daytyksr" colspan="4">{$paktotal[$pakid.tiyanka]['total'] ?? 0}</td>
+                        <td colspan="3">代其他店收款</td>
+                        <td class="daydqtdsk" colspan="3">{$dstotal ?? 0}</td>
+                    </tr>
+                    <tr class="hjsec" style="font-weight: 600">
+                        <td colspan="4">当日退款</td>
+                        <td colspan="4" class="daytk">{$$tuitotal ?? 0}</td>
+                        <td colspan="4">当日还款</td>
+                        <td  colspan="4" class="dayhk" >0</td>
+                        <td colspan="4">当日消费汇总</td>
+                        <td class="daysrhz" colspan="4">{$xiaofeitotal ?? 0}</td>
+                        <td colspan="3">借用其他店二维码支付</td>
+                        <td class="dayjyqtdewmzf" colspan="3">0</td>
+                    </tr>
+                    <tr class="hjthr" style="font-weight: 600">
+                        <td colspan="30">实际入账(消费汇总+还款-退款+代收款-借店付款):<b class="shishou"></b></td>
+
+                    </tr>
+<!--                    <tr></tr>-->
+<!--                    <tr class="hjfir" style="font-weight: 600">-->
+<!--                        <td colspan="5" rowspan="2">截止今日总收入累计</td>-->
+<!--                        <td colspan="4">疗程销售收入</td>-->
+<!--                        <td colspan="4" class="lcxssr">{$paktotal[$pakid.liaochengyeji]['total'] ?? 0}</td>-->
+<!--                        <td colspan="3">产品收入</td>-->
+<!--                        <td  colspan="3" class="cpsr" >{$paktotal[$pakid.chanpinyeji]['total'] ?? 0}</td>-->
+<!--                        <td colspan="4">体验卡收入</td>-->
+<!--                        <td class="tyksr" colspan="4">{$paktotal[$pakid.tiyanka]['total'] ?? 0}</td>-->
+<!--                        <td colspan="4">代其他店收款</td>-->
+<!--                        <td class="dqtdsk" colspan="4">0</td>-->
+<!--                    </tr>-->
+<!--                    <tr class="hjsec" style="font-weight: 600">-->
+<!--                        <td colspan="4">当日退款</td>-->
+<!--                        <td colspan="4" class="tk">0</td>-->
+<!--                        <td colspan="3">当日还款</td>-->
+<!--                        <td  colspan="3" class="hk" >0</td>-->
+<!--                        <td colspan="4">当日收入汇总</td>-->
+<!--                        <td class="srhz" colspan="4">0</td>-->
+<!--                        <td colspan="4">借用其他店二维码支付</td>-->
+<!--                        <td class="jyqtdewmzf" colspan="4">0</td>-->
+<!--                    </tr>-->
+
+
+                    <tr></tr>
+                    <tr class="mrsfir">
+                        <td rowspan="{$countjishi ?? ''}" colspan="5">当天美容师个人业绩</td>
+                        <td colspan="4">岗位</td>
+                        <td colspan="4">治疗师姓名</td>
+                        <td colspan="4">祛斑</td>
+                        <td colspan="4">体验卡</td>
+                        <td colspan="4">疗程业绩</td>
+                        <td colspan="4">产品业绩</td>
+                        <td colspan="3">退款</td>
+                        <td colspan="3">业绩合计</td>
+                    </tr>
+                    {if condition="(isset($jishi))"}
+                    {foreach $jishi as $k }
+                    {if condition="(isset($yejilist[$k.id]['package']))"}
+                    <tr class="mrssec">
+                        <td colspan="4">{$k.job_name}</td>
+                        <td colspan="4">{$k.name}</td>
+                        <td class="jsquban" colspan="4">{$yejilist[$k.id]['package'][$pakid.quban]['total'] ?? 0}</td>
+                        <td class="jstiyanka" colspan="4">{$yejilist[$k.id]['package'][$pakid.tiyanka]['total'] ?? 0}</td>
+                        <td class="jsliaochengyeji" colspan="4">{$yejilist[$k.id]['package'][$pakid.liaochengyeji]['total'] ?? 0}</td>
+                        <td class="jschanpinyeji" colspan="4">{$yejilist[$k.id]['package'][$pakid.chanpinyeji]['total'] ?? 0}</td>
+                        <td class="jstuikuan" colspan="3">{$yejilist[$k.id]['tuifei'] ?? 0}</td>
+                        <td class="jstotal" colspan="3">0</td>
+                    </tr>
+                    {/if}
+                    {/foreach}
+                    {/if}
+                    <tr class="mryfir">
+                        <td rowspan="{$countchain ?? ''}" colspan="5">当天代收其他门店费用</td>
+                        <td colspan="4">其他门店</td>
+                        <td colspan="4">门店名称</td>
+                        <td colspan="4">祛斑</td>
+                        <td colspan="4">体验卡</td>
+                        <td colspan="4">疗程业绩</td>
+                        <td colspan="4">产品业绩</td>
+                        <td colspan="3">退款</td>
+                        <td colspan="3">业绩合计</td>
+                    </tr>
+                    {if condition="(isset($chainarr))"}
+                    {foreach $chainarr as $k }
+                    {if condition="(isset($dschain[$k.id]['package']))"}
+                    <tr class="mrysec">
+                        <td colspan="4">其他门店</td>
+                        <td colspan="4">{$k.name}</td>
+                        <td class="jsquban" colspan="4">{$dschain[$k.id]['package'][$pakid.quban]['total'] ?? 0}</td>
+                        <td class="jstiyanka" colspan="4">{$dschain[$k.id]['package'][$pakid.tiyanka]['total'] ?? 0}</td>
+                        <td class="jsliaochengyeji" colspan="4">{$dschain[$k.id]['package'][$pakid.liaochengyeji]['total'] ?? 0}</td>
+                        <td class="jschanpinyeji" colspan="4">{$dschain[$k.id]['package'][$pakid.chanpinyeji]['total'] ?? 0}</td>
+                        <td class="jstuikuan" colspan="3">{$dschain[$k.id]['tuifei'] ?? 0}</td>
+                        <td class="jstotal" colspan="3">0</td>
+                    </tr>
+                    {/if}
+                    {/foreach}
+                    {/if}
+                    </tbody>
+                </table>
+                <div style="width: 96.8%;margin-left: 1.5%;margin-bottom: 10px; text-align: center;font-size: 14px;color: #fff;">
+                    <p style="width: 70px;">
+                        <span> <a type="button" class="btn btn-primary" download="nihaonao" onclick="method5('data_list','hello')" >导出</a></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.contenttr').each(function () {
+            var xfpayid = $(this).attr('xfpayid');
+            var hkpayid = $(this).attr('hkpayid');
+            var jdpayid = $(this).attr('jdpayid');
+            var xf = $(this).attr('xf');
+            var hk = $(this).attr('hk');
+            var jd = $(this).attr('jd');
+            // $('.jine').text('');
+            $(this).find('.xf_' + xfpayid).text(xf);
+            $(this).find('.hk_' + hkpayid).text(hk);
+            $(this).find('.jd_' + jdpayid).text(jd);
+        })
+        num('kfje');num('xfxj');num('xfsk');num('xfjsm');num('xfzfbkb');num('xfnbm');num('xfjfq');num('xfms');num('xfymjfq');num('xfmhfq');num('xfmsfq');
+        num('xfjxfq');num('jdjsm');num('jdsk');num('jdylewm');num('jdnbm');num('xfbbfq');num('xfqt1');num('xfqt2');num('qiankuan');num('hkxj');num('hksk');
+        num('hkjsm');num('hkzfbkb');num('hknbm');num('hkqt');
+        $('.xuhao').each(function (i) {
+            $(this).text(i+1);i++;
+        })
+        hukuanheji();
+        jdtotal();
+        sjxiaofei();
+        var i = 0;
+        var j = 0;
+        var k = 0;
+        $('.lasttr td').each(function () {
+            if(($(this).attr('class'))!=undefined && ($(this).attr('class'))!=null && ($(this).attr('class'))!='' && $(this).attr('class').length>2){
+                var all = $(this).attr('class').trim().replace(/\s/g, "")
+                if((all.substr(-3,3)) == 'all'){
+                    var fangshi = all.substring(0,all.length-3);
+                    if(fangshi.substring(0,2) == 'xf'){
+                       if(Number($(this).text())==0){
+                           console.log(fangshi);
+                           $('.'+fangshi).remove();
+                           $('.'+fangshi+'all').remove();
+                           $('.'+fangshi+'all').remove();
+                           i = i+1;
+                       }
+                    }
+                    else if(fangshi.substring(0,2) == 'jd'){
+                        if(Number($(this).text())==0){
+                            console.log(fangshi);
+                            $('.'+fangshi).remove();;
+                            $('.'+fangshi+'all').remove();
+                            $('.'+fangshi+'all').remove();
+                            j = j+1;
+                        }
+                    }
+                    else if(fangshi.substring(0,2) == 'hk'){
+                        if(Number($(this).text())==0){
+                            console.log(fangshi);
+                            $('.'+fangshi).remove();
+                            $('.'+fangshi+'all').remove();
+                            $('.'+fangshi+'all').remove();
+                            k = k+1;
+                        }
+                    }
+
+                }
+
+            }
+
+        })
+        console.log(i+','+j+','+k);
+        if(i<=14 && j<5) {
+            $('.xfjine').attr('colspan', 19 - i - j);
+        }
+        if(j<5){
+            $('.jdjine').attr('colspan',5-j);
+        }
+        if(k<6){
+            $('.hkjine').attr('colspan',6-k);
+        }else{
+
+            $('.hkjine').remove();
+        }
+        if(i<=14 && j<5 && k<=6) {
+            $('.firtr td').attr('colspan',35-i-j-k);
+        }
+        if(i+j+k<=4){
+            $('.hjfir').children().eq(0).attr('colspan',5-i-j-k);
+            $('.hjthr').children().eq(0).attr('colspan',30-i-j-k);
+            $('.mrsfir').children().eq(0).attr('colspan',5-i-j-k);
+            $('.mryfir').children().eq(0).attr('colspan',5-i-j-k);
+        }else{
+            $('.hjfir').children().eq(0).attr('colspan',1);
+            $('.hjthr').children().eq(0).attr('colspan',34-i-j-k);
+            $('.mrsfir').children().eq(0).attr('colspan',1);
+            $('.mryfir').children().eq(0).attr('colspan',1);
+            //剩余
+            var a = i+j+k - 4;
+            //取余
+            var b = a%8;
+            //取整
+            var c = parseInt(a/8)
+            console.log(a+' '+b+' '+c);
+            if(c==0){
+                for(var l =0;l<b;l++){
+                    var dd =  $('.hjfir').children().eq(l+1);
+                    dd.attr('colspan',Number(dd.attr('colspan'))-1);
+                    var kk = $('.hjsec').children().eq(l);
+                    kk.attr('colspan',Number(kk.attr('colspan'))-1);
+                    var hh =  $('.mrsfir').children().eq(l+1);
+                    hh.attr('colspan',Number(hh.attr('colspan'))-1);
+                    var ll = $('.mrssec').children().eq(l);
+                    ll.attr('colspan',Number(ll.attr('colspan'))-1);
+                    var tt =  $('.mryfir').children().eq(l+1);
+                    tt.attr('colspan',Number(tt.attr('colspan'))-1);
+                    var pp = $('.mrysec').children().eq(l);
+                    pp.attr('colspan',Number(pp.attr('colspan'))-1);
+                }
+            }else{
+                for(var l =0;l<b;l++){
+                    var dd =  $('.hjfir').children().eq(l+1);
+                    dd.attr('colspan',Number(dd.attr('colspan'))-1-c);
+                    var kk = $('.hjsec').children().eq(l);
+                    kk.attr('colspan',Number(kk.attr('colspan'))-1-c);
+                    var hh =  $('.mrsfir').children().eq(l+1);
+                    hh.attr('colspan',Number(hh.attr('colspan'))-1-c);
+                    var ll = $('.mrssec').children().eq(l);
+                    ll.attr('colspan',Number(ll.attr('colspan'))-1-c);
+                    var tt =  $('.mryfir').children().eq(l+1);
+                    tt.attr('colspan',Number(tt.attr('colspan'))-1-c);
+                    var pp = $('.mrysec').children().eq(l);
+                    pp.attr('colspan',Number(pp.attr('colspan'))-1-c);
+                }
+                for(var m =b;m<9;m++){
+                    var dd =  $('.hjfir').children().eq(m+1);
+                    dd.attr('colspan',Number(dd.attr('colspan'))-c);
+                    var kk = $('.hjsec').children().eq(m);
+                    kk.attr('colspan',Number(kk.attr('colspan'))-c);
+                    var hh =  $('.mrsfir').children().eq(m+1);
+                    hh.attr('colspan',Number(hh.attr('colspan'))-c);
+                    var ll = $('.mrssec').children().eq(m);
+                    ll.attr('colspan',Number(ll.attr('colspan'))-c);
+                    var tt =  $('.mryfir').children().eq(m+1);
+                    tt.attr('colspan',Number(tt.attr('colspan'))-c);
+                    var pp = $('.mrysec').children().eq(m);
+                    pp.attr('colspan',Number(pp.attr('colspan'))-c);
+                }
+            }
+        }
+
+    })
+
+    function hukuanheji() {
+        var xj = Number($('.hkxjall').text());
+        var sk = Number($('.hkskall').text());
+        var jsm = Number($('.hkjsmall').text());
+        var zfbkb = Number($('.hkzfbkball').text());
+        var nbm = Number($('.hknball').text());
+        var qt = Number($('.hkqtall').text());
+        $('.dayhk').text(parseFloat(xj+sk+jsm+zfbkb+nbm+qt));
+
+    }
+    function jdtotal() {
+        var jsm = Number($('.jdjsmall').text());
+        var sk = Number($('.jdskall').text());
+        var ylewm = Number($('.jdylewmall').text());
+        var nbm = Number($('.jdnbmall').text());
+        $('.dayjyqtdewmzf').text(parseFloat(jsm+sk+ylewm+nbm));
+    }
+    function sjxiaofei(j) {
+        //消费
+        var xiaofei = Number($('.daysrhz').text());
+        //借店消费
+        var jdxiaofei = Number($('.dayjyqtdewmzf').text());
+        //代收kuan
+        var daishou = Number($('.daydqtdsk').text());
+        //还款
+        var huankuan = Number($('.dayhk').text());
+        //退款
+        var tuikuan = Number($('.daytk').text());
+        //实际收入 = 消费 + 还款 - 退费 + 代收 - 借店消费
+        var shishou = Number(xiaofei + huankuan -tuikuan + daishou -jdxiaofei);
+        $('.shishou').text(shishou);
+    }
+    function num(j){
+        var num=0;
+        $('.fivtr .'+j).each(function(){
+            if(Math.abs(parseFloat($(this).text()))>0){
+                num += parseFloat($(this).text());
+            }
+        })
+        $('.lasttr .'+j+'all').append(num);
+    }
+
+
+    var d = new DateJs({
+        inputEl: '#inputdate',
+        el: '#date'
+    })
+    $('.date-js').css('margin-left', '0')
+
+    function onconfirm() {
+      $('form').submit();
+    }
+
+</script>
+<!--<script>-->
+<!--    var tableToExcel = (function () {-->
+<!--        var uri = 'data:application/vnd.ms-excel;base64,',-->
+<!--            template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head>&lt;!&ndash;[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]&ndash;&gt;</head><body><table>{table}</table></body></html>',-->
+<!--            base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) },-->
+<!--            format = function (s, c) {-->
+<!--                return s.replace(/{(\w+)}/g,-->
+<!--                    function (m, p) { return c[p]; })-->
+<!--            }-->
+
+<!--        return function (table, name) {-->
+<!--            if (!table.nodeType) table = document.getElementById(table)-->
+<!--            var ctx = { worksheet: name || 'Worksheet', table: table.innerHTML }-->
+<!--            return uri + base64(format(template, ctx))/////-->
+<!--            window.location.href = uri + base64(format(template, ctx))-->
+<!--        }-->
+<!--    })()-->
+<!--    dl.href= tableToExcel('tb','hello')-->
+<!--</script>-->
+{include file="template/footer.html"}

@@ -7,6 +7,7 @@ use http\Params;
 use Illuminate\Http\Request;
 use think\Controller;
 use think\Loader;
+use think\migration\command\migrate\Status;
 use think\View;
 use think\Db;
 
@@ -20,9 +21,9 @@ class Customers extends Base
 
     public function index()
     {
-        $config = config('grade');
-        if ($_SESSION['GID'] == $config['chief_dean']) {
-            //总院长
+        $config = config('group');
+        if ($_SESSION['GID'] == $config['dean']) {
+            //院长
             $this->assign('sign', 2);
         } else if ($_SESSION['GID'] == $config['admin']) {
             //超级管理员
@@ -30,7 +31,7 @@ class Customers extends Base
         }
         if ($_SESSION['GID'] == $config['chief_dean']) {
             //总院长
-            $this->assign('sign', 2);
+            $this->assign('sign', 1);
         }
         $map = array();
         $ormap = array();
@@ -61,33 +62,32 @@ class Customers extends Base
             ->alias('a')
             ->join('mbs_all_assessment o', 'a.id=o.customer_id', 'LEFT')
             ->field('a.*,o.id sid,o.status ostatus,o.server_id ser_id')
-
             ->whereOr($ormap)
             ->where($map)
             ->order('id')
             ->select();
 
-        foreach ($re as $k=>$v){
+        foreach ($re as $k => $v) {
             $cusno[] = $v['id'];
             $ree[$v['id']] = $v;
         }
         //顾客id集合
-        $str = implode(',',$cusno);
+        $str = implode(',', $cusno);
 
-        $sermap['status']=1;
+        $sermap['status'] = 1;
         $sermap['customer_id'] = array('in', $str);
         //有效服务单
-        $serinfo =  Db::table('mbs_all_assessment')
+        $serinfo = Db::table('mbs_all_assessment')
             ->alias('o')
             ->field('o.id sid,o.status ostatus,o.server_id ser_id,customer_id')
             ->where($sermap)
             ->order('id')
             ->select();
 
-        foreach ($serinfo as $k=>$v) {
-                $ree[$v['customer_id']]['sid'] = $v['sid'];
-                $ree[$v['customer_id']]['ostatus'] = $v['ostatus'];
-                $ree[$v['customer_id']]['ser_id'] = $v['ser_id'];
+        foreach ($serinfo as $k => $v) {
+            $ree[$v['customer_id']]['sid'] = $v['sid'];
+            $ree[$v['customer_id']]['ostatus'] = $v['ostatus'];
+            $ree[$v['customer_id']]['ser_id'] = $v['ser_id'];
         }
         //释放
         unset($serinfo);
@@ -100,6 +100,12 @@ class Customers extends Base
     public function edituser()
     {
         $id = intval($_GET['id']);
+        $source = Db::table('mbs_fromway')
+            ->where('status', 1)
+            ->order('fromway_id asc')
+            ->select();
+        $this->assign('source', $source);
+
         if ($id > 0) {
             $userinfo = Db::table('mbs_customers')
                 ->where('id', $id)
@@ -171,6 +177,616 @@ class Customers extends Base
         return $this->view->fetch();
     }
 
+    /*
+     * 添加消费
+     */
+    public function addxiaofei()
+    {
+        $id = intval($_GET['id']);
+        $cid = intval($_SESSION['CID']);
+        $cname = '';
+        //门店id
+        if ($cid > 0) {
+            $cnamearr = getChainname($cid);
+            $cname = $cnamearr['name'];
+        }
+        $gid = intval($_SESSION['GID']);
+        $config = config('group');
+        //客户信息
+        $cusinfo = Db::table('mbs_customers')
+            ->where('id', $id)
+            ->find();
+
+        if ($gid == 1 || $gid == $config['chief_dean']) {
+            //超级管理员或者总院长，没有分配门店
+            //其他门店代收的费用
+            $this->assign('usign', 1);
+            $chain = Db::table('mbs_chain')
+                ->where('status', 1)
+                ->select();
+            $this->assign('chain', $chain);
+        } else if ($gid == $config['dean']) {
+            //院长
+            $this->assign('usign', 2);
+            $chain = Db::table('mbs_chain')
+                ->where('status', 1)
+                ->select();
+            $this->assign('chain', $chain);
+
+            //默认门店技师
+            $jsmap['status'] = 1;
+            $jsmap['chain_id'] = $cid;
+            $jsmap['user_group'] = $config['jishi'];
+
+            $jishi = Db::table('mbs_user')
+                ->where($jsmap)
+                ->order('id asc')
+                ->select();
+            $this->assign('jishi', $jishi);
+
+            //默认门店诊疗项目
+            $pakmap['status'] = 1;
+            $package = Db::table('mbs_package')
+                ->where($pakmap)
+                ->where('find_in_set(' . $cid . ',chain_id)')
+                ->order('package_id asc')
+                ->select();
+            $this->assign('package', $package);
+
+            //默认门店前台
+            $reception = intval($config['reception']);
+            $remap['status'] = 1;
+            $remap['chain_id'] = $cid;
+            $remap['user_group'] = $config['reception'];
+            $recelist = Db::table('mbs_user')
+                ->where($remap)
+                ->order('id asc')
+                ->select();
+            $this->assign('reception', $recelist);
+
+        }
+        //支付方式
+        $paymap['status'] = 1;
+        $paymap['paytype'] = 1;
+        $payway = Db::table('mbs_payway')
+            ->where($paymap)
+            ->order('payway_id asc')
+            ->select();
+        $this->assign('payway', $payway);
+
+        $opaymap['status'] = 1;
+        $opaymap['paytype'] = 2;
+        $opayway = Db::table('mbs_payway')
+            ->where($opaymap)
+            ->order('payway_id asc')
+            ->select();
+        $this->assign('opayway', $opayway);
+
+        $cin['cid'] = $cid;
+        $cin['cname'] = $cname;
+        $this->assign('cin', $cin);
+        $this->assign('cname', $cname);
+
+        $this->assign('cusinfo', $cusinfo);
+        return $this->view->fetch();
+    }
+
+    public function editxiaofei()
+    {
+        $id = intval($_GET['id']);
+        $xiaofeiinfo = Db::table('mbs_xiaofei')
+            ->alias('a')
+            ->join('mbs_customers c', 'a.customer_id = c.id', 'INNER')
+            ->field('a.*')
+            ->where('a.xiaofei_id', $id)
+            ->find();
+        if ($xiaofeiinfo['serchain_id'] > 0) {
+            $cid = $xiaofeiinfo['serchain_id'];
+            $cnamearr = getChainname($cid);
+            $cname = $cnamearr['name'];
+        }
+        $gid = intval($_SESSION['GID']);
+        $config = config('group');
+        //客户信息
+        $cusinfo = Db::table('mbs_customers')
+            ->where('id', $xiaofeiinfo['customer_id'])
+            ->find();
+
+        if ($gid == 1 || $gid == $config['chief_dean']) {
+            //超级管理员或者总院长，没有分配门店
+            //其他门店代收的费用
+            $this->assign('usign', 1);
+        } else if ($gid == $config['dean']) {
+            //院长
+            $this->assign('usign', 2);
+        }
+        $chain = Db::table('mbs_chain')
+            ->where('status', 1)
+            ->select();
+        $this->assign('chain', $chain);
+
+        //默认门店技师
+        $jsmap['status'] = 1;
+        $jsmap['chain_id'] = $cid;
+        $jsmap['user_group'] = $config['jishi'];
+
+        $jishi = Db::table('mbs_user')
+            ->where($jsmap)
+            ->order('id asc')
+            ->select();
+        $this->assign('jishi', $jishi);
+        //默认门店诊疗项目
+        $pakmap['status'] = 1;
+        $package = Db::table('mbs_package')
+            ->where($pakmap)
+            ->where('find_in_set(' . $cid . ',chain_id)')
+            ->order('package_id asc')
+            ->select();
+        $this->assign('package', $package);
+
+        //默认门店前台
+        $reception = intval($config['reception']);
+        $remap['status'] = 1;
+        $remap['chain_id'] = $cid;
+        $remap['user_group'] = $config['reception'];
+        $recelist = Db::table('mbs_user')
+            ->where($remap)
+            ->order('id asc')
+            ->select();
+        $this->assign('reception', $recelist);
+
+        //支付方式
+        $paymap['status'] = 1;
+        $paymap['paytype'] = 1;
+        $payway = Db::table('mbs_payway')
+            ->where($paymap)
+            ->order('payway_id asc')
+            ->select();
+        $this->assign('payway', $payway);
+
+        $opaymap['status'] = 1;
+        $opaymap['paytype'] = 2;
+        $opayway = Db::table('mbs_payway')
+            ->where($opaymap)
+            ->order('payway_id asc')
+            ->select();
+        $this->assign('opayway', $opayway);
+
+        $cin['cid'] = $cid;
+        $cin['cname'] = $cname;
+        $this->assign('cin', $cin);
+        $this->assign('cname', $cname);
+
+        $this->assign('cusinfo', $cusinfo);
+        $this->assign('xiaofeiinfo', $xiaofeiinfo);
+        return $this->view->fetch();
+    }
+
+    public function savexiaofei()
+    {
+        $user_info_str = array_filter(explode(',', $_POST['xfinfo']));
+        $dataxf = array();
+        $xiaofei_id = 0;
+        if (isset($_POST['xiaofei_id'])) {
+            $xiaofei_id = intval($_POST['xiaofei_id']);
+        }
+        foreach ($user_info_str as $k => $v) {
+            $dataxf[substr($v, 0, strrpos($v, '*'))] = substr($v, strripos($v, "*") + 1);
+        }
+        $dataxf['update_time'] = date('Y-m-d H:m:s', time());
+        if ($xiaofei_id > 0) {
+            //编辑保存
+
+            if (intval($dataxf['customer_id']) > 0) {
+                $customer = Db::table('mbs_customers')
+                    ->where('id', intval($dataxf['customer_id']))
+                    ->find();
+            } else {
+                $data['code'] = 0;
+                $data['msg'] = '操作失败';
+                return json_encode($data);
+            }
+            if ($customer) {
+                $dataxf['fromway_id'] = $customer['source_id'];
+            }
+
+
+            //消费
+            Db::startTrans();
+
+            try {
+                //作废相关还款
+                $datahk['status'] = 0;
+                $ifhave = Db::table('mbs_xfhuankuan')
+                    ->where('xiaofei_id', $xiaofei_id)
+                    ->where('status', 1)
+                    ->select();
+
+                $re0 = Db::table('mbs_xfhuankuan')
+                    ->where('xiaofei_id', $xiaofei_id)
+                    ->update($datahk);
+                //添加消费
+                $ree = Db::table('mbs_xiaofei')
+                    ->where('customer_id', $dataxf['customer_id'])
+                    ->where('status', 1)
+                    ->find();
+                if ($ree) {
+                    $dataxf['firvisit'] = 2;
+                } else {
+                    $dataxf['firvisit'] = 1;
+                }
+                $re = Db::table('mbs_xiaofei')
+                    ->where('xiaofei_id', $xiaofei_id)
+                    ->update($dataxf);
+                //操作日志
+                $logdata['xf_id'] = $xiaofei_id;
+                $logdata['user_id'] = $_SESSION['UID'];
+                $logdata['customer_id'] = $dataxf['customer_id'];
+                $logdata['logType'] = 3;
+                $logdata['logContent'] = '修改消费记录，消费金额' . $dataxf['total_money'];
+                $logdata['money'] = $dataxf['total_money'];
+                $logdata['createTime'] = date('Y-m-d H:m:s', time());
+
+                $re1 = Db::table('mbs_xiaofei_log')
+                    ->insert($logdata);
+                if (($re && $re1 && $re0 && !empty($ifhave)) || (empty($ifhave) && $re && $re1)) {
+                    Db::commit();//提交事务
+                    unset($data);
+                    $data['code'] = 200;
+                    $data['msg'] = '保存成功';
+                    return json_encode($data);
+                } else {
+                    Db::rollback();//回滚事务
+                    unset($data);
+                    $data['code'] = 0;
+                    $data['msg'] = '保存失败';
+                    return json_encode($data);
+                }
+            } catch (\Exception $e) {
+                Db::rollback();//回滚事务
+                unset($data);
+                $data['code'] = 0;
+                $data['msg'] = '保存失败';
+                return json_encode($data);
+            }
+
+
+        } else {
+            if (intval($dataxf['customer_id']) > 0) {
+                $customer = Db::table('mbs_customers')
+                    ->where('id', intval($dataxf['customer_id']))
+                    ->find();
+            } else {
+                $data['code'] = 0;
+                $data['msg'] = '操作失败';
+                return json_encode($data);
+            }
+
+            if ($customer) {
+                $dataxf['fromway_id'] = $customer['source_id'];
+            }
+            if (intval($dataxf['package_id']) == -1) {
+                //退款
+                Db::startTrans();
+                try {
+                    //添加退费
+
+                    $re = Db::table('mbs_tuifei')
+                        ->insert($dataxf);
+                    //操作日志
+                    $logdata['xf_id'] = $re;
+                    $logdata['user_id'] = $_SESSION['UID'];
+                    $logdata['customer_id'] = $dataxf['customer_id'];
+                    $logdata['logType'] = 2;
+                    $logdata['logContent'] = '添加退费记录，退费金额' . $dataxf['total_money'];
+                    $logdata['money'] = $dataxf['total_money'];
+                    $logdata['createTime'] = date('Y-m-d H:m:s', time());
+
+                    $re1 = Db::table('mbs_xiaofei_log')
+                        ->insert($logdata);
+                    if ($re && $re1) {
+                        Db::commit();//提交事务
+                        unset($data);
+                        $data['code'] = 200;
+                        $data['msg'] = '保存成功';
+                        return json_encode($data);
+                    } else {
+                        Db::rollback();//回滚事务
+                        unset($data);
+                        $data['code'] = 0;
+                        $data['msg'] = '保存失败';
+                        return json_encode($data);
+                    }
+                } catch (\Exception $e) {
+                    Db::rollback();//回滚事务
+                    unset($data);
+                    $data['code'] = 0;
+                    $data['msg'] = '保存失败';
+                    return json_encode($data);
+                }
+
+            } else {
+                //消费
+                Db::startTrans();
+                try {
+                    //添加消费
+                    $ree = Db::table('mbs_xiaofei')
+                        ->where('customer_id', $dataxf['customer_id'])
+                        ->find();
+                    if ($ree) {
+                        $dataxf['firvisit'] = 2;
+                    } else {
+                        $dataxf['firvisit'] = 1;
+                    }
+                    $dataxf['create_time'] = date('Y-m-d H:m:s', time());
+                    $dataxf['kaifa_money'] = $dataxf['total_money'] + $dataxf['owe'];
+//                    var_dump($dataxf);die();
+                    $re = Db::table('mbs_xiaofei')
+                        ->insert($dataxf);
+                    //操作日志
+                    $logdata['xf_id'] = $re;
+                    $logdata['user_id'] = $_SESSION['UID'];
+                    $logdata['customer_id'] = $dataxf['customer_id'];
+                    $logdata['logType'] = 1;
+                    $logdata['logContent'] = '添加消费记录，消费金额' . $dataxf['total_money'];
+                    $logdata['money'] = $dataxf['total_money'];
+                    $logdata['createTime'] = date('Y-m-d H:m:s', time());
+
+                    $re1 = Db::table('mbs_xiaofei_log')
+                        ->insert($logdata);
+                    if ($re && $re1) {
+                        Db::commit();//提交事务
+                        unset($data);
+                        $data['code'] = 200;
+                        $data['msg'] = '保存成功';
+                        return json_encode($data);
+                    } else {
+                        Db::rollback();//回滚事务
+                        unset($data);
+                        $data['code'] = 0;
+                        $data['msg'] = '保存失败';
+                        return json_encode($data);
+                    }
+                } catch (\Exception $e) {
+                    Db::rollback();//回滚事务
+                    unset($data);
+                    $data['code'] = 0;
+                    $data['msg'] = '保存失败';
+                    return json_encode($data);
+                }
+            }
+        }
+
+
+    }
+
+    public function viewxiaofei()
+    {
+        $config = config('group');
+        $gid = intval($_SESSION['GID']);
+        if ($gid == 1 || $gid == $config['chief_dean']) {
+            //超级管理员或者总院长，没有分配门店
+            //其他门店代收的费用
+            $this->assign('usign', 1);
+        } else if ($gid == $config['dean']) {
+            //院长
+            $this->assign('usign', 2);
+        }
+        $customer_id = intval($_GET['id']);
+        $xiaofeilist = Db::table('mbs_xiaofei')
+            ->alias('a')
+            ->join('mbs_customers c', 'a.customer_id = c.id', 'LEFT')
+            ->join('mbs_package p', 'a.package_id = p.package_id', 'LEFT')
+            ->field('a.*,c.phone,p.package_name')
+            ->where('customer_id', $customer_id)
+            ->where('a.status', 1)
+            ->order('create_time desc')
+            ->select();
+        $tfxiaofeilist = Db::table('mbs_tuifei')
+            ->alias('a')
+            ->join('mbs_customers c', 'a.customer_id = c.id', 'LEFT')
+            ->join('mbs_package p', 'a.package_id = p.package_id', 'LEFT')
+            ->field('a.*,c.phone,p.package_name')
+            ->where('customer_id', $customer_id)
+            ->where('a.status', 1)
+            ->order('create_time desc')
+            ->select();
+        $this->assign('xiaofeilist', $xiaofeilist);
+        $this->assign('tfxiaofeilist', $tfxiaofeilist);
+
+        $payway = Db::table('mbs_payway')
+            ->where('status',1)
+            ->where('paytype',3)
+            ->order('payway_id asc')
+            ->select();
+        $this->assign('payway', $payway);
+
+        return $this->view->fetch();
+    }
+
+    public function delxiaofei()
+    {
+        $id = intval($_POST['id']);
+        if ($id > 0) {
+
+            Db::startTrans();
+            $re = Db::table('mbs_xiaofei')
+                ->where('xiaofei_id', $id)
+                ->update(['status' => 0]);
+            $ifhave = Db::table('mbs_xfhuankuan')
+                ->where('xiaofei_id', $id)
+                ->where('status', 1)
+                ->select();
+
+            $re0 = Db::table('mbs_xfhuankuan')
+                ->where('xiaofei_id', $id)
+                ->update(['status' => 0]);
+            if ((empty($ifhave) && $re) || (!empty($ifhave) && $re && $re0)) {
+                Db::commit();
+                $data['code'] = 200;
+                $data['msg'] = "删除成功！";
+                return json_encode($data);
+            } else {
+                Db::rollback();
+                $data['code'] = 1;
+                $data['msg'] = "删除失败！";
+                return json_encode($data);
+            }
+        } else {
+            $data['code'] = -1;
+            $data['msg'] = '没有可操作的对象';
+            return json_encode($data);
+        }
+    }
+
+    public function addclean()
+    {
+        $id = intval($_POST['xf_id']);
+        $money = trim($_POST['owe']);
+        $payway_id = trim($_POST['payway_id']);
+        if (is_numeric($money)) {
+            $xfinfo = Db::table('mbs_xiaofei')
+                ->where('xiaofei_id', $id)
+                ->find();
+            $data['xiaofei_id'] = $id;
+            $data['payway_id'] = $payway_id;
+            $data['customer_id'] = $xfinfo['customer_id'];
+            $data['customer_name'] = $xfinfo['customer_name'];
+            $data['create_time'] = date('Y-m-d H:m:s', time());
+            if ($money >= $xfinfo['owe']) {
+                $data['clean'] = 1;
+                $data['owe'] = 0;
+                $data['huan_money'] = $money;
+                $udata['clean'] = 1;
+                $udata['owe'] = 0;
+            } else {
+                $data['clean'] = 2;
+                $data['owe'] = $xfinfo['owe'] - $money;
+                $data['huan_money'] = $money;
+                $udata['owe'] = $xfinfo['owe'] - $money;
+            }
+            $logdata['xf_id'] = $id;
+            $logdata['user_id'] = $_SESSION['UID'];
+            $logdata['customer_id'] = $xfinfo['customer_id'];
+            $logdata['logType'] = 4;
+            $logdata['logContent'] = '还款' . $money;
+            $logdata['money'] = $money;
+            $logdata['createTime'] = date('Y-m-d H:m:s', time());
+
+            Db::startTrans();
+
+            $re = Db::table('mbs_xiaofei')
+                ->where('xiaofei_id', $id)
+                ->update($udata);
+
+            $re1 = Db::table('mbs_xfhuankuan')
+                ->insert($data);
+            $re2 = Db::table('mbs_xiaofei_log')
+                ->insert($logdata);
+            if ($re && $re1 && $re2) {
+                Db::commit();//提交事务
+                $data['code'] = 200;
+                $data['msg'] = '操作成功';
+                if (($xfinfo['owe'] - $money) > 0) {
+                    $data['owe'] = $xfinfo['owe'] - $money;
+                } else {
+                    $data['owe'] = 0;
+                }
+                return json_encode($data);
+            } else {
+                Db::rollback();
+                $data['code'] = 0;
+                $data['msg'] = '操作失败';
+                return json_encode($data);
+            }
+
+        } else {
+            $data['code'] = 0;
+            $data['msg'] = '操作失败';
+            return json_encode($data);
+        }
+    }
+
+    public function payway()
+    {
+        $type = intval($_POST['type']);
+        if ($type == 1) {
+            //支付方式
+            $paymap['status'] = 1;
+            $paymap['paytype'] = 1;
+            $payway = Db::table('mbs_payway')
+                ->where($paymap)
+                ->order('payway_id asc')
+                ->select();
+            $data['code'] = 200;
+            $data['msg'] = 1;
+            $data['payway'] = $payway;
+            return json_encode($data);
+        } else if ($type == 2) {
+            $opaymap['status'] = 1;
+            $opaymap['paytype'] = 2;
+            $opayway = Db::table('mbs_payway')
+                ->where($opaymap)
+                ->order('payway_id asc')
+                ->select();
+            $data['code'] = 200;
+            $data['msg'] = 2;
+            $data['payway'] = $opayway;
+            return json_encode($data);
+        } else {
+            $data['code'] = 0;
+            $data['msg'] = '操作失败';
+            return json_encode($data);
+        }
+    }
+
+    public function changechain()
+    {
+        $chainid = intval($_POST['chainid']);
+        $config = config('group');
+        if ($chainid > 0) {
+
+            //门店技师
+            $jsmap['status'] = 1;
+            $jsmap['chain_id'] = $chainid;
+            $jsmap['user_group'] = $config['jishi'];
+
+            $jishi = Db::table('mbs_user')
+                ->where($jsmap)
+                ->order('id asc')
+                ->select();
+            $data['jishi'] = $jishi;
+
+            //门店诊疗项目
+            $pakmap['status'] = 1;
+            $package = Db::table('mbs_package')
+                ->where($pakmap)
+                ->where('find_in_set(' . $chainid . ',chain_id)')
+                ->order('package_id asc')
+                ->select();
+            $data['package'] = $package;
+
+            //门店前台
+            $reception = intval($config['reception']);
+            $remap['status'] = 1;
+            $remap['chain_id'] = $chainid;
+            $remap['user_group'] = $config['reception'];
+            $recelist = Db::table('mbs_user')
+                ->where($remap)
+                ->order('id asc')
+                ->select();
+            $data['reception'] = $recelist;
+
+            $data['code'] = 200;
+            $data['msg'] = '操作成功';
+            return json_encode($data);
+        } else {
+            $data['code'] = 0;
+            $data['msg'] = '无效的门店';
+            return json_encode($data);
+        }
+    }
+
     public function save_user()
     {
         $user_info_str = array_filter(explode(',', $_POST['user_info']));
@@ -185,6 +801,7 @@ class Customers extends Base
         $data['phone'] = $new['userphone'];
         $data['email'] = $new['useremail'];
         $data['address'] = $new['useraddress'];
+        $data['source_id'] = $new['sourceid'];
         $data['source_from'] = $new['sourcefrom'];
         if (isset($_GET['id']) && intval($_GET['id']) > 0) {
             $data['update_time'] = date('Y-m-d h:i:s', time());
@@ -256,7 +873,7 @@ class Customers extends Base
     public function save_server()
     {
         $server_id = 0;
-        if(isset($_POST['serid'])){
+        if (isset($_POST['serid'])) {
             $server_id = intval($_POST['serid']);
         }
 
@@ -270,7 +887,7 @@ class Customers extends Base
         foreach ($exdcusarr as $k => $v) {
             $exdcusinfo[substr($v, 0, strrpos($v, '*'))] = substr($v, strripos($v, "*") + 1);
         }
-        if(isset($_POST['cussrc']) && $_POST['cussrc']!=''){
+        if (isset($_POST['cussrc']) && $_POST['cussrc'] != '') {
             //图片
             $exdcusinfo['srcsource'] = $_POST['cussrc'];
         }
@@ -286,7 +903,8 @@ class Customers extends Base
         $addinfo['stains_cate'] = $_POST['stains_cate'];
 
         if ($server_id > 0) {
-            echo 1;die();
+            echo 1;
+            die();
             $addinfo['update_time'] = date('Y-m-d', time());
             //        启动事务
             Db::startTrans();

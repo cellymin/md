@@ -38,6 +38,14 @@ class Chain extends Model
             ->select();
         return $chains;
     }
+    public function getName($cid){
+        $chainname = Db::table('mbs_chain')
+            ->field('name')
+            ->where('status',1)
+            ->where('id',$cid)
+            ->find();
+        return $chainname;
+    }
 
 
 }

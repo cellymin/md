@@ -47,7 +47,7 @@
 <div class="sidebar-nav" style="background: #39435C;">
     <ul class="side-new">
         <li class="img-user">
-            <a class="" href="index.html"><span class="navbar-brand" style="color: #fff;line-height: 60px;padding:0;height: 60px;margin-left: 10px"><span
+            <a class="" href="{$Think.const.DQURL}"><span class="navbar-brand" style="color: #fff;line-height: 60px;padding:0;height: 60px;margin-left: 10px"><span
                     class="fa fa-paper-plane"></span> Miaoboshi </span></a>
         </li>
         <li class="img-user" style="background: #39435C;">
@@ -64,7 +64,7 @@
             <ul class=" {$v.module_name}-menu nav nav-list collapse {if condition='$k eq 1'} in {/if}">
                 {present name="$v.childli"}
                 {foreach $v.childli as $kk=>$vv }
-                <li><a href=" {$vv.menu_url}"><span class="fa fa-caret-right"></span> {$vv.menu_name}</a></li>
+                <li><a href=" {$Think.const.SITEURL}{$vv.menu_url}"><span class="fa fa-caret-right"></span> {$vv.menu_name}</a></li>
                 {/foreach}
                 {/present}
             </ul>
@@ -78,7 +78,7 @@
     <!--                class="fa fa-fw fa-dashboard"></i> Dashboard<i class="fa fa-collapse"></i></a></li>-->
     <!--        <li>-->
     <!--            <ul class="dashboard-menu nav nav-list collapse in">-->
-    <!--                <li><a href="index.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
+    <!--                <li><a href="day.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
     <!--                <li><a href="users.html"><span class="fa fa-caret-right"></span> User List</a></li>-->
     <!--                <li><a href="user.html"><span class="fa fa-caret-right"></span> User Profile</a></li>-->
     <!--                <li><a href="media.html"><span class="fa fa-caret-right"></span> Media</a></li>-->
@@ -143,11 +143,11 @@
 <!--    <ul>-->
 <!--        <li><a href="#" data-target=".dashboard-menu" class="nav-header" data-toggle="collapse"><i class="fa fa-fw fa-dashboard"></i> Dashboard<i class="fa fa-collapse"></i></a></li>-->
 <!--        <li><ul class="dashboard-menu nav nav-list collapse in">-->
-<!--            <li><a href="index.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
-<!--            <li><a href="index.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
-<!--            <li><a href="index.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
-<!--            <li><a href="index.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
-<!--            <li><a href="index.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
+<!--            <li><a href="day.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
+<!--            <li><a href="day.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
+<!--            <li><a href="day.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
+<!--            <li><a href="day.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
+<!--            <li><a href="day.html"><span class="fa fa-caret-right"></span> Main</a></li>-->
 <!--        </ul></li>-->
 <!--        <li><a href="#" data-target=".nini-menu" class="nav-header collapsed" data-toggle="collapse"><i class="fa fa-fw fa-briefcase"></i> Account <span class="label label-info">+3</span></a></li>-->
 <!--        <li><ul class="nini-menu nav nav-list collapse">-->

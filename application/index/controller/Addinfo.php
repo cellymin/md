@@ -18,5 +18,6 @@ class Addinfo extends Base {
         $this->assign('create_time',time());
         $this->assign('user_no',$no);
         return $this->view->fetch('template/addinfo.html');
+
     }
 }

@@ -46,10 +46,17 @@ class User extends Base
         }
         $map['status'] = 1;
 
-        $re = Db::table('mbs_user')
+
+        $total = Db::table('mbs_user')
             ->where($map)
-            ->select();
+            ->count();
+        $pagesize = 20;
+        Loader::import('page.Page', EXTEND_PATH, '.class.php');
+        $page = new \page($total, $pagesize);
+        $re = Db::query('SELECT * FROM mbs_user WHERE status=1 ORDER BY id ASC '.$page->limit);
         $this->assign('userlist', $re);
+        $down_page = $page->fpage();
+        $this->assign('page', $down_page);
 
         return $this->view->fetch();
     }
@@ -63,8 +70,7 @@ class User extends Base
                 ->find();
             $this->assign('userinfo', $userinfo);
         }
-//        echo '<pre/>';
-//        var_dump($userinfo);die();
+
         $chain_list = $this->chain_list();
         $group_list = $this->group_list();
         $user_grade = $this->get_grade();
@@ -133,7 +139,6 @@ class User extends Base
 
         if (isset($_GET['id']) && intval($_GET['id']) > 0) {
             $data['update_time'] = date('Y-m-d h:i:s', time());
-
 
             $re = Db::table('mbs_user')
                 ->where('id', intval($_GET['id']))

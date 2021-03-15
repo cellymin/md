@@ -20,7 +20,12 @@ class Payway extends Base
 
     public function index()
     {
-        $paytype = intval($_GET['paytype']);
+        if(isset($_GET['paytype'])){
+            $paytype = intval($_GET['paytype']);
+        }else{
+            $paytype = 0;
+        }
+
 
         $map = array();
         $where = '';

@@ -33,40 +33,59 @@ class Customers extends Base
             //总院长
             $this->assign('sign', 1);
         }
+        $chain = Db::table('mbs_chain')
+            ->where('status', 1)
+            ->select();
+        $chainlist = array();
+        foreach ($chain as $k => $v) {
+            $chainlist[$v['id']] = $v;
+        }
+        $this->assign('chain', $chain);
         $map = array();
         $ormap = array();
+        $where = '';
+        $orwhere = '';
 
 //        if (!empty($_GET['name'])) {
 //            $map['o.chain_name'] = ['like', '%' . $_GET['chain_name'] . '%'];
 //        }
+        if (!empty($_GET['chain_id']) && intval($_GET['chain_id']) > 0) {
+            $map['a.chain_id'] = intval($_GET['chain_id']);
+            $where = ' AND a.chain_id=\'' . intval($_GET['chain_id']) . '\' ';
+            $this->assign('cid', intval($_GET['chain_id']));
+        }
         if (!empty($_GET['keywords'])) {
             $ormap['a.name'] = ['like', '%' . $_GET['keywords'] . '%'];
-        }
-        if (!empty($_GET['keywords'])) {
             $ormap['a.phone'] = ['like', '%' . $_GET['keywords'] . '%'];
-        }
-        if (!empty($_GET['keywords'])) {
             $ormap['o.server_no'] = ['like', '%' . $_GET['keywords'] . '%'];
+            $ormap['o.server_name'] = ['like', '%' . $_GET['keywords'] . '%'];
+            $orwhere .= ' AND (a.name LIKE \'%' . $_GET['keywords'] . '%\' OR a.phone LIKE \'%' . $_GET['keywords'] . '%\'  OR o.server_no LIKE \'%' . $_GET['keywords'] . '%\'  OR o.server_name LIKE \'%' . $_GET['keywords'] . '%\') ';
         }
         if (!empty($_GET['create_time'])) {
             $create_time = strtotime($_GET['create_time']);
             $star_t = date('Y-m-d 00:00:00', $create_time);
             $end_t = date('Y-m-d 23:59:59', $create_time);
             $map['o.create_time'] = ['between time', [$star_t, $end_t]];
-        }
-        if (!empty($_GET['keywords'])) {
-            $ormap['o.server_name'] = ['like', '%' . $_GET['keywords'] . '%'];
+            $where = ' AND o.create_time>\'' . $star_t . '\' AND o.create_time<\'' . $end_t . '\' ';
         }
         $map['a.status'] = 1;
-        $re = Db::table('mbs_customers')
+        $pagesize = 20;
+        Loader::import('page.Page', EXTEND_PATH, '.class.php');
+
+        $total = Db::table('mbs_customers')
             ->alias('a')
             ->join('mbs_all_assessment o', 'a.id=o.customer_id', 'LEFT')
-            ->field('a.*,o.id sid,o.status ostatus,o.server_id ser_id')
+//            ->field('a.*,o.id sid,o.status ostatus,o.server_id ser_id')
             ->whereOr($ormap)
             ->where($map)
-            ->order('id')
-            ->select();
-
+            ->count();
+        $page = new \page($total, $pagesize);
+        $re = Db::query('SELECT a.*,o.id sid,o.status ostatus,o.server_id ser_id FROM mbs_customers AS a LEFT JOIN mbs_all_assessment AS o ON a.id=o.customer_id 
+WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
+        $down_page = $page->fpage();
+        $this->assign('page', $down_page);
+        $cusno = [];
+        $ree = [];
         foreach ($re as $k => $v) {
             $cusno[] = $v['id'];
             $ree[$v['id']] = $v;
@@ -112,6 +131,14 @@ class Customers extends Base
                 ->find();
             $this->assign('userinfo', $userinfo);
         }
+        $chain = Db::table('mbs_chain')
+            ->where('status', 1)
+            ->select();
+        $chainlist = array();
+        foreach ($chain as $k => $v) {
+            $chainlist[$v['id']] = $v;
+        }
+        $this->assign('chain', $chain);
         return $this->view->fetch();
     }
 
@@ -142,6 +169,114 @@ class Customers extends Base
         }
     }
 
+    public function custfp()
+    {
+        $custidsstr = trim($_POST['custids']);
+        $oldchain = intval($_POST['oldchain']);
+        $newchain = intval($_POST['newchain']);
+        $sign = intval($_POST['sign']);
+        $chain = Db::table('mbs_chain')
+            ->where('status', 1)
+            ->select();
+        $chainlist = array();
+        foreach ($chain as $k => $v) {
+            $chainlist[$v['id']] = $v;
+        }
+        if (strlen($custidsstr) == 0 && $sign == 2) {
+            //批量迁移同店全部顾客
+
+            Db::startTrans();
+            try {
+                $re1 = Db::table('mbs_customers')
+                    ->where('status', 1)
+                    ->update(['chain_id' => $newchain]);
+
+                $logdata['user_id'] = $_SESSION['UID'];
+                $logdata['customer_id'] = $custidsstr;
+                $logdata['logType'] = '分配门店';
+                $logdata['logContent'] = '将全部客户从' . $chainlist[$oldchain]['name'] . '分配至' . $chainlist[$newchain]['name'];
+                $logdata['createTime'] = date('Y-m-d H:i:s');
+                $logdata['status'] = 1;
+                $re2 = Db::table('mbs_caozuo_log')
+                    ->insert($logdata);
+
+                if ($re1 && $re2) {
+                    Db::commit();//提交事务
+                    unset($data);
+                    $data['code'] = 200;
+                    $data['msg'] = '保存成功';
+                    return json_encode($data);
+                } else {
+                    Db::rollback();//回滚事务
+                    unset($data);
+                    $data['code'] = 0;
+                    $data['msg'] = '保存失败';
+                    return json_encode($data);
+                }
+            } catch (\Exception $e) {
+                Db::rollback();//回滚事务
+                unset($data);
+                $data['code'] = 0;
+                $data['msg'] = '保存失败';
+                return json_encode($data);
+            }
+        } else {
+            //一个或多个同店顾客分配
+            if (strlen($custidsstr) == 0) {
+                $data['code'] = 0;
+                $data['msg'] = '操作客户不能为空';
+                return json_encode($data);
+            }
+            Db::startTrans();
+            try {
+                $re = Db::table('mbs_customers')
+                    ->field('chain_id')
+                    ->where(' id in(' . $custidsstr . ') ')
+                    ->group('chain_id')
+                    ->select();
+                if (count($re) > 1) {
+                    Db::rollback();//回滚事务
+                    unset($data);
+                    $data['code'] = 0;
+                    $data['msg'] = '只能操作一家门店';
+                    return json_encode($data);
+                }
+                $re1 = Db::table('mbs_customers')
+                    ->where(' id in(' . $custidsstr . ') ')
+                    ->update(['chain_id' => $newchain]);
+
+                $logdata['user_id'] = $_SESSION['UID'];
+                $logdata['customer_id'] = $custidsstr;
+                $logdata['logType'] = '分配门店';
+                $logdata['logContent'] = '将客户' . $custidsstr . '从' . $chainlist[$oldchain]['name'] . '分配至' . $chainlist[$newchain]['name'];
+                $logdata['createTime'] = date('Y-m-d H:i:s');
+                $logdata['status'] = 1;
+                $re2 = Db::table('mbs_caozuo_log')
+                    ->insert($logdata);
+
+                if ($re1 && $re2) {
+                    Db::commit();//提交事务
+                    unset($data);
+                    $data['code'] = 200;
+                    $data['msg'] = '保存成功';
+                    return json_encode($data);
+                } else {
+                    Db::rollback();//回滚事务
+                    unset($data);
+                    $data['code'] = 0;
+                    $data['msg'] = '保存失败';
+                    return json_encode($data);
+                }
+            } catch (\Exception $e) {
+                Db::rollback();//回滚事务
+                unset($data);
+                $data['code'] = 0;
+                $data['msg'] = '保存失败';
+                return json_encode($data);
+            }
+        }
+    }
+
     public function addserver()
     {
         $id = intval($_GET['id']);
@@ -167,9 +302,6 @@ class Customers extends Base
         $cusinfo = Db::table('mbs_customers')
             ->where('id', $id)
             ->find();
-//        echo '<pre/>';
-//        var_dump($cusinfo);
-//        die();
         $this->assign('cusinfo', $cusinfo);
         $no = getuser_no();
         $this->assign('create_time', time());
@@ -470,7 +602,7 @@ class Customers extends Base
                 Db::startTrans();
                 try {
                     //添加退费
-
+                    $dataxf['create_time'] = date('Y-m-d H:m:s', time());
                     $re = Db::table('mbs_tuifei')
                         ->insert($dataxf);
                     //操作日志
@@ -578,25 +710,25 @@ class Customers extends Base
             ->join('mbs_customers c', 'a.customer_id = c.id', 'LEFT')
             ->join('mbs_package p', 'a.package_id = p.package_id', 'LEFT')
             ->field('a.*,c.phone,p.package_name')
-            ->where('customer_id', $customer_id)
+            ->where('a.customer_id', $customer_id)
             ->where('a.status', 1)
-            ->order('create_time desc')
+            ->order('a.create_time desc')
             ->select();
         $tfxiaofeilist = Db::table('mbs_tuifei')
             ->alias('a')
             ->join('mbs_customers c', 'a.customer_id = c.id', 'LEFT')
             ->join('mbs_package p', 'a.package_id = p.package_id', 'LEFT')
             ->field('a.*,c.phone,p.package_name')
-            ->where('customer_id', $customer_id)
+            ->where('a.customer_id', $customer_id)
             ->where('a.status', 1)
-            ->order('create_time desc')
+            ->order('a.create_time desc')
             ->select();
         $this->assign('xiaofeilist', $xiaofeilist);
         $this->assign('tfxiaofeilist', $tfxiaofeilist);
 
         $payway = Db::table('mbs_payway')
-            ->where('status',1)
-            ->where('paytype',3)
+            ->where('status', 1)
+            ->where('paytype', 3)
             ->order('payway_id asc')
             ->select();
         $this->assign('payway', $payway);
@@ -803,6 +935,7 @@ class Customers extends Base
         $data['address'] = $new['useraddress'];
         $data['source_id'] = $new['sourceid'];
         $data['source_from'] = $new['sourcefrom'];
+        $data['chain_id'] = $new['chainid'];
         if (isset($_GET['id']) && intval($_GET['id']) > 0) {
             $data['update_time'] = date('Y-m-d h:i:s', time());
             //启动事务
@@ -901,10 +1034,9 @@ class Customers extends Base
         $addinfo['health'] = $_POST['health'];
         $addinfo['freckle_experience'] = $_POST['freckle_experience'];
         $addinfo['stains_cate'] = $_POST['stains_cate'];
-
+        $addinfo['customer_sign'] = $_POST['customer_sign'];
+        $addinfo['dean_sign'] = $_POST['dean_sign'];
         if ($server_id > 0) {
-            echo 1;
-            die();
             $addinfo['update_time'] = date('Y-m-d', time());
             //        启动事务
             Db::startTrans();

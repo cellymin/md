@@ -212,7 +212,6 @@ class Tongji extends Base
         $tuitotal = 0;
 
         $tuifeilist = Db::query('SELECT total_money tuifei,tuifei_id,customer_id,payway_id xfpayway_id,firvisit,jishi_id,jishi_name,serchain_id,xfchain_id FROM mbs_tuifei WHERE status=1 ' . $tfwhere . ' ORDER BY customer_id ASC');
-
         foreach ($tuifeilist as $k => $v) {
             if ($v['tuifei'] > 0) {
                 $tuitotal = $tuitotal + $v['tuifei'];

@@ -19,10 +19,11 @@
     <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
     <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
     <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}xiaofei.css">
     <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}commonindex.css">
-
 </head>
 <body class=" theme-blue">
+
 
 <!-- Demo page code -->
 
@@ -41,6 +42,7 @@
 
     });
 </script>
+
 <script type="text/javascript">
     $(function() {
         var uls = $('.sidebar-nav > ul > *').clone();
@@ -53,35 +55,101 @@
 <!--After purchasing a premium license, the full source code will be available for download.-->
 
 {include file="template/sidebar.html"}
+
+<style>
+
+    .sousuo {
+        clear: both;
+        height: 40px;
+        min-width: 360px;
+        margin: 0px auto;
+        margin-bottom: 10px;
+    }
+
+    .sousuo .sousuo_form {
+        width: 240px;
+        margin: 5px 5px;
+        float: left;
+    }
+
+    .add_user {
+        cursor: pointer;
+        font-size: 16px;
+        width: 100px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        height: 3px;
+        border-top: none;
+    }
+
+    .sousuo .form_sub {
+
+    }
+    .sousuo .form_sub input{
+        width:245px;
+        height: 30px;
+        border: 1px solid #ccc;
+    }
+    .sousuo .form_sub:focus {
+        outline: none;
+        border-color: #ccc;
+        box-shadow: 0 0 10px #ccc;
+    }
+
+    .sousuo .confirm_sub {
+        clear: both;
+    }
+
+    .sousuo .confirm_sub b{
+        height: 30px;
+        color: #333;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    .sousuo .confirm_sub p span {
+        background: #ccc;
+        width: 80px;
+        letter-spacing: 1px;
+        padding: 0 5px;
+        text-align: center;
+        margin: 20px 10px;
+    }
+
+    .caozuo {
+        cursor: pointer;
+    }
+    .anniu{
+        width: 83%;
+        min-width: 360px;
+        margin: 0 auto;
+    }
+    .sousuo_form .suosou_btn{
+        height: 30px;
+        line-height: 30px;
+        letter-spacing: 5px;
+
+    }
+</style>
 <div class="content">
     {include file="template/navbar.html"}
     <div class="sousuo" >
         <form action="" method="get">
             <div class="form_sub">
-                <!--                <div class="sousuo_form">-->
-                <!--                    门店： <input type="text" name="chain_name">-->
-                <!--                </div>-->
+<!--                <div class="sousuo_form">-->
+<!--                    门店： <input type="text" name="chain_name">-->
+<!--                </div>-->
                 <div class="sousuo_form">
-                     <span>
-                           <select style="" class="chain_id" name="chain_id" autocomplete="off">
-                                <option value="" >请选择门店
-                               </option>
-                               {foreach $chain as $k }
-                               <option value="{$k.id}" {if condition="(isset($cid) && $k.id == $cid)" } selected {/if}>{$k.name}
-                               </option>
-                               {/foreach}
-                           </select>
-                     </span>
+                  <input type="text" value="{$Think.get.keywords}" name="keywords" autocomplete="off" placeholder="请输入名称/编号" >
                 </div>
-                <div class="sousuo_form">
-                    <input type="text" value="{$Think.get.keywords}" name="keywords" autocomplete="off" placeholder="请输入名称/编号" >
-                </div>
-                <!--                <div class="sousuo_form">-->
-                <!--                    电话：<br/><input type="text" value="{$Think.get.phone}" name="phone" autocomplete="off">-->
-                <!--                </div>-->
-                <!--                <div class="sousuo_form">-->
-                <!--                    订单编号：<br/><input type="text" value="{$Think.get.server_no}" name="server_no" autocomplete="off">-->
-                <!--                </div>-->
+<!--                <div class="sousuo_form">-->
+<!--                    电话：<br/><input type="text" value="{$Think.get.phone}" name="phone" autocomplete="off">-->
+<!--                </div>-->
+<!--                <div class="sousuo_form">-->
+<!--                    订单编号：<br/><input type="text" value="{$Think.get.server_no}" name="server_no" autocomplete="off">-->
+<!--                </div>-->
                 <div class="sousuo_form">
                      <span id='date'>
 			                  <input type="text" value="{$Think.get.create_time}" class="user_birth" name="create_time" placeholder="点击选择时间" id='inputdate' autocomplete="off" />
@@ -90,12 +158,14 @@
                 <div class="sousuo_form" style="width: 80px;text-align: center;margin-left: 10px;background: #39435C;color: #fff;cursor:pointer; ">
                     <span class="suosou_btn" onclick="onconfirm();">搜索</span>
                 </div>
-                <!--                <div class="sousuo_form">-->
-                <!--                    技师名称：<br/><input type="text" value="{$Think.get.server_name}" name="server_name" autocomplete="off">-->
-                <!--                </div>-->
+<!--                <div class="sousuo_form">-->
+<!--                    技师名称：<br/><input type="text" value="{$Think.get.server_name}" name="server_name" autocomplete="off">-->
+<!--                </div>-->
             </div>
         </form>
+
     </div>
+
     <div class="main-content" style="clear: both;margin-top: 10px;">
         <!--                <h1 class="page">用户列表</h1>-->
         <div class="row">
@@ -107,7 +177,7 @@
                 <table class="dataintable table">
                     <thead>
                     <tr>
-                        <th style="width: 50px;">序号</th>
+                        <th style="width: 50px;"></th>
                         <th>姓名</th>
                         <th>创建时间</th>
                         <th>来源</th>
@@ -120,7 +190,7 @@
                     <tbody>
                     {foreach $userlist as $k }
                     <tr>
-                        <td><input type="checkbox" value="{$k.id}" class="custid" name="custid" chainid="{$k.chain_id}"></td>
+                        <td></td>
                         <td>
                             {if condition="($k.name != '') "} {$k.name}
                             {elseif condition="$k.nickname !='' "/}{$k.nickname}
@@ -151,7 +221,7 @@
                             {if condition="(isset($sign) && ($sign == '1' || $sign == '2') || $k.ser_id == $uid)"}
                             <span onclick="addxiaofei(this);" attrid="{$k.id}"> 添加 |</span>
                             {/if}
-                            <a href="{$Think.const.DQURL}index/customers/viewxiaofei?id={$k.id}" attrid="{$k.id}" target="_brank"> 查看</a>
+                            <a href="{$Think.const.DQURL}index/customers/viewxiaofei?id={$k.id}" attrid="{$k.id}"> 查看</a>
                         </td>
                         <td>
                             <span class="text-sm" style="margin-left: 10px"> <a href="javascript:void(0)"
@@ -167,67 +237,11 @@
                     {/foreach}
                     </tbody>
                 </table>
-                <table style="margin-left: 2%" align="left">
-                    <tr>
-                        <td style="padding-bottom: 8px;">
-                            {$page}
-
-                        </td>
-                        <td class="fenpei" style="padding-bottom: 8px;">
-                            <span onclick="custfp();">分配</span>
-                            <span onclick="custfp('all')">一键分配</span>
-                        </td>
-                    </tr>
-                </table>
             </div>
         </div>
-    </div>
-</div>
-<div class="layui-layer-shade" style="z-index:19891019; background:url({$Think.const.IMG_URL}/kong.png); display:none;" id="xiugaiyynn">
-    <div class="layui-layer layui-anim layui-layer-page layer-ext-moon" style="z-index: 19891020; width:310px; height:250px; left:50%; margin-left:-155px;">
-        <div class="layui-layer-title" style="cursor: move;">分配门店</div>
-        <div class="layui-layer-content">
-            <div class="animated">
-                <!--                <form action="__URL__/managexf" method="post" class="form-horizontal">-->
-                <div class="ibox float-e-margins" style="margin-bottom:0px;">
-                    <div class="ibox-content" style="width: 98%; margin: 5px auto;">
-                        <div class="input-group m-b" style="margin-bottom:5px;"><span class="input-group-addon">原门店</span>
-                            <input type="hidden" name="custids" value="" class="custids">
-                            <input type="hidden" name="oldchainid" value="" class="oldchainid">
-                            <select style="" class="oldchain form-control" name="oldchain" autocomplete="off" disabled="disabled">
-                                <option value="" >请选择门店
-                                </option>
-                                {foreach $chain as $k }
-                                <option value="{$k.id}">{$k.name}
-                                </option>
-                                {/foreach}
-                            </select>
-                        </div>
-                        <div class="input-group m-b" style="margin-bottom:5px;"><span class="input-group-addon">新门店</span>
-                            <select style="" class="newchain form-control" name="newchain" autocomplete="off">
-                                <option value="" selected>请选择门店
-                                </option>
-                                {foreach $chain as $k }
-                                <option value="{$k.id}">{$k.name}
-                                </option>
-                                {/foreach}
-                            </select>
-                        </div>
-                        <div class="form-group" align="center" style="margin-bottom:5px;min-width: 300px">
-                            <p style="background: #29b578; width: 9rem; height: 3rem; line-height: 3rem; color: #fff;  letter-spacing: 1px;margin-top: 1rem;"><sapn style="cursor: pointer;" class="confirmbtn" sign="1" onclick="confirmfp();">确定修改</sapn></p>
-                        </div>
-                    </div>
-                </div>
-                <!--                </form>-->
-            </div>
-        </div>
-        <span class="layui-layer-setwin" id="xiugaiyyxx"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a></span>
     </div>
 </div>
 <script>
-    $('#xiugaiyyxx').on('click', function(){
-        $('#xiugaiyynn').hide()
-    });
     var d = new DateJs({
         inputEl: '#inputdate',
         el: '#date'
@@ -240,7 +254,7 @@
                 type: 2,
                 title: '编辑用户',
                 maxmin: true,
-                area: ['50%', '70%'],
+                area: ['85%', '70%'],
                 content: '{$Think.const.DQURL}index/customers/edituser?id=' + id
             });
         });
@@ -253,7 +267,7 @@
                 type: 2,
                 title: '祛斑跟踪表',
                 maxmin: true,
-                area: ['60%', '90%'],
+                area: ['85%', '90%'],
                 content: '{$Think.const.DQURL}index/customers/addserver?id=' + id
             })
         })
@@ -377,97 +391,8 @@
         } else {
             return false;
         }
-    }
-    function custfp(sign) {
-        if(sign=='all'){
-            $('.oldchainid').val('');
-            $('.custids').val('');
-            $('.oldchain').removeAttr('disabled');
-            $('.confirmbtn').attr('sign',2)
-        }else{
-            var getchain = getUrlParam('chain_id');
-            var sschain_id =$(".chain_id").val();
-            var custids = new Array();
-            var chainid = new Array();
-            $("input[name='custid']:checked").each(function(i){
-                custids[i] = Number($(this).val());
-                chainid[i] = Number($(this).attr('chainid'));
-            })
-            if(custids.length==0){
-                alert('请至少选择一个操作对象！');
-                return false;
-            }
-            if(custids.length>1){
-                //选择不止一个客户，要先选择门店
-                if(getchain == null || getchain == undefined || getchain == '' || sschain_id == null || sschain_id == undefined || sschain_id == ''){
-                    alert('请选选择门店！');
-                    return false;
-                }
-            }
-            $('.custids').val(custids);
-            if(custids.length==1 && chainid.length==1){
-                $('.oldchainid').val(chainid[0]);
-            }else{
-                $('.oldchainid').val(getchain);
-            }
-
-            var oldchainid = parseInt($('.oldchainid').val());
-            if(!(oldchainid>0)){
-                alert('门店无效，请重新选择！');
-                return  false;
-            }
-            $('.oldchain').attr('disabled','disabled');
-            $('.confirmbtn').attr('sign',1)
-            $(".oldchain").find("option[value="+oldchainid+"]").attr("selected",true);
-            $(".newchain").find("option[value="+oldchainid+"]").css('display','none');
-        }
-        $('#xiugaiyynn').show()
 
 
-    }
-    function confirmfp() {
-        var sign = parseInt($('.confirmbtn').attr('sign'));
-        var oldchain = parseInt($('.oldchain').val());
-        var oldchainname = ($('.oldchain').find("option:selected").text()).trim().replace(/\s/g, "");
-        var newchain = parseInt($('.newchain').val());
-        var newchainname = ($('.newchain').find("option:selected").text()).trim().replace(/\s/g, "");
-        var custids = $('.custids').val().trim().replace(/\s/g, "")
-        if(sign==2){
-            var msg = "确认将"+oldchainname+"全部客户分配至"+newchainname+"？\n\n请确认！";
-        }else{
-            var msg = "确定重新分配客户？\n\n请确认！";
-        }
-
-        if (confirm(msg) == true) {
-            $.ajax({
-                url: '{$Think.const.DQURL}index/customers/custfp',// 获取自己系统后台用户信息接口
-                data: {"oldchain": oldchain,"newchain":newchain,"custids":custids,"sign":sign},
-                type: "POST",
-                dataType: "json",
-                success: function (data) {
-                    if (data) {
-                        var data = JSON.parse(data);
-                        if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
-                            window.location.reload();
-                        } else {
-                            alert(data.msg);
-                            return false;
-                        }
-                    }
-                },
-                error: function (data) {
-                    $(e).removeAttr('disabled');
-                    console.log(data.message);
-                }
-            });
-        } else {
-            return false;
-        }
-    }
-    function getUrlParam(name) {
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-        var r = window.location.search.substr(1).match(reg); //匹配目标参数
-        if (r != null) return unescape(r[2]); return null; //返回参数值
     }
 </script>
 {include file="template/footer.html"}

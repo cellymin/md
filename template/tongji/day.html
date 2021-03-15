@@ -20,9 +20,9 @@
     <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
     <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
     <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
-    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}xiaofei.css">
     <link rel="stylesheet" href="{$Think.const.CSS_URL}other.css">
     <script src="{$Think.const.JS_URL}other.js"></script>
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}commonindex.css">
 </head>
 <body class=" theme-blue">
 
@@ -44,44 +44,6 @@
 
     });
 </script>
-<style type="text/css">
-    #line-chart {
-        height: 300px;
-        width: 800px;
-        margin: 0px auto;
-        margin-top: 1em;
-    }
-
-    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
-        color: #fff;
-    }
-
-    .main-content {
-        clear: both;
-        width: 100%;
-        margin: 0px auto;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        background: #fff;
-    }
-
-    .content .main-content .col-md-offset-1 {
-        width: 100%;
-        margin-left: 0px;
-    }
-
-    .main-content .page {
-        margin-top: 0px;
-        margin-block-start: 0;
-        margin-block-end: 0;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-        text-align: left;
-        margin-left: 15px;
-        color: #333;
-    }
-</style>
-
 <script type="text/javascript">
     $(function () {
         var uls = $('.sidebar-nav > ul > *').clone();
@@ -96,86 +58,6 @@
 {include file="template/sidebar.html"}
 
 <style>
-
-    .sousuo {
-        clear: both;
-        height: 40px;
-        min-width: 360px;
-        margin: 0px auto;
-        margin-bottom: 10px;
-    }
-
-    .sousuo .sousuo_form {
-        width: 240px;
-        margin: 5px 5px;
-        float: left;
-    }
-
-    .add_user {
-        cursor: pointer;
-        font-size: 16px;
-        width: 100px;
-        height: 20px;
-        line-height: 20px;
-        text-align: center;
-        height: 3px;
-        border-top: none;
-    }
-
-    .sousuo .form_sub {
-
-    }
-
-    .sousuo .form_sub input, .sousuo .form_sub select {
-        width: 245px;
-        height: 30px;
-        border: 1px solid #ccc;
-    }
-
-    .sousuo .form_sub:focus, .sousuo .form_sub select:focus {
-        outline: none;
-        border-color: #ccc;
-        box-shadow: 0 0 10px #ccc;
-    }
-
-    .sousuo .confirm_sub {
-        clear: both;
-    }
-
-    .sousuo .confirm_sub b {
-        height: 30px;
-        color: #333;
-        font-size: 16px;
-        margin-top: 10px;
-        cursor: pointer;
-    }
-
-    .sousuo .confirm_sub p span {
-        background: #ccc;
-        width: 80px;
-        letter-spacing: 1px;
-        padding: 0 5px;
-        text-align: center;
-        margin: 20px 10px;
-    }
-
-    .caozuo {
-        cursor: pointer;
-    }
-
-    .anniu {
-        width: 83%;
-        min-width: 360px;
-        margin: 0 auto;
-    }
-
-    .sousuo_form .suosou_btn {
-        height: 30px;
-        line-height: 30px;
-        letter-spacing: 5px;
-
-    }
-
     .main-content .row .col-md-10 .dataintable {
         text-align: center;
         border: 1px solid #211d1d;
@@ -472,7 +354,7 @@
                     </tr>
                     <tr class="hjsec" style="font-weight: 600">
                         <td colspan="4">当日退款</td>
-                        <td colspan="4" class="daytk">{$$tuitotal ?? 0}</td>
+                        <td colspan="4" class="daytk">{$tuitotal ?? 0}</td>
                         <td colspan="4">当日还款</td>
                         <td  colspan="4" class="dayhk" >0</td>
                         <td colspan="4">当日消费汇总</td>
@@ -522,7 +404,7 @@
                     </tr>
                     {if condition="(isset($jishi))"}
                     {foreach $jishi as $k }
-                    {if condition="(isset($yejilist[$k.id]['package']))"}
+                    {if condition="(isset($yejilist[$k.id]))"}
                     <tr class="mrssec">
                         <td colspan="4">{$k.job_name}</td>
                         <td colspan="4">{$k.name}</td>
@@ -608,7 +490,7 @@
                     var fangshi = all.substring(0,all.length-3);
                     if(fangshi.substring(0,2) == 'xf'){
                        if(Number($(this).text())==0){
-                           console.log(fangshi);
+                           // console.log(fangshi);
                            $('.'+fangshi).remove();
                            $('.'+fangshi+'all').remove();
                            $('.'+fangshi+'all').remove();
@@ -617,7 +499,7 @@
                     }
                     else if(fangshi.substring(0,2) == 'jd'){
                         if(Number($(this).text())==0){
-                            console.log(fangshi);
+                            // console.log(fangshi);
                             $('.'+fangshi).remove();;
                             $('.'+fangshi+'all').remove();
                             $('.'+fangshi+'all').remove();
@@ -626,7 +508,7 @@
                     }
                     else if(fangshi.substring(0,2) == 'hk'){
                         if(Number($(this).text())==0){
-                            console.log(fangshi);
+                            // console.log(fangshi);
                             $('.'+fangshi).remove();
                             $('.'+fangshi+'all').remove();
                             $('.'+fangshi+'all').remove();
@@ -655,6 +537,7 @@
         if(i<=14 && j<5 && k<=6) {
             $('.firtr td').attr('colspan',35-i-j-k);
         }
+        console.log(i+k+j);
         if(i+j+k<=4){
             $('.hjfir').children().eq(0).attr('colspan',5-i-j-k);
             $('.hjthr').children().eq(0).attr('colspan',30-i-j-k);
@@ -671,21 +554,20 @@
             var b = a%8;
             //取整
             var c = parseInt(a/8)
-            console.log(a+' '+b+' '+c);
             if(c==0){
                 for(var l =0;l<b;l++){
                     var dd =  $('.hjfir').children().eq(l+1);
                     dd.attr('colspan',Number(dd.attr('colspan'))-1);
                     var kk = $('.hjsec').children().eq(l);
                     kk.attr('colspan',Number(kk.attr('colspan'))-1);
-                    $('.mrssec').each(function () {
-                        var ll = $(this).children().eq(l);
-                        ll.attr('colspan',Number(ll.attr('colspan'))-1);
-                    })
                     var hh =  $('.mrsfir').children().eq(l+1);
                     hh.attr('colspan',Number(hh.attr('colspan'))-1);
                     var tt =  $('.mryfir').children().eq(l+1);
                     tt.attr('colspan',Number(tt.attr('colspan'))-1);
+                    $('.mrssec').each(function () {
+                        var ll = $(this).children().eq(l);
+                        ll.attr('colspan',Number(ll.attr('colspan'))-1);
+                    })
                 }
             }else{
                 for(var l =0;l<b;l++){

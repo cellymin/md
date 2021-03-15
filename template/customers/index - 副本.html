@@ -120,7 +120,7 @@
                     <tbody>
                     {foreach $userlist as $k }
                     <tr>
-                        <td><input type="checkbox" value="{$k.id}" class="custid" name="custid" chainid="{$k.chain_id}"></td>
+                        <td><input type="checkbox" value="{$k.id}" class="custid" name="custid"></td>
                         <td>
                             {if condition="($k.name != '') "} {$k.name}
                             {elseif condition="$k.nickname !='' "/}{$k.nickname}
@@ -151,7 +151,7 @@
                             {if condition="(isset($sign) && ($sign == '1' || $sign == '2') || $k.ser_id == $uid)"}
                             <span onclick="addxiaofei(this);" attrid="{$k.id}"> 添加 |</span>
                             {/if}
-                            <a href="{$Think.const.DQURL}index/customers/viewxiaofei?id={$k.id}" attrid="{$k.id}" target="_brank"> 查看</a>
+                            <a href="{$Think.const.DQURL}index/customers/viewxiaofei?id={$k.id}" attrid="{$k.id}"> 查看</a>
                         </td>
                         <td>
                             <span class="text-sm" style="margin-left: 10px"> <a href="javascript:void(0)"
@@ -175,7 +175,7 @@
                         </td>
                         <td class="fenpei" style="padding-bottom: 8px;">
                             <span onclick="custfp();">分配</span>
-                            <span onclick="custfp('all')">一键分配</span>
+                            <span>一键分配</span>
                         </td>
                     </tr>
                 </table>
@@ -183,51 +183,7 @@
         </div>
     </div>
 </div>
-<div class="layui-layer-shade" style="z-index:19891019; background:url({$Think.const.IMG_URL}/kong.png); display:none;" id="xiugaiyynn">
-    <div class="layui-layer layui-anim layui-layer-page layer-ext-moon" style="z-index: 19891020; width:310px; height:250px; left:50%; margin-left:-155px;">
-        <div class="layui-layer-title" style="cursor: move;">分配门店</div>
-        <div class="layui-layer-content">
-            <div class="animated">
-                <!--                <form action="__URL__/managexf" method="post" class="form-horizontal">-->
-                <div class="ibox float-e-margins" style="margin-bottom:0px;">
-                    <div class="ibox-content" style="width: 98%; margin: 5px auto;">
-                        <div class="input-group m-b" style="margin-bottom:5px;"><span class="input-group-addon">原门店</span>
-                            <input type="hidden" name="custids" value="" class="custids">
-                            <input type="hidden" name="oldchainid" value="" class="oldchainid">
-                            <select style="" class="oldchain form-control" name="oldchain" autocomplete="off" disabled="disabled">
-                                <option value="" >请选择门店
-                                </option>
-                                {foreach $chain as $k }
-                                <option value="{$k.id}">{$k.name}
-                                </option>
-                                {/foreach}
-                            </select>
-                        </div>
-                        <div class="input-group m-b" style="margin-bottom:5px;"><span class="input-group-addon">新门店</span>
-                            <select style="" class="newchain form-control" name="newchain" autocomplete="off">
-                                <option value="" selected>请选择门店
-                                </option>
-                                {foreach $chain as $k }
-                                <option value="{$k.id}">{$k.name}
-                                </option>
-                                {/foreach}
-                            </select>
-                        </div>
-                        <div class="form-group" align="center" style="margin-bottom:5px;min-width: 300px">
-                            <p style="background: #29b578; width: 9rem; height: 3rem; line-height: 3rem; color: #fff;  letter-spacing: 1px;margin-top: 1rem;"><sapn style="cursor: pointer;" class="confirmbtn" sign="1" onclick="confirmfp();">确定修改</sapn></p>
-                        </div>
-                    </div>
-                </div>
-                <!--                </form>-->
-            </div>
-        </div>
-        <span class="layui-layer-setwin" id="xiugaiyyxx"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a></span>
-    </div>
-</div>
 <script>
-    $('#xiugaiyyxx').on('click', function(){
-        $('#xiugaiyynn').hide()
-    });
     var d = new DateJs({
         inputEl: '#inputdate',
         el: '#date'
@@ -378,96 +334,11 @@
             return false;
         }
     }
-    function custfp(sign) {
-        if(sign=='all'){
-            $('.oldchainid').val('');
-            $('.custids').val('');
-            $('.oldchain').removeAttr('disabled');
-            $('.confirmbtn').attr('sign',2)
-        }else{
-            var getchain = getUrlParam('chain_id');
-            var sschain_id =$(".chain_id").val();
-            var custids = new Array();
-            var chainid = new Array();
-            $("input[name='custid']:checked").each(function(i){
-                custids[i] = Number($(this).val());
-                chainid[i] = Number($(this).attr('chainid'));
-            })
-            if(custids.length==0){
-                alert('请至少选择一个操作对象！');
-                return false;
-            }
-            if(custids.length>1){
-                //选择不止一个客户，要先选择门店
-                if(getchain == null || getchain == undefined || getchain == '' || sschain_id == null || sschain_id == undefined || sschain_id == ''){
-                    alert('请选选择门店！');
-                    return false;
-                }
-            }
-            $('.custids').val(custids);
-            if(custids.length==1 && chainid.length==1){
-                $('.oldchainid').val(chainid[0]);
-            }else{
-                $('.oldchainid').val(getchain);
-            }
-
-            var oldchainid = parseInt($('.oldchainid').val());
-            if(!(oldchainid>0)){
-                alert('门店无效，请重新选择！');
-                return  false;
-            }
-            $('.oldchain').attr('disabled','disabled');
-            $('.confirmbtn').attr('sign',1)
-            $(".oldchain").find("option[value="+oldchainid+"]").attr("selected",true);
-            $(".newchain").find("option[value="+oldchainid+"]").css('display','none');
-        }
-        $('#xiugaiyynn').show()
-
-
-    }
-    function confirmfp() {
-        var sign = parseInt($('.confirmbtn').attr('sign'));
-        var oldchain = parseInt($('.oldchain').val());
-        var oldchainname = ($('.oldchain').find("option:selected").text()).trim().replace(/\s/g, "");
-        var newchain = parseInt($('.newchain').val());
-        var newchainname = ($('.newchain').find("option:selected").text()).trim().replace(/\s/g, "");
-        var custids = $('.custids').val().trim().replace(/\s/g, "")
-        if(sign==2){
-            var msg = "确认将"+oldchainname+"全部客户分配至"+newchainname+"？\n\n请确认！";
-        }else{
-            var msg = "确定重新分配客户？\n\n请确认！";
-        }
-
-        if (confirm(msg) == true) {
-            $.ajax({
-                url: '{$Think.const.DQURL}index/customers/custfp',// 获取自己系统后台用户信息接口
-                data: {"oldchain": oldchain,"newchain":newchain,"custids":custids,"sign":sign},
-                type: "POST",
-                dataType: "json",
-                success: function (data) {
-                    if (data) {
-                        var data = JSON.parse(data);
-                        if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
-                            window.location.reload();
-                        } else {
-                            alert(data.msg);
-                            return false;
-                        }
-                    }
-                },
-                error: function (data) {
-                    $(e).removeAttr('disabled');
-                    console.log(data.message);
-                }
-            });
-        } else {
-            return false;
-        }
-    }
-    function getUrlParam(name) {
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-        var r = window.location.search.substr(1).match(reg); //匹配目标参数
-        if (r != null) return unescape(r[2]); return null; //返回参数值
+    function custfp() {
+        $(".custid:checkbox[checked]").each(function (i) {
+            console.log(i);
+            console.log($(this).val());
+        })
     }
 </script>
 {include file="template/footer.html"}

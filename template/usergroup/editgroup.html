@@ -48,14 +48,14 @@
                         <label>描述：</label>
                         <textarea class="group_desc"
                                 style="border:1px solid #ccc;border-radius:5px;background-color:rgba(241,241,241,.98);width: 16rem;height: 100px;padding: 10px;resize: none;"
-                                placeholder="备注描述用户组">{$groupinfo.group_desc}
+                                placeholder="备注描述用户组">{$groupinfo.group_desc ?? ''}
                         </textarea>
                     </div>
 
                 </div>
                 <div class="form-group" align="center" style="margin-bottom:5px;">
                     <p style="background: #29b578; width: 9rem; height: 2.5rem; line-height: 2.5rem; color: #fff;  letter-spacing: 1px;margin-top: 1rem;">
-                        <sapn attrid="{$groupinfo.group_id}" style="cursor: pointer;" onclick="confim_ok(this);">确定</sapn>
+                        <sapn attrid="{$groupinfo.group_id ?? ''}" style="cursor: pointer;" onclick="confim_ok(this);">确定</sapn>
                     </p>
                 </div>
             </form>

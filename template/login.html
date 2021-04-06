@@ -89,29 +89,27 @@
 </div>
 </div>
 
-
-
 <div class="dialog">
     <div class="panel panel-default">
-        <p class="panel-heading no-collapse">Sign In</p>
+        <p class="panel-heading no-collapse">登录</p>
         <div class="panel-body">
             <form>
                 <div class="form-group">
-                    <label>Username</label>
+                    <label>用户名</label>
                     <input id="accountName" type="text"  class="form-control span12">
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
+                    <label>密码</label>
                     <input id="password" type="password" class="form-controlspan12 form-control">
                 </div>
-                <a href="javascript:void(0);" class="btn btn-primary pull-right" onclick="check(this);">Sign In</a>
-                <label class="remember-me"><input type="checkbox"> Remember me</label>
+                <a href="javascript:void(0);" class="btn btn-primary pull-right" onclick="check(this);">登录</a>
+<!--                <label class="remember-me"><input type="checkbox"> 记住我</label>-->
                 <div class="clearfix"></div>
             </form>
         </div>
     </div>
-    <p class="pull-right" style=""><a href="http://www.portnine.com" target="blank" style="font-size: .75em; margin-top: .25em;">Design by Portnine</a></p>
-    <p><a href="reset-password.html">Forgot your password?</a></p>
+<!--    <p class="pull-right" style=""><a href="http://www.portnine.com" target="blank" style="font-size: .75em; margin-top: .25em;">Design by Portnine</a></p>-->
+<!--    <p><a href="reset-password.html">Forgot your password?</a></p>-->
 </div>
 
 
@@ -146,7 +144,7 @@
             success : function(data) {
                 if (data){
                     var data = JSON.parse(data);
-                    // console.log(data);
+                    console.log(data);
                     if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
                             console.log(data.msg);
                             window.location.href =  '/';//指向登录的页面地址

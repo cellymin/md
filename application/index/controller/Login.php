@@ -41,6 +41,10 @@ class Login extends Controller
                         $data['code'] = 200;
                         $data['msg'] = '登录成功';
                         return json_encode($data);
+                    }else{
+                        $data['code'] = -1;
+                        $data['msg'] = '密码错误';
+                        return json_encode($data);
                     }
                 }
             } else {

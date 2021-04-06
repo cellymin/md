@@ -108,7 +108,7 @@
                      </span>
                 </div>
                 <div class="sousuo_form"
-                     style="width: 80px;text-align: center;margin-left: 10px;background: #39435C;color: #fff;cursor:pointer; ">
+                     style="width: 80px;text-align: center;background: #39435C;color: #fff;cursor:pointer; ">
                     <span class="suosou_btn" onclick="onconfirm();">搜索</span>
                 </div>
                 <!--                <div class="sousuo_form">-->
@@ -126,6 +126,7 @@
                 <div style="background: #e5e5e5 ;">
                     <h1 class="page">门店日报表</h1>
                 </div>
+                <div style="overflow: scroll">
                 <table id="data_list" class="dataintable table" style="font-size: 14px">
                     <thead>
                     <tr class="firtr">
@@ -447,6 +448,7 @@
                     {/if}
                     </tbody>
                 </table>
+                </div>
                 <div style="width: 96.8%;margin-left: 1.5%;margin-bottom: 10px; text-align: center;font-size: 14px;color: #fff;">
                     <p style="width: 70px;">
                         <span> <a type="button" class="btn btn-primary" download="nihaonao" onclick="method5('data_list','hello')" >导出</a></span>

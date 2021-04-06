@@ -35,6 +35,7 @@ class Login extends Controller
                         $_SESSION['UID'] = $re['id'];
                         $_SESSION['UNAME'] = $re['name'];
                         $_SESSION['GID'] = $re['grade_id'];
+                        $_SESSION['GROUP'] = $re['user_group'];
                         $_SESSION['CID'] = $re['chain_id'];
                         $_SESSION['USRC'] = $re['usrsrc'];
                         $data['code'] = 200;
@@ -59,6 +60,10 @@ class Login extends Controller
         if (!empty($_SESSION['UID'])) {
             $_SESSION['UID'] = '';
             $_SESSION['UNAME'] = '';
+            $_SESSION['GID'] = '';
+            $_SESSION['GROUP'] = '';
+            $_SESSION['CID'] = '';
+            $_SESSION['USRC'] = '';
         }
         return redirect('/');
     }

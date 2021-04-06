@@ -22,7 +22,7 @@
                 <div class="form-group">
 
                     <label>电话：</label>
-                    <input type="text" class="tel" value="{$chaininfo.tel ?? ''}" placeholder="">
+                    <input type="text" class="tel" value="{$chaininfo.tel ?? '4006667715'}" placeholder="">
                 </div>
 
                 <div class="form-group">
@@ -181,6 +181,7 @@
         var istel = checkContactNumber(tel);
         if(!istel){
             alert('电话格式不正确！');
+            $(e).removeAttr('disabled');
             return false;
         }
         chain_info = 'name*' + chain_name + ','
@@ -218,10 +219,6 @@
 
     }
 
-    var d = new DateJs({
-        inputEl: '#inputdate',
-        el: '#date'
-    })
 
     function close_open() {
         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引

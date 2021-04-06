@@ -22,6 +22,7 @@ class Customers extends Base
     public function index()
     {
         $config = config('group');
+//        var_dump($_SESSION);die();
         if ($_SESSION['GID'] == $config['dean']) {
             //院长
             $this->assign('sign', 2);
@@ -40,15 +41,37 @@ class Customers extends Base
         foreach ($chain as $k => $v) {
             $chainlist[$v['id']] = $v;
         }
-        $this->assign('chain', $chain);
+        $this->assign('chain', $chainlist);
         $map = array();
         $ormap = array();
         $where = '';
         $orwhere = '';
+        //院长能看本院所有客户
+        if ($_SESSION['GID'] == $config['dean']) {
+            //院长
+            $map['a.chain_id'] = intval($_SESSION['CID']);
+            $where = ' AND a.chain_id=\'' . intval($_SESSION['CID']) . '\' ';
+        }
 
-//        if (!empty($_GET['name'])) {
-//            $map['o.chain_name'] = ['like', '%' . $_GET['chain_name'] . '%'];
-//        }
+        //普通技师能看自己负责的客人
+        if ($_SESSION['GID'] == $config['jishi']) {
+            //技师
+            $owearr = [];
+            $owecust = Db::table('mbs_all_assessment')
+                ->distinct(true)
+                ->field('customer_id')
+                ->where('status',1)
+                ->where('server_id',intval($_SESSION['UID']))
+                ->select();
+            foreach ($owecust as $k=>$v){
+                $owearr[]= $v['customer_id'];
+            }
+            if(count($owearr)>0){
+                $owestr = implode(',',$owearr);
+                $map['a.id'] = ['in',$owestr];
+                $where .= ' AND a.id in ('.$owestr.')';
+            }
+        }
         if (!empty($_GET['chain_id']) && intval($_GET['chain_id']) > 0) {
             $map['a.chain_id'] = intval($_GET['chain_id']);
             $where = ' AND a.chain_id=\'' . intval($_GET['chain_id']) . '\' ';
@@ -71,14 +94,21 @@ class Customers extends Base
         $map['a.status'] = 1;
         $pagesize = 20;
         Loader::import('page.Page', EXTEND_PATH, '.class.php');
+        if (!empty($_GET['keywords'])) {
+            $total = Db::table('mbs_customers')
+                ->alias('a')
+                ->join('mbs_all_assessment o', 'a.id=o.customer_id', 'LEFT')
+                ->where('a.name LIKE \'%' . $_GET['keywords'] . '%\' OR a.phone LIKE \'%' . $_GET['keywords'] . '%\'  OR o.server_no LIKE \'%' . $_GET['keywords'] . '%\'  OR o.server_name LIKE \'%' . $_GET['keywords'] . '%\'')
+                ->where($map)
+                ->count();
+        }else{
+            $total = Db::table('mbs_customers')
+                ->alias('a')
+                ->join('mbs_all_assessment o', 'a.id=o.customer_id', 'LEFT')
+                ->where($map)
+                ->count();
+        }
 
-        $total = Db::table('mbs_customers')
-            ->alias('a')
-            ->join('mbs_all_assessment o', 'a.id=o.customer_id', 'LEFT')
-//            ->field('a.*,o.id sid,o.status ostatus,o.server_id ser_id')
-            ->whereOr($ormap)
-            ->where($map)
-            ->count();
         $page = new \page($total, $pagesize);
         $re = Db::query('SELECT a.*,o.id sid,o.status ostatus,o.server_id ser_id FROM mbs_customers AS a LEFT JOIN mbs_all_assessment AS o ON a.id=o.customer_id 
 WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
@@ -315,20 +345,23 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
     public function addxiaofei()
     {
         $id = intval($_GET['id']);
-        $cid = intval($_SESSION['CID']);
+
         $cname = '';
         //门店id
-        if ($cid > 0) {
-            $cnamearr = getChainname($cid);
-            $cname = $cnamearr['name'];
-        }
         $gid = intval($_SESSION['GID']);
         $config = config('group');
         //客户信息
         $cusinfo = Db::table('mbs_customers')
-            ->where('id', $id)
+            ->alias('a')
+            ->join('mbs_all_assessment s','a.id = s.customer_id','left')
+            ->field('a.*,s.server_id')
+            ->where('a.id', $id)
             ->find();
-
+        $cid = $_SESSION['CID'] ?: $cusinfo['chain_id'];
+        if ($cid > 0) {
+            $cnamearr = getChainname($cid);
+            $cname = $cnamearr['name'];
+        }
         if ($gid == 1 || $gid == $config['chief_dean']) {
             //超级管理员或者总院长，没有分配门店
             //其他门店代收的费用
@@ -344,7 +377,7 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                 ->where('status', 1)
                 ->select();
             $this->assign('chain', $chain);
-
+        }
             //默认门店技师
             $jsmap['status'] = 1;
             $jsmap['chain_id'] = $cid;
@@ -376,7 +409,7 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                 ->select();
             $this->assign('reception', $recelist);
 
-        }
+
         //支付方式
         $paymap['status'] = 1;
         $paymap['paytype'] = 1;
@@ -700,10 +733,15 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             //超级管理员或者总院长，没有分配门店
             //其他门店代收的费用
             $this->assign('usign', 1);
+
         } else if ($gid == $config['dean']) {
             //院长
             $this->assign('usign', 2);
+        }else{
+            $this->assign('usign', 3);
         }
+        $this->assign('sessiongid', $_SESSION['GID']);
+
         $customer_id = intval($_GET['id']);
         $xiaofeilist = Db::table('mbs_xiaofei')
             ->alias('a')
@@ -770,6 +808,34 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             return json_encode($data);
         }
     }
+    public function deltuifei()
+    {
+        $id = intval($_POST['id']);
+        if ($id > 0) {
+
+            Db::startTrans();
+            $re = Db::table('mbs_tuifei')
+                ->where('tuifei_id', $id)
+                ->update(['status' => 0]);
+
+            if ($re) {
+                Db::commit();
+                $data['code'] = 200;
+                $data['msg'] = "删除成功！";
+                return json_encode($data);
+            } else {
+                Db::rollback();
+                $data['code'] = 1;
+                $data['msg'] = "删除失败！";
+                return json_encode($data);
+            }
+        } else {
+            $data['code'] = -1;
+            $data['msg'] = '没有可操作的对象';
+            return json_encode($data);
+        }
+    }
+
 
     public function addclean()
     {
@@ -1011,11 +1077,9 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
         }
 
         $customerspost = $_POST['customers'];
-        if (isset($_POST['sserinfo'])) {
-            $sserinfo = $_POST['sserinfo'];
-        }
+
         //附加用户信息
-        $addinfoexd = $_POST['addinfo'];
+        $addinfoexd = $_POST['addinfos'];
         $exdcusarr = array_filter(explode(',', $addinfoexd));
         foreach ($exdcusarr as $k => $v) {
             $exdcusinfo[substr($v, 0, strrpos($v, '*'))] = substr($v, strripos($v, "*") + 1);
@@ -1038,6 +1102,48 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
         $addinfo['dean_sign'] = $_POST['dean_sign'];
         if ($server_id > 0) {
             $addinfo['update_time'] = date('Y-m-d', time());
+            //上传图片凭证
+            $picturestr = [];
+            if(isset($_FILES['upfile'])){
+                $photo = $_FILES['upfile'];
+                $uploaddir = $_SERVER['DOCUMENT_ROOT'] . "/upload";//文件存放目录
+                if ($_FILES) {
+                    extract($_POST);
+                    $i = 0;
+                    foreach ($_FILES["upfile"]["error"] as $key => $error) {
+                        if ($error == UPLOAD_ERR_OK) {
+                            $re =    $this->upload_multi($uploaddir, $_FILES["upfile"], $i,$server_id);
+                            if(!empty($re)){
+                                $picturestr[] = $re;
+                            }
+                        }
+                        $i++;
+                    }
+                }
+                $picstr = Db::table('mbs_all_assessment')
+                    ->field('pictures')
+                    ->where('id',$server_id)
+                    ->find();
+                if(!empty($picstr)){
+                    $oldarr = explode(',',$picstr['pictures']);
+                    $picturestr = array_filter(array_unique(array_merge($oldarr,$picturestr)));
+                }
+                foreach ($picturestr as $k=>$v){
+                    $picinfo = explode('_',$v);
+                    if(!file_exists($_SERVER['DOCUMENT_ROOT'] . "/upload/".date('Ymd',$picinfo[1]).'/'.$v)){
+                        unset($picturestr[$k]);
+                    }
+                }
+                if(!empty($picturestr)){
+                    $picturestrs = implode(',',$picturestr);
+                }
+                $addinfo['pictures'] = $picturestrs;
+            }
+            if (isset($_POST['sserinfo'])) {
+                $sserinfo = json_decode($_POST['sserinfo'],true);
+            }
+            $list = [];
+
             //        启动事务
             Db::startTrans();
             try {
@@ -1050,7 +1156,7 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                     ->where("id", $server_id)
                     ->update($addinfo);
 
-                if (isset($sserinfo)) {
+                if (!empty($sserinfo)) {
                     foreach ($sserinfo as $k => $v) {
                         $list[$k] = $v;
                         //服务单
@@ -1102,7 +1208,8 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             try {
 
                 $if_exist = Db::table('mbs_all_assessment')
-                    ->where("id", $addinfo['customer_id'])
+                    ->where("customer_id", $addinfo['customer_id'])
+                    ->where("status", 1)
                     ->find();
                 if ($if_exist) {
                     $data['code'] = 0;
@@ -1182,9 +1289,21 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             //总院长
             $this->assign('sign', 3);
         }
-//        echo $serid;
+        $picarr = [];
+        if(!empty($serinfo['pictures'])){
+            $piclist = explode(',',$serinfo['pictures']);
+            foreach ($piclist as $k=>$v){
+                $picinfo = explode('_',$v);
+                if(file_exists($_SERVER['DOCUMENT_ROOT'] . "/upload/".date('Ymd',$picinfo[1]).'/'.$v)){
+                    $picarr[$k]['name'] = $v;
+                    $picarr[$k]['url'] = date('Ymd',$picinfo[1]);
+                }
+            }
+        }
+        $this->assign('picarr', $picarr);
+////        echo $serid;
 //        echo '<pre/>';
-//        var_dump($serinfo);
+//        var_dump($picarr);
 //        die();
         $this->assign('serinfo', $serinfo);
         $skin_cate = array_filter(explode(',', $serinfo['skin_cate']));
@@ -1230,6 +1349,19 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             ->where('a.id', $ser_id)
             ->find();
         $this->assign('serinfo', $serinfo);
+        //图片凭证
+        $picarr = [];
+        if(!empty($serinfo['pictures'])){
+            $piclist = explode(',',$serinfo['pictures']);
+            foreach ($piclist as $k=>$v){
+                $picinfo = explode('_',$v);
+                if(file_exists($_SERVER['DOCUMENT_ROOT'] . "/upload/".date('Ymd',$picinfo[1]).'/'.$v)){
+                    $picarr[$k]['name'] = $v;
+                    $picarr[$k]['url'] = date('Ymd',$picinfo[1]);
+                }
+            }
+        }
+        $this->assign('picarr', $picarr);
         $recetion = Db::table('mbs_user')
             ->field('name')
             ->where('id', $serinfo['reception'])
@@ -1292,4 +1424,93 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             return json_encode($data);
         }
     }
+    public function indeximg(){
+        return $this->view->fetch();
+    }
+
+    public function imgtest()
+    {
+        $picturestr = [];
+        $serid = intval($_GET['serverno']);
+        if(!isset($_FILES['upfile'])){
+            $data['code'] = 0;
+            $data['msg'] = '上传数据为空';
+            return json_encode($data);
+        }
+        $photo = $_FILES['upfile'];
+        $uploaddir = $_SERVER['DOCUMENT_ROOT'] . "/upload";//文件存放目录
+        if ($_FILES) {
+            extract($_POST);
+            $i = 0;
+            foreach ($_FILES["upfile"]["error"] as $key => $error) {
+                if ($error == UPLOAD_ERR_OK) {
+                    $re =    $this->upload_multi($uploaddir, $_FILES["upfile"], $i,$serid);
+                    if(!empty($re)){
+                        $picturestr[] = $re;
+                    }
+                }
+                $i++;
+            }
+        }
+
+        $picstr = Db::table('mbs_all_assessment')
+            ->field('pictures')
+            ->where('id',$serid)
+            ->find();
+        if(!empty($picstr)){
+            $oldarr = explode(',',$picstr['pictures']);
+            $picturestr = array_filter(array_unique(array_merge($oldarr,$picturestr)));
+        }
+        foreach ($picturestr as $k=>$v){
+            $picinfo = explode('_',$v);
+            if(!file_exists($_SERVER['DOCUMENT_ROOT'] . "/upload/".date('Ymd',$picinfo[1]).'/'.$v)){
+                unset($picturestr[$k]);
+            }
+        }
+        if(!empty($picturestr)){
+            $picturestrs = implode(',',$picturestr);
+        }
+        $re = Db::table('mbs_all_assessment')
+            ->where('id',$serid)
+            ->update(['pictures'=>$picturestrs]);
+        if($re){
+            if ($re) {
+                $data['code'] = 200;
+                $data['msg'] = '上传成功';
+                $data['piclist'] = $picturestrs;
+                return json_encode($data);
+            } else {
+                $data['code'] = 0;
+                $data['msg'] = '上传失败';
+                return json_encode($data);
+            }
+        }
+
+    }
+    public function upload_multi($path,$photo,$i,$serid){
+
+        $date = date('Ymd',time());
+        if (!file_exists($path))//如果目录不存在就新建
+            $path = mkdir($path);
+        if(!file_exists($path.'/'.$date))
+            $childpath = mkdir($path.'/'.$date);
+        $piece = explode('.', $photo['name'][$i]);
+        $uploadfile = $path.'/'.$date.'/' .$serid. '_' .time().'_'.$i. '.' . $piece[1];
+        $result = move_uploaded_file($photo['tmp_name'][$i], $uploadfile);
+        if (!$result) {
+            exit('上传失败');
+        }
+        $this->image_zip($uploadfile,50,600);
+        return basename($uploadfile);
+    }
+
+    function image_zip($url,$size_number,$size_thumb)
+    {
+        $size = filesize($url);
+        if(($size/1000)>$size_number){
+            $image = \think\Image::open($url);
+            $image->thumb($size_thumb, $size_thumb)->save($url);
+        }
+    }
+
 }

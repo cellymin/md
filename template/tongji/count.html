@@ -57,103 +57,7 @@
 
 {include file="template/sidebar.html"}
 
-<style>
-
-    .sousuo {
-        clear: both;
-        height: 40px;
-        min-width: 360px;
-        margin: 0px auto;
-        margin-bottom: 10px;
-    }
-
-    .sousuo .sousuo_form {
-        width: 240px;
-        margin: 5px 5px;
-        float: left;
-    }
-
-    .add_user {
-        cursor: pointer;
-        font-size: 16px;
-        width: 100px;
-        height: 20px;
-        line-height: 20px;
-        text-align: center;
-        height: 3px;
-        border-top: none;
-    }
-
-    .sousuo .form_sub {
-
-    }
-
-    .sousuo .form_sub input, .sousuo .form_sub select {
-        width: 245px;
-        height: 30px;
-        border: 1px solid #ccc;
-    }
-
-    .sousuo .form_sub:focus, .sousuo .form_sub select:focus {
-        outline: none;
-        border-color: #ccc;
-        box-shadow: 0 0 10px #ccc;
-    }
-
-    .sousuo .confirm_sub {
-        clear: both;
-    }
-
-    .sousuo .confirm_sub b {
-        height: 30px;
-        color: #333;
-        font-size: 16px;
-        margin-top: 10px;
-        cursor: pointer;
-    }
-
-    .sousuo .confirm_sub p span {
-        background: #ccc;
-        width: 80px;
-        letter-spacing: 1px;
-        padding: 0 5px;
-        text-align: center;
-        margin: 20px 10px;
-    }
-
-    .caozuo {
-        cursor: pointer;
-    }
-
-    .anniu {
-        width: 83%;
-        min-width: 360px;
-        margin: 0 auto;
-    }
-
-    .sousuo_form .suosou_btn {
-        height: 30px;
-        line-height: 30px;
-        letter-spacing: 5px;
-
-    }
-
-    .main-content .row .col-md-10 .dataintable {
-        text-align: center;
-        border: 1px solid #211d1d;
-    }
-
-    .main-content .row .col-md-10 .dataintable .sectr td, .main-content .row .col-md-10 .dataintable .threetr td, .main-content .row .col-md-10 .dataintable .fourtr td,
-    .main-content .row .col-md-10 .dataintable .fivtr td, .main-content .row .col-md-10 .dataintable .lasttr td,.main-content .row .col-md-10 .dataintable .hjfir td ,
-    .main-content .row .col-md-10 .dataintable .hjsec td, .main-content .row .col-md-10 .dataintable .hjthr td,.main-content .row .col-md-10 .dataintable .mrsfir td ,
-    .main-content .row .col-md-10 .dataintable .mrssec td, .main-content .row .col-md-10 .dataintable .mrsthr td{
-        border-top: 1px solid #211d1d;
-        border-left: 1px solid #211d1d;
-        border-right: 1px solid #211d1d;
-        border-bottom: 1px solid #211d1d;
-        vertical-align: middle;
-    }
-</style>
+<!---->
 <div class="content">
     {include file="template/navbar.html"}
     <div class="sousuo">
@@ -187,7 +91,7 @@
                      </span>
                 </div>
                 <div class="sousuo_form"
-                     style="width: 80px;text-align: center;margin-left: 10px;background: #39435C;color: #fff;cursor:pointer; ">
+                     style="width: 80px;text-align: center;background: #39435C;color: #fff;cursor:pointer; ">
                     <span class="suosou_btn" onclick="onconfirm();">搜索</span>
                 </div>
                 <!--                <div class="sousuo_form">-->
@@ -205,6 +109,7 @@
                 <div style="background: #e5e5e5 ;">
                     <h1 class="page">门店汇总表</h1>
                 </div>
+                <div style="overflow: scroll">
                 <table id="data_list" class="dataintable table" style="font-size: 14px">
                     <thead>
                     <tr class="firtr">
@@ -348,6 +253,7 @@
                     </tr>
                     </tbody>
                 </table>
+                </div>
                 <div style="width: 96.8%;margin-left: 1.5%;margin-bottom: 10px; text-align: center;font-size: 14px;color: #fff;">
                     <p style="width: 70px;">
                         <span> <a type="button" class="btn btn-primary" download="nihaonao" onclick="method5('data_list','hello')" >导出</a></span>

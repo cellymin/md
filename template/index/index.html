@@ -158,90 +158,139 @@
     .st-green {
         background-color: #4ECDC4;
     }
+    .mdshuju td,.mdshuju th{
+        border-top: 1px solid #ccc;
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        vertical-align: middle;
+        width: 16%;
+    }
+    .mdshuju .sjruz {
+    width: 20%;
+    }
 
 </style>
 <div class="content" style="background: #f3f8fb;">
     {include file="template/navbar.html"}
-<!--    <div class="header">-->
-<!--        <div class="stats">-->
-<!--            <p class="stat"><span class="label label-info">5</span></p>-->
-<!--            <p class="stat"><span class="label label-success">27</span> Tasks</p>-->
-<!--            <p class="stat"><span class="label label-danger">15</span> Overdue</p>-->
-<!--        </div>-->
 
-<!--        <h1 class="page-title">Dashboard</h1>-->
-<!--        <ul class="breadcrumb">-->
-<!--            <li><a href="day.html">Home</a></li>-->
-<!--            <li class="active">Dashboard</li>-->
-<!--        </ul>-->
+    <div class="sousuo"    {if condition="(isset($sign) && $sign == '1' )"}{else/}style="displayt:none"{/if}>
+        <form action="" method="get">
+            <div class="form_sub">
+                <!--                <div class="sousuo_form">-->
+                <!--                    门店： <input type="text" name="chain_name">-->
+                <!--                </div>-->
+                <div class="sousuo_form">
+                     <span>
+                           <select style="" class="shichang" name="shichang" autocomplete="off" onchange="changechain(this);" >
+                                <option value="" >请选择市场
+                               </option>
+                               {foreach $shichanglist as $k }
+                               <option value="{$k.city}" {if condition="(!empty($Think.get.shichang) && $Think.get.shichang==$k.city)"} selected {/if}>{$k.city}
+                               </option>
+                               {/foreach}
+                           </select>
+                     </span>
+                </div>
+                <div class="sousuo_form">
+                     <span>
+                           <select style="" class="chain_id" name="chain_id" autocomplete="off">
+                                <option value="" >请选择门店
+                               </option>
+                               {foreach $chain as $k }
+                               <option value="{$k.id}" {if condition="(!empty($Think.get.chain_id) && $Think.get.chain_id == $k.id)" } selected {/if}>{$k.name}
+                               </option>
+                               {/foreach}
+                           </select>
+                     </span>
+                </div>
+                <!--                <div class="sousuo_form">-->
+                <!--                    电话：<br/><input type="text" value="{$Think.get.phone}" name="phone" autocomplete="off">-->
+                <!--                </div>-->
+                <!--                <div class="sousuo_form">-->
+                <!--                    订单编号：<br/><input type="text" value="{$Think.get.server_no}" name="server_no" autocomplete="off">-->
+                <!--                </div>-->
 
-<!--    </div>-->
+                <div class="sousuo_form" style="width: 80px;text-align: center;background: #39435C;color: #fff;cursor:pointer; ">
+                    <span class="suosou_btn" onclick="onconfirm();">搜索</span>
+                </div>
+                <!--                <div class="sousuo_form">-->
+                <!--                    技师名称：<br/><input type="text" value="{$Think.get.server_name}" name="server_name" autocomplete="off">-->
+                <!--                </div>-->
+            </div>
+        </form>
+    </div>
     <div class="main-content" style="background: #f3f8fb;border: none">
 
+        <div class="row" style="overflow: hidden;" >
+            <div style="border:1px solid #ddd;padding: 2px">
+                <div class="echarts" id="echarts-bar-chart" style="width: 100%;height:418px;"></div>
+            </div>
 
-        <div class="panel panel-default" style="background: #f3f8fb;">
-            <a href="#page-stats" class="panel-heading" data-toggle="collapse">Latest Stats</a>
-            <div class="row" style="margin-bottom: 5px;">
-                <div class="col-md-3">
-                    <div class="sm-st clearfix"><span class="sm-st-icon st-red"><i class="fa fa-check-square-o"></i></span>
-                        <div class="sm-st-info"><span>3200</span>
-                            <div>Total Tasks</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="sm-st clearfix"><span class="sm-st-icon st-violet"><i class="fa fa-envelope-o"></i></span>
-                        <div class="sm-st-info"><span>2200</span>
-                            <div>Total Messages</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="sm-st clearfix"><span class="sm-st-icon st-blue"><i class="fa fa-dollar"></i></span>
-                        <div class="sm-st-info"><span>100,320</span>
-                            <div>Total Profit</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="sm-st clearfix"><span class="sm-st-icon st-green"><i class="fa fa-paperclip"></i></span>
-                        <div class="sm-st-info"><span>4567</span>
-                            <div>Total Documents</div>
-                        </div>
-                    </div>
+            <div style="border:1px solid #ddd;padding: 2px;overflow: hidden;margin-top: 5px">
+            {if condition='isset($chainlist)'}
+            {foreach $chainlist as $k}
+            <div class="col-sm-6 mobile_left" style="min-width: 330px;overflow: hidden;margin: 8px 0px" >
+                <div class="panel panel-default" style="margin-bottom: 0px">
+                <table class="dataintable table" style="width: 100%">
+                    <tr>
+                        <th colspan="7"> {$k.name}</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 14%">日期</th>
+                        <th>消费</th>
+                        <th>欠费</th>
+                        <th>退费</th>
+                        <th>还款</th>
+                        <th>借店支付</th>
+                        <th>代店支付</th>
+                    </tr>
+                    <tr>
+                        <td>今天</td>
+                        <td>{$dayarr[$k.id]['xiaofei'] ?? '0'}</td>
+                        <td>{$dayarr[$k.id]['owe'] ?? '0'}</td>
+                        <td>{$dayarr[$k.id]['tuifei'] ?? '0'}</td>
+                        <td>{$dayarr[$k.id]['huankuan'] ?? '0'}</td>
+                        <td>{$dayarr[$k.id]['jiedian'] ?? '0'}</td>
+                        <td>{$dayarr[$k.id]['daishou'] ?? '0'}</td>
+                    </tr>
+                    <tr>
+                        <td>昨天</td>
+                        <td>{$yestodayarr[$k.id]['xiaofei'] ?? '0'}</td>
+                        <td>{$yestodayarr[$k.id]['owe'] ?? '0'}</td>
+                        <td>{$yestodayarr[$k.id]['tuifei'] ?? '0'}</td>
+                        <td>{$yestodayarr[$k.id]['huankuan'] ?? '0'}</td>
+                        <td>{$yestodayarr[$k.id]['jiedian'] ?? '0'}</td>
+                        <td>{$yestodayarr[$k.id]['daishou'] ?? '0'}</td>
+                    </tr>
+                    <tr>
+                        <td>本月</td>
+                        <td>{$montharr[$k.id]['xiaofei'] ?? '0'}</td>
+                        <td>{$montharr[$k.id]['owe'] ?? '0'}</td>
+                        <td>{$montharr[$k.id]['tuifei'] ?? '0'}</td>
+                        <td>{$montharr[$k.id]['huankuan'] ?? '0'}</td>
+                        <td>{$montharr[$k.id]['jiedian'] ?? '0'}</td>
+                        <td>{$montharr[$k.id]['daishou'] ?? '0'}</td>
+                    </tr>
+                    <tr>
+                        <td>上月</td>
+                        <td>{$premontharr[$k.id]['xiaofei'] ?? '0'}</td>
+                        <td>{$premontharr[$k.id]['owe'] ?? '0'}</td>
+                        <td>{$premontharr[$k.id]['tuifei'] ?? '0'}</td>
+                        <td>{$premontharr[$k.id]['huankuan'] ?? '0'}</td>
+                        <td>{$premontharr[$k.id]['jiedian'] ?? '0'}</td>
+                        <td>{$premontharr[$k.id]['daishou'] ?? '0'}</td>
+                    </tr>
+
+                </table>
                 </div>
             </div>
+            {/foreach}
+                {/if}
+            </div>
+
+
         </div>
-
-        <div class="row" style="overflow: hidden;">
-            <div class="col-sm-6 col-md-6" style="float: left;padding: 0px;min-width: 330px">
-                <div class="panel panel-default" style="">
-                <div id="testechart"  style="width: 100%;height:418px;"></div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-6 mobile_right" style=" min-width: 330px;overflow: hidden">
-                <div class="panel panel-default"  >
-<!--                    <a href="#widget1container" class="panel-heading" data-toggle="collapse">Collapsible </a>-->
-                    <div id="widget1container" class="panel-body collapse in" style="height: 418px">
-                        <h2>Here's a Tip</h2>
-                        <p>This template was developed with <a href="http://middlemanapp.com/"
-                                                               target="_blank">Middleman</a> and includes .erb layouts
-                            and views.</p>
-                        <p>All of the views you see here (sign in, sign up, users, etc) are already split up so you
-                            don't have to waste your time doing it yourself!</p>
-                        <p>The layout.erb file includes the header, footer, and side navigation and all of the views are
-                            broken out into their own files.</p>
-                        <p>If you aren't using Ruby, there is also a set of plain HTML files for each page, just like
-                            you would expect.</p>
-                        <p>All of the views you see here (sign in, sign up, users, etc) are already split up so you
-                            don't have to waste your time doing it yourself!</p>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
 
         <footer>
             <hr>
@@ -256,91 +305,161 @@
 
 
 {include file="template/footer.html"}
+<script src="{$Think.const.STATIC_URL}/lib/echarts/echarts-all.js"></script>
 <script>
-    var myChart = echarts.init(document.getElementById('testechart'));
-    //
-    // // 指定图表的配置项和数据
-    // var option = {
-    //     title: {
-    //         text: 'ECharts 入门示例'
-    //     },
-    //     tooltip: {},
-    //     legend: {
-    //         data:['销量']
-    //     },
-    //     xAxis: {
-    //         data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
-    //     },
-    //     yAxis: {},
-    //     series: [{
-    //         name: '销量',
-    //         type: 'bar',
-    //         data: [5, 20, 36, 10, 10, 20]
-    //     }]
-    // };
-
-
-    setTimeout(function () {
-
-        option = {
-            legend: {},
+    $(function() {
+        var i = echarts.init(document.getElementById("echarts-bar-chart"));
+        var q = {
+            title : {
+                subtext: {$date_riqi_s} - {$date_riqi_e}
+            },
             tooltip: {
-                trigger: 'axis',
-                showContent: false
+                trigger: "axis"
             },
-            dataset: {
-                source: [
-                    ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
-                    ['Cheese Cocoa', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5],
-                    ['Walnut Brownie', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1]
-                ]
+            legend: {
+                data:['消费','欠款','退款']
             },
-            xAxis: {type: 'category'},
-            yAxis: {gridIndex: 0},
-            grid: {top: '55%'},
-            series: [
-                {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-                {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+            grid: {
+                x: {$left},
+                x2: {$left},
+                y2: 24,
+                containLabel:true,
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: false},
+                    dataView : {show: false, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: false},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable: true,
+            xAxis: [{
+                type: "category",
+                data : [{$date_riqi}]
+            }],
+            yAxis: [
                 {
-                    type: 'pie',
-                    id: 'pie',
-                    radius: '30%',
-                    center: ['50%', '25%'],
-                    label: {
-                        formatter: '{b}: {@2012} ({d}%)'
-                    },
-                    encode: {
-                        itemName: 'product',
-                        value: '2012',
-                        tooltip: '2012'
+                    type: 'value',
+                    show: true,
+                    axisLabel:{
+                        interval:0,
+                        roate:0
                     }
                 }
-            ]
-        };
-
-        myChart.on('updateAxisPointer', function (event) {
-            var xAxisInfo = event.axesInfo[0];
-            if (xAxisInfo) {
-                var dimension = xAxisInfo.value + 1;
-                myChart.setOption({
-                    series: {
-                        id: 'pie',
-                        label: {
-                            formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+            ],
+            series: [{
+                name: "消费",
+                type: "bar",
+                data: [{$tenxiaofeiarr}],
+                itemStyle: {normal: {
+                        label : {show: true}
+                    }},
+                markPoint: {
+                    data: [{
+                        type: "max",
+                        name: "最大值"
+                    },
+                        {
+                            type: "min",
+                            name: "最小值"
+                        }]
+                },
+                markLine: {
+                    data: [{
+                        type: "average",
+                        name: "平均值"
+                    }]
+                }
+            },
+                {
+                    name: "欠款",
+                    type: "bar",
+                    data: [{$tenowearr}],
+                    itemStyle: {normal: {
+                            label : {show: true}
+                        }},
+                    markPoint: {
+                        data: [{
+                            type: "max",
+                            name: "最大值"
                         },
-                        encode: {
-                            value: dimension,
-                            tooltip: dimension
-                        }
+                            {
+                                type: "min",
+                                name: "最小值"
+                            }]
+                    },
+                    markLine: {
+                        data: [{
+                            type: "average",
+                            name: "平均值"
+                        }]
                     }
-                });
+                },
+                {
+                    name: "退款",
+                    type: "bar",
+                    data: [{$tentuifeiarr}],
+                    itemStyle: {normal: {
+                            label : {show: true}
+                        }},
+                    markPoint: {
+                        data: [{
+                            type: "max",
+                            name: "最大值"
+                        },
+                            {
+                                type: "min",
+                                name: "最小值"
+                            }]
+                    },
+                    markLine: {
+                        data: [{
+                            type: "average",
+                            name: "平均值"
+                        }]
+                    }
+                }]
+        };
+        i.setOption(q);
+        window.onresize = i.resize;
+    });
+    function changechain(e) {
+        var sc = $(e).val().replace(/(^\s*)|(\s*$)/g, "");
+        $.ajax({
+            url: '{$Think.const.DQURL}index/chain/changechain',
+            data: {"sc": sc},
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    var data = JSON.parse(data);
+                    var ss ='  <option value="" >请选择门店</option>';
+
+                    if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
+                        var chainlist = data.chainlist;
+                        for (var i in chainlist) {
+                            ss += '  <option value="' + chainlist[i]['id'] + '">' + chainlist[i]['name'] + '</option>'
+                        }
+                        $('.chain_id').html('');
+                        $('.chain_id').html(ss)
+
+                    } else {
+                        alert(data.msg);
+                        return false;
+                    }
+                }
+            },
+            error: function (data) {
+                console.log(data.message);
             }
         });
-
-        myChart.setOption(option);
-
-    });
-
+    }
+    function onconfirm() {
+        $('form').submit();
+    }
 </script>
 
 </body>

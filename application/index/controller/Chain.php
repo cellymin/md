@@ -33,16 +33,16 @@ class Chain extends Base
             $this->assign('sign', 2);
         }
 
+        $map['c.status'] = 1;
         $map['u.status'] = 1;
         $re = Db::table('mbs_chain')
             ->field('c.*,u.name uname')
             ->alias('c')
             ->join('mbs_user u','u.id = c.dean_id','LEFT')
             ->where($map)
+            ->whereOr('(u.status is null and c.status=1)')
             ->select();
-//        echo '<pre/>>';
-//        var_dump($re);
-//        die();
+
         $this->assign('chainlist',$re);
 
         return $this->view->fetch();
@@ -150,5 +150,25 @@ class Chain extends Base
             return json_encode($data);
         }
 
+    }
+    public function changechain(){
+
+        $shichang = trim($_POST['sc']);
+        $map = [];
+        if(empty($shichang));
+        else{
+            $map['city'] = $shichang;
+        }
+        $chainre = Db::table('mbs_chain')
+            ->where($map)
+            ->select();
+        $chainlist = array();
+        foreach ($chainre as $k => $v) {
+            $chainlist[$v['id']] = $v;
+        }
+        $data['msg'] = "成功！";
+        $data['code'] = 200;
+        $data['chainlist'] = $chainlist;
+        return json_encode($data);
     }
 }

@@ -19,6 +19,7 @@
     <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
     <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
     <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}commonindex.css">
 
 </head>
 <body class=" theme-blue" >
@@ -41,37 +42,7 @@
     });
 </script>
 <style type="text/css">
-    #line-chart {
-        height:300px;
-        width:800px;
-        margin: 0px auto;
-        margin-top: 1em;
-    }
-    .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
-        color: #fff;
-    }
-    .main-content{
-        clear: both;
-        width: 100%;
-        margin: 0px auto ;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        background: #fff;
-    }
-   .content .main-content .col-md-offset-1 {
-       width: 100%;
-       margin-left: 0px;
-   }
-    .main-content .page{
-        margin-top: 0px;
-        margin-block-start:0;
-        margin-block-end: 0;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-       text-align: left;
-        margin-left: 15px;
-        color: #333;
-    }
+
 
 </style>
 
@@ -92,6 +63,54 @@
 {include file="template/sidebar.html"}
 <div class="content" style="background: #f3f8fb;"  onLoad="goPage(1,10);">
     {include file="template/navbar.html"}
+    <div class="sousuo" >
+        <form action="" method="get">
+            <div class="form_sub">
+                <!--                <div class="sousuo_form">-->
+                <!--                    门店： <input type="text" name="chain_name">-->
+                <!--                </div>-->
+                <div class="sousuo_form">
+                     <span>
+                           <select style="" class="chain_id" name="chain_id" autocomplete="off">
+                                <option value="" >请选择门店
+                               </option>
+                               {foreach $chain as $k }
+                               <option value="{$k.id}" {if condition="(isset($cid) && $k.id == $cid)" } selected {/if}>{$k.name}
+                               </option>
+                               {/foreach}
+                           </select>
+                     </span>
+                </div>
+                <div class="sousuo_form">
+                     <span>
+                           <select style="" class="chain_id" name="group" autocomplete="off">
+                                <option value="" >清选择用户组
+                               </option>
+                               {foreach $grouplist as $k }
+                               <option value="{$k.group_id}" {if condition="(isset($group) && $k.group_id == $group)" } selected {/if}>{$k.group_name}
+                               </option>
+                               {/foreach}
+                           </select>
+                     </span>
+                </div>
+                <div class="sousuo_form">
+                    <input type="text" value="{$Think.get.keywords}" name="keywords" autocomplete="off" placeholder="请输入名称" >
+                </div>
+                <!--                <div class="sousuo_form">-->
+                <!--                    电话：<br/><input type="text" value="{$Think.get.phone}" name="phone" autocomplete="off">-->
+                <!--                </div>-->
+                <!--                <div class="sousuo_form">-->
+                <!--                    订单编号：<br/><input type="text" value="{$Think.get.server_no}" name="server_no" autocomplete="off">-->
+                <!--                </div>-->
+                <div class="sousuo_form" style="width: 80px;text-align: center;background: #39435C;color: #fff;cursor:pointer; ">
+                    <span class="suosou_btn" onclick="onconfirm();">搜索</span>
+                </div>
+                <!--                <div class="sousuo_form">-->
+                <!--                    技师名称：<br/><input type="text" value="{$Think.get.server_name}" name="server_name" autocomplete="off">-->
+                <!--                </div>-->
+            </div>
+        </form>
+    </div>
     <div class="main-content">
         <div class="row">
 
@@ -100,6 +119,7 @@
                     <div class="add_user" onclick="openedit();" style="float:right;cursor:pointer;font-size: 25px;width: 35px;height: 35px;margin-right:15px;line-height: 40px;text-align: center;margin-bottom: 2px">+</div>
                     <h1 class="page">用户列表</h1>
                 </div>
+                <div style="overflow: scroll">
                 <table class="dataintable table" id="idData">
                     <thead>
                       <tr>
@@ -130,6 +150,7 @@
                     {/foreach}
                     </tbody>
                 </table>
+                </div>
                 <table style="margin-left: 2%" align="left">
                     <tr><td style="padding-bottom: 8px;">{$page}</td></tr>
                 </table>
@@ -147,7 +168,7 @@
                 type: 2,
                 title: '编辑用户',
                 maxmin: true,
-                area: ['85%', '70%'],
+                area: ['60%', '60%'],
                 content: '{$Think.const.DQURL}index/user/edituser?id='+id
             });
         });
@@ -183,8 +204,9 @@
         } else {
             return false;
         }
-
-
+    }
+    function onconfirm() {
+        $('form').submit();
     }
 
 </script>

@@ -118,14 +118,15 @@
                         <td class="clean">{$k.owe}</td>
                         <td>{$k.xfbeizhu}</td>
                         <td class="caozuo">
-                            {if condition="($usign==1)"}
-                            <span onclick="editxiaofei(this);" attrid="{$k.xiaofei_id}">编辑|</span>
+                            {if condition="($usign==1 || $usign==2)" }
+                            <span onclick="editxiaofei(this);" attrid="{$k.xiaofei_id}">编辑{$Think.session.GID}</span>
                             {/if}
-                            {if condition="($k.clean==2)"}
-                            <span onclick="addown(this,'{$k.xiaofei_id}');" attrid="{$k.xiaofei_id}">还款|</span>
+                            {if condition="($k.clean==2 && ($usign==1 || $usign==2))"}
+                            <span onclick="addown(this,'{$k.xiaofei_id}');" attrid="{$k.xiaofei_id}">|还款</span>
                             {/if}
-                            <span onclick="delxiaofei(this);" attrid="{$k.xiaofei_id}"> 删除</span>
-
+                            {if condition="$sessiongid==1"}
+                            <span onclick="delxiaofei(this);" attrid="{$k.xiaofei_id}"> |删除</span>
+                            {/if}
                         </td>
                     </tr>
                     {/foreach}
@@ -165,8 +166,9 @@
                         <td class="caozuo">
                             {if condition="($usign==1)"}
                             {/if}
-                            <span onclick="delxiaofei(this);" attrid="{$k.tuifei_id}"> 删除</span>
-
+                            {if condition="$Think.session.GID==1"}
+                            <span onclick="deltuifei(this);" attrid="{$k.tuifei_id}"> 删除</span>
+                            {/if}
                         </td>
                     </tr>
                     {/foreach}
@@ -290,6 +292,36 @@
         if (confirm(msg) == true) {
             $.ajax({
                 url: '{$Think.const.DQURL}index/customers/delxiaofei',// 获取自己系统后台用户信息接口
+                data: {"id": id},
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        var data = JSON.parse(data);
+                        if (data.code == 200) { //判断返回值，这里根据的业务内容可做调整
+                            $(e).parent().parent().remove();
+                        } else {
+                            alert(data.msg);
+                            $(e).removeAttr('disabled');
+                            return false;
+                        }
+                    }
+                },
+                error: function (data) {
+                    $(e).removeAttr('disabled');
+                    console.log(data.message);
+                }
+            });
+        } else {
+            return false;
+        }
+    }
+    function deltuifei(e) {
+        var id = $(e).attr('attrid');
+        var msg = "您真的确定要删除吗？\n\n请确认！";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '{$Think.const.DQURL}index/customers/deltuifei',// 获取自己系统后台用户信息接口
                 data: {"id": id},
                 type: "POST",
                 dataType: "json",

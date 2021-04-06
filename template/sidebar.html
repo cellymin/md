@@ -55,7 +55,14 @@
                  src=" {$uinfo['usrsrc']}">
             <div class="user-name"> {$_SESSION['UNAME']}</div>
         </li>
-
+        <li class="side-newli"><a onclick="openedit();" data-target="" style="cursor: pointer"
+                                  class="nav-header " >
+            添加客户</a></li>
+        <li>
+        <li class="side-newli"><a href="{$Think.const.DQURL}index/customers" data-target=""
+                                  class="nav-header " >
+            客户信息</a></li>
+        <li>
         {foreach $list as $k=>$v }
         <li class="side-newli"><a href="#" data-target=".{$v.module_name}-menu"
                                   class="nav-header  {if condition='$k neq 1'} collapsed {/if}" data-toggle="collapse">
@@ -164,3 +171,17 @@
 
 <!--    </ul>-->
 <!--</div>-->
+<script>
+    function openedit(e) {
+        var id = parseInt($(e).attr('attrid'));
+        layer.ready(function () {
+            layer.open({
+                type: 2,
+                title: '编辑用户',
+                maxmin: true,
+                area: ['50%', '70%'],
+                content: '{$Think.const.DQURL}index/customers/edituser?id=' + id
+            });
+        });
+    }
+</script>

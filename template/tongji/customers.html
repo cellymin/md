@@ -75,7 +75,7 @@
 			                  <input type="text" value="{$Think.get.create_time}" class="user_birth" name="create_time" placeholder="点击选择时间" id='inputdate' autocomplete="off" />
                      </span>
                 </div>
-                <div class="sousuo_form" style="width: 80px;text-align: center;margin-left: 10px;background: #39435C;color: #fff;cursor:pointer; ">
+                <div class="sousuo_form" style="width: 80px;text-align: center;background: #39435C;color: #fff;cursor:pointer; ">
                     <span class="suosou_btn" onclick="onconfirm();">搜索</span>
                 </div>
 <!--                <div class="sousuo_form">-->
@@ -94,6 +94,7 @@
                     <div class="add_user" onclick="openedit();" style="float:right;cursor:pointer;font-size: 25px;width: 35px;height: 35px;margin-right:15px;line-height: 40px;text-align: center;margin-bottom: 2px">+</div>
                     <h1 class="page">客户消费统计</h1>
                 </div>
+                <div style="overflow: scroll">
                 <table class="dataintable table">
                     <thead>
                     <tr>
@@ -134,6 +135,7 @@
                     {/foreach}
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>

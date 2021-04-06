@@ -21,39 +21,82 @@ class User extends Base
     public function index()
     {
         $map = array();
-        $config = config('grade');
+        $where = '';
+        $config = config('group');
         //总院长
         $cheif = $config['chief_dean'];
         //院长
         $dean = intval($config['dean']);
         if (!empty($_SESSION['CID'])) {
-            if ($_SESSION['GID'] == $cheif || $_SESSION['GID'] == 1) {//总院长
+            if ($_SESSION['GID'] == $cheif || $_SESSION['GID'] == 1) {//总院长或者超级管理员
 
             } else {
-                if ($_SESSION['CID'] == $dean) {
-                    $map['chain_id'] = $dean;
+                if ($_SESSION['GID'] == $dean) {
+                    //院长
+                    $map['chain_id'] = $_SESSION['CID'];
+                    $where .= ' AND chain_id='.$_SESSION['CID'].' ';
                 } else {
                     $map['id'] = $_SESSION['UID'];
+                    $where .= ' AND id='.$_SESSION['UID'].' ';
                 }
             }
 
         } else {
-            if ($_SESSION['GID'] == 1) {
-
+            if ($_SESSION['GID'] == 1 || $_SESSION['GID'] == $cheif) {
+                //总院长和超级管理员没有所属门店
             } else {
                 return redirect('/index.php/index/login');
             }
         }
+        //门店
+        $chain = Db::table('mbs_chain')
+            ->where('status', 1)
+            ->select();
+        $chainlist = array();
+        foreach ($chain as $k => $v) {
+            $chainlist[$v['id']] = $v;
+        }
+        $this->assign('chain', $chainlist);
+        //用户组
+        $usergroup = Db::table('mbs_user_group')
+            ->where('status', 1)
+            ->select();
+        $grouplist = array();
+        foreach ($usergroup as $k => $v) {
+            $grouplist[$v['group_id']] = $v;
+        }
+        $this->assign('grouplist', $grouplist);
+
+        if (!empty($_GET['chain_id']) && intval($_GET['chain_id']) > 0) {
+            $map['chain_id'] = intval($_GET['chain_id']);
+            $where = ' AND chain_id=\'' . intval($_GET['chain_id']) . '\' ';
+            $this->assign('cid', intval($_GET['chain_id']));
+        }
+        if (!empty($_GET['group']) && intval($_GET['group']) > 0) {
+            $map['user_group'] = intval($_GET['group']);
+            $where = ' AND user_group=\'' . intval($_GET['group']) . '\' ';
+            $this->assign('group', intval($_GET['group']));
+        }
+        if (!empty($_GET['keywords'])) {
+            $where .= ' AND (name LIKE \'%' . $_GET['keywords'] . '%\' OR phone LIKE \'%' . $_GET['keywords'] . '%\' ) ';
+        }
         $map['status'] = 1;
 
+        if (!empty($_GET['keywords'])) {
+            $total = Db::table('mbs_user')
+                ->where($map)
+                ->where('name LIKE \'%' . $_GET['keywords'] . '%\' OR phone LIKE \'%' . $_GET['keywords'] . '%\'   ')
+                ->count();
+        }else{
+            $total = Db::table('mbs_user')
+                ->where($map)
+                ->count();
+        }
 
-        $total = Db::table('mbs_user')
-            ->where($map)
-            ->count();
         $pagesize = 20;
         Loader::import('page.Page', EXTEND_PATH, '.class.php');
         $page = new \page($total, $pagesize);
-        $re = Db::query('SELECT * FROM mbs_user WHERE status=1 ORDER BY id ASC '.$page->limit);
+        $re = Db::query('SELECT * FROM mbs_user WHERE status=1 '.$where.' ORDER BY id ASC '.$page->limit);
         $this->assign('userlist', $re);
         $down_page = $page->fpage();
         $this->assign('page', $down_page);
@@ -121,7 +164,13 @@ class User extends Base
         $data['grade_name'] = $new['usergrade'];
         $data['email'] = $new['useremail'];
         $data['address'] = $new['useraddress'];
-
+        if(strlen( $new['userpassword'])>=4){
+            $data['password'] = md5($new['userpassword']);
+        }else if(strlen($new['userpassword'])>0 && strlen($new['userpassword'])<4){
+            $data['code'] = 0;
+            $data['msg'] = '密码长度必须大于4';
+            return json_encode($data);
+        }
         $data['grade_id'] = $new['usergradeid'];
         $data['chain_id'] = $new['userchainid'];
         $data['chain_name'] = $new['userchainid'];
@@ -138,6 +187,7 @@ class User extends Base
         $data['jianxie'] = strtoupper($pinyin->getpy($new['username'], false));
 
         if (isset($_GET['id']) && intval($_GET['id']) > 0) {
+            //编辑
             $data['update_time'] = date('Y-m-d h:i:s', time());
 
             $re = Db::table('mbs_user')
@@ -164,7 +214,9 @@ class User extends Base
                 return json_encode($data);
             }
         } else {
-            $data['password'] = md5(123456);
+            if(strlen($new['userpassword'])==0){
+                $data['password'] = md5(123456);
+            }
             $data['create_time'] = date('Y-m-d h:i:s', time());
             //启动事务
             Db::startTrans();

@@ -372,9 +372,9 @@
                 <select style="width: 187px;height:25px;" class="serchain_select" name="serchain_id" autocomplete="off"
                         onchange="changechain(this)">
 
-                    <option value="0" dd="" es="" ss="" taxrate="">请选择门店</option>
+                    <option value="0" dd="" es="" ss=""  taxrate="">请选择门店</option>
                     {foreach $chain as $k }
-                    <option value="{$k.id}" dd="" es="" ss="{$k.id}" taxrate="" >{$k.name}</option>
+                    <option value="{$k.id}" dd="" es="" ss="{$k.id}" taxrate="" {if condition="$cusinfo.chain_id==$k.id" }selected {/if} >{$k.name}</option>
                     {/foreach}
                 </select>
                 {/if}
@@ -403,14 +403,11 @@
             <div class="base_input_right">
                 <span class="tcxz" style="position: relative"><em style="letter-spacing: 1px">诊疗项目：</em>
                    <select style="width: 187px;height:25px;" class="packageselect" name="wz_detail" autocomplete="off">
-                    {if condition='($usign==2)'}
                         {foreach $package as $k }
                         <option value="{$k.package_id}" dd="" es="" ss="{$k.package_id}"
                              taxrate="">{$k.package_name}</option>
                         {/foreach}
                         <option value="-1" dd="" es="" ss="" >退款</option>
-                    {/if}
-
                     </select>
                 </span>
                 <!--                <span class="xmxz" style="display: none" onclick="xzxm();">自选项目</span>-->
@@ -423,22 +420,18 @@
             <div class="base_input_left">
                 <span class="jishi" style="position: relative"><em style="letter-spacing: 5px">治疗师：</em>  </span>
                 <select style="width: 187px;height:25px;" class="jishiselect" name="jishi" autocomplete="off">
-                    {if condition='($usign==2)'}
                     {foreach $jishi as $k }
-                    <option value="{$k.id}" dd="" es="" ss="{$k.id}" taxrate="">{$k.name}</option>
+                    <option value="{$k.id}" dd="" es="" ss="{$k.id}" {if condition="$cusinfo.server_id==$k.id"}selected {/if} taxrate="">{$k.name}</option>
                     {/foreach}
-                    {/if}
                 </select>
 
             </div>
             <div class="base_input_right">
                 <span class="qiantai"><em style="">前台接待：</em> </span>
                 <select style="width: 187px;height:25px;" class="qiqantaiselect" name="reception" autocomplete="off">
-                    {if condition='($usign==2)'}
                     {foreach $reception as $k }
                     <option value="{$k.id}" dd="" es="" ss="{$k.id}" taxrate="">{$k.name}</option>
                     {/foreach}
-                    {/if}
                 </select>
 
             </div>

@@ -435,7 +435,7 @@
                     {if condition="(isset($dschain[$k.id]['package']))"}
                     <tr class="mrssec">
                         <td colspan="4">其他门店</td>
-                        <td colspan="4">{$k.name}</td>
+                        <td colspan="4">{$chainlist[$k.id]['name']}</td>
                         <td class="jsquban" colspan="4">{$dschain[$k.id]['package'][$pakid.quban]['total'] ?? 0}</td>
                         <td class="jstiyanka" colspan="4">{$dschain[$k.id]['package'][$pakid.tiyanka]['total'] ?? 0}</td>
                         <td class="jsliaochengyeji" colspan="4">{$dschain[$k.id]['package'][$pakid.liaochengyeji]['total'] ?? 0}</td>

@@ -385,10 +385,10 @@ class Tongji extends Base
 
             //当日代收其他门店
             $dstotal = 0;
-            $daishou = Db::query('SELECT SUM(total_money) xiaofei,SUM(owe) owe,xfchain_id,package_id FROM mbs_xiaofei WHERE status=1  ' . $daiwhere . ' GROUP BY package_id,xfchain_id ORDER BY customer_id ASC');
+            $daishou = Db::query('SELECT SUM(total_money) xiaofei,SUM(owe) owe,xfchain_id,serchain_id,package_id FROM mbs_xiaofei WHERE status=1  ' . $daiwhere . ' GROUP BY package_id,serchain_id ORDER BY customer_id ASC');
             foreach ($daishou as $k => $v) {
                 if ($v['xfchain_id'] > 0) {
-                    $dschainid[] = $v['xfchain_id'];
+                    $dschainid[] = $v['serchain_id'];
                 }
                 if ($v['xiaofei'] > 0) {
                     $dstotal = $dstotal + $v['xiaofei'];
@@ -397,37 +397,37 @@ class Tongji extends Base
                 switch ($v['package_id']) {
                     case $pakid['quban']:
                         if ($v['package_id'] == $pakid['quban']) {
-                            if (isset($yejilist[$v['xfchain_id']]['package'][$v['package_id']]['total'])) {
-                                $dschain[$v['xfchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'] + $yejilist[$v['jishi_id']][$v['package_id']]['total'];
+                            if (isset($yejilist[$v['serchain_id']]['package'][$v['package_id']]['total'])) {
+                                $dschain[$v['serchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'] + $yejilist[$v['jishi_id']][$v['package_id']]['total'];
                             } else {
-                                $dschain[$v['xfchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'];
+                                $dschain[$v['serchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'];
                             }
                         }
                         break;
                     case $pakid['tiyanka']:
                         if ($v['package_id'] == $pakid['tiyanka']) {
-                            if (isset($yejilist[$v['xfchain_id']]['package'][$v['package_id']]['total'])) {
-                                $dschain[$v['xfchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'] + $yejilist[$v['jishi_id']][$v['package_id']]['total'];
+                            if (isset($yejilist[$v['serchain_id']]['package'][$v['package_id']]['total'])) {
+                                $dschain[$v['serchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'] + $yejilist[$v['jishi_id']][$v['package_id']]['total'];
                             } else {
-                                $dschain[$v['xfchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'];
+                                $dschain[$v['serchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'];
                             }
                         }
                         break;
                     case $pakid['chanpinyeji']:
                         if ($v['package_id'] == $pakid['chanpinyeji']) {
-                            if (isset($yejilist[$v['xfchain_id']]['package'][$v['package_id']]['total'])) {
-                                $dschain[$v['xfchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'] + $yejilist[$v['jishi_id']][$v['package_id']]['total'];
+                            if (isset($yejilist[$v['serchain_id']]['package'][$v['package_id']]['total'])) {
+                                $dschain[$v['serchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'] + $yejilist[$v['jishi_id']][$v['package_id']]['total'];
                             } else {
-                                $dschain[$v['xfchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'];
+                                $dschain[$v['serchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'];
                             }
                         }
                         break;
                     case $pakid['liaochengyeji']:
                         if ($v['package_id'] == $pakid['liaochengyeji']) {
-                            if (isset($yejilist[$v['xfchain_id']]['package'][$v['package_id']]['total'])) {
-                                $dschain[$v['xfchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'] + $yejilist[$v['jishi_id']][$v['package_id']]['total'];
+                            if (isset($yejilist[$v['serchain_id']]['package'][$v['package_id']]['total'])) {
+                                $dschain[$v['serchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'] + $yejilist[$v['jishi_id']][$v['package_id']]['total'];
                             } else {
-                                $dschain[$v['xfchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'];
+                                $dschain[$v['serchain_id']]['package'][$v['package_id']]['total'] = $v['xiaofei'];
                             }
                         }
                         break;

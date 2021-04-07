@@ -100,6 +100,7 @@
                         <th style="width: 50px;">序号</th>
                         <th>姓名</th>
                         <th>手机</th>
+                        <th>时间</th>
                         <th>诊疗项目</th>
                         <th>金额</th>
                         <th>欠款</th>
@@ -113,6 +114,7 @@
                         <td>{$k.xiaofei_id}</td>
                         <td>{$k.customer_name}</td>
                         <td>{$k.phone}</td>
+                        <td>{$k.create_time|substr=0,10}</td>
                         <td>{$k.package_name}</td>
                         <td>{$k.total_money}</td>
                         <td class="clean">{$k.owe}</td>
@@ -148,6 +150,7 @@
                         <th style="width: 50px;">序号</th>
                         <th>姓名</th>
                         <th>手机</th>
+                        <th>时间</th>
                         <th>诊疗项目</th>
                         <th>金额</th>
                         <th>备注</th>
@@ -160,7 +163,8 @@
                         <td>{$k.tuifei_id}</td>
                         <td>{$k.customer_name}</td>
                         <td>{$k.phone}</td>
-                        <td>{$k.package_name}</td>
+                        <td>{$k.create_time|substr=0,10}</td>
+                        <td>退款</td>
                         <td>{$k.total_money}</td>
                         <td>{$k.xfbeizhu}</td>
                         <td class="caozuo">

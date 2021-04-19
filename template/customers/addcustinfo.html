@@ -574,7 +574,12 @@
         var source_id = parseInt($('.source_from').val());
         var source_from = $('.source_from').find("option:selected").text().replace(/(^\s*)|(\s*$)/g, "");
         var user_sex = parseInt($('input[name="sex"]:checked').val());
-        var chain_id =  $('.chain_id').find("option:selected").val().replace(/(^\s*)|(\s*$)/g, "");
+        var chain_id =  $('.chain_id').find("option:selected").val();
+        if(chain_id!=undefined && chain_id!=null && chain_id!=''){
+            chain_id = chain_id.replace(/(^\s*)|(\s*$)/g, "");
+        }else{
+            chain_id = $('.chain_input').attr('sid');
+        }
         var charge_money = Number($('.charge_money').val());
         if(!(/^1[3456789]\d{9}$/.test(user_phone))){
             layer.msg("手机号码有误，请重填");

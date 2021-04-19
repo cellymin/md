@@ -1192,6 +1192,7 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                             $re = Db::table('mbs_customers')
                                 ->where('id', intval($_GET['id']))
                                 ->update($data);
+
                             //建卡
                             $chdata['customer_id'] = intval($_GET['id']);
                             $chdata['card_no'] = time() . mt_rand(1, 100);;
@@ -1203,6 +1204,7 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                             $chdata['create_time'] = date('Y-m-d h:i:s', time());
                             $re7 = Db::table('mbs_customer_card')
                                 ->insertGetId($chdata);
+
                             //卡创建充值操作
                             $cadata['card_id'] = intval($re7);
                             $cadata['customer_id'] = intval($_GET['id']);
@@ -1216,7 +1218,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                             //添加充值日志
                             $logcadata['xf_id'] = intval($re1);
                             $logcadata['user_id'] = $_SESSION['UID'];
-                            $logcadata['card_id'] = intval($re7);
                             $logcadata['customer_id'] = intval($_GET['id']);
                             $logcadata['logType'] = 5;
                             $logcadata['logContent'] = '添加消费充值记录，充值金额' . intval($cadata['money']);
@@ -1224,7 +1225,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                             $logcadata['createTime'] = date('Y-m-d H:i:s', time());
                             $re5 = Db::table('mbs_xiaofei_log')
                                 ->insert($logcadata);
-
                             //卡划扣操作
                             $cdata['card_id'] = intval($re7);
                             $cdata['customer_id'] = intval($_GET['id']);
@@ -2936,7 +2936,7 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                                     } else {
                                         if (intval($dataxf['owe']) != $oldowe && !empty($ifhave)) {
 
-                                            if ($re && $rexf && $re3 && $re2 && $re4 && $re6) {
+                                            if ($re && $rexf  && $re2 && $re4 && $re6 && $re0) {
                                                 Db::commit();//提交事务
                                                 unset($data);
                                                 $data['code'] = 200;
@@ -2951,7 +2951,7 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                                             }
 
                                         } else {
-                                            if ($re && $rexf && $re3 && $re2 && $re4 && $re6) {
+                                            if ($re && $rexf && $re2 && $re4 && $re6) {
                                                 Db::commit();//提交事务
                                                 unset($data);
                                                 $data['code'] = 200;

@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Miaoboshi</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="{$Think.const.STATIC_URL}lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{$Think.const.STATIC_URL}lib/font-awesome/css/font-awesome.css">
+
+    <script src="{$Think.const.STATIC_URL}lib/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="{$Think.const.STATIC_URL}layer/layer.js"></script>
+    <script src="{$Think.const.JS_URL}date.js" type="text/javascript" charset="utf-8"></script>
+
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}theme.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}premium.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}mbscom.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}commonindex.css">
+    <link rel="stylesheet" type="text/css" href="{$Think.const.CSS_URL}commonedit.css">
+</head>
+<body class=" theme-blue">
+
+
+<!-- Demo page code -->
+
+<script type="text/javascript">
+    $(function () {
+        var match = document.cookie.match(new RegExp('color=([^;]+)'));
+        if (match) var color = match[1];
+        if (color) {
+            $('body').removeClass(function (index, css) {
+                return (css.match(/\btheme-\S+/g) || []).join(' ')
+            })
+            $('body').addClass('theme-' + color);
+        }
+
+        $('[data-popover="true"]').popover({html: true});
+
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+        var uls = $('.sidebar-nav > ul > *').clone();
+        uls.addClass('visible-xs');
+        $('#main-menu').append(uls.clone());
+    });
+</script>
+<!--Use of these features requires a premium license.-->
+<!--See http://www.portnine.com/bootstrap-themes for details.-->
+<!--After purchasing a premium license, the full source code will be available for download.-->
+<style>
+    .nav-tabs > li > a {
+        color: #555;
+    }
+
+    .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+        background: #4ECDC4;
+        color: #fff;
+        border: 0px;
+    }
+
+    .nav-tabs {
+        border-bottom: 0px;
+    }
+
+    .tab_detail {
+        width: 50%;
+        overflow: hidden;
+    }
+    .tab-content .form-group input {
+        width: 75%;
+        height: 30px;
+        border: 1px solid #ccc;
+    }
+    .tab-content .form-group input:focus{
+        outline: none;
+        border-color: #ccc;
+        box-shadow: 0 0 10px #ccc;
+    }
+    .self_money{
+        margin:0px 15px 15px 15px;
+    }
+    .self_money input{
+        width: 50%;
+        height: 34px;
+        border: 1px solid #ccc;
+    }
+    .self_money input::-webkit-input-placeholder { /* WebKit browsers */
+        color: #999;
+    }
+
+    .self_money input::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: #999;
+    }
+
+    .self_money input:-ms-input-placeholder { /* Internet Explorer 10+ */
+        color: #999;
+    }
+    @media (max-width: 500px) {
+        .self_money input{
+            width: 70%;
+        }
+    }
+</style>
+{include file="template/sidebar.html"}
+
+<div class="content">
+    {include file="template/navbar.html"}
+    <div class="main-content" style="clear: both;margin-top: 10px;">
+        <!--                <h1 class="page">用户列表</h1>-->
+        <div class="tabbable">
+            <ul class="nav nav-tabs" id="myTab">
+                <li class="active">
+                    <a data-toggle="tab" href="#xiaofei">
+                        <i class="green icon-home bigger-110"></i>
+                        消费详情
+                    </a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#charge">
+                        充值操作
+                    </a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#profile">
+                        客户信息
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <!--                <div class="sousuo" >-->
+                <!--                    <form action="" method="get">-->
+                <!--                        <div class="form_sub">-->
+                <!--                            &lt;!&ndash;                <div class="sousuo_form">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                    门店： <input type="text" name="chain_name">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                </div>&ndash;&gt;-->
+                <!--                            <div class="sousuo_form">-->
+                <!--                                <input type="text" value="{$Think.get.keywords}" name="keywords" autocomplete="off" placeholder="请输入名称/编号" >-->
+                <!--                            </div>-->
+                <!--                            &lt;!&ndash;                <div class="sousuo_form">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                    电话：<br/><input type="text" value="{$Think.get.phone}" name="phone" autocomplete="off">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                </div>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                <div class="sousuo_form">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                    订单编号：<br/><input type="text" value="{$Think.get.server_no}" name="server_no" autocomplete="off">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                </div>&ndash;&gt;-->
+                <!--                            <div class="sousuo_form">-->
+                <!--                     <span id='date'>-->
+                <!--			                  <input type="text" value="{$Think.get.create_time}" class="user_birth" name="create_time" placeholder="点击选择时间" id='inputdate' autocomplete="off" />-->
+                <!--                     </span>-->
+                <!--                            </div>-->
+                <!--                            <div class="sousuo_form" style="width: 80px;text-align: center;margin-left: 10px;background: #39435C;color: #fff;cursor:pointer; ">-->
+                <!--                                <span class="suosou_btn" onclick="onconfirm();">搜索</span>-->
+                <!--                            </div>-->
+                <!--                            &lt;!&ndash;                <div class="sousuo_form">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                    技师名称：<br/><input type="text" value="{$Think.get.server_name}" name="server_name" autocomplete="off">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                </div>&ndash;&gt;-->
+                <!--                        </div>-->
+                <!--                    </form>-->
+
+                <!--                </div>-->
+
+                <div id="xiaofei" class="tab-pane in active">
+                    <div class="detail_bt" style="background: #e5e5e5 ;">
+                        <h1 class="page" style="">消费列表</h1>
+                    </div>
+                    <table class="dataintable table">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;">序号</th>
+                            <th>姓名</th>
+                            <th>手机</th>
+                            <th>时间</th>
+                            <th>诊疗项目</th>
+                            <th>金额</th>
+                            <th>欠款</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {foreach $xiaofeilist as $k }
+                        <tr>
+                            <td>{$k.xiaofei_id}</td>
+                            <td>{$k.customer_name}</td>
+                            <td>{$k.phone}</td>
+                            <td>{$k.create_time|substr=0,10}</td>
+                            <td>{$k.package_name}</td>
+                            <td>{$k.total_money}</td>
+                            <td class="clean">{$k.owe}</td>
+                            <td>{$k.xfbeizhu}</td>
+                            <td class="caozuo" style="font-size: 14px">
+                                {if condition="($usign==1 || $usign==2)" }
+                                <a style="color: #999" href=" {$Think.const.DQURL}index/customers/editcustinfo?id={$k.xiaofei_id}">编辑</a>
+                                {/if}
+                                {if condition="($k.clean==2 && ($usign==1 || $usign==2))"}
+                                <span onclick="addown(this,'{$k.xiaofei_id}');" attrid="{$k.xiaofei_id}">|还款</span>
+                                {/if}
+                                {if condition="$sessiongid==1"}
+                                <span onclick="delxiaofei(this);" attrid="{$k.xiaofei_id}"> |删除</span>
+                                {/if}
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    <div class="detail_bt" style="background: #e5e5e5 ;">
+                        <h1 class="page" style="">退费列表</h1>
+                    </div>
+                    <table class="dataintable table">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;">序号</th>
+                            <th>姓名</th>
+                            <th>手机</th>
+                            <th>时间</th>
+                            <th>金额</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {foreach $tfxiaofeilist as $k }
+                        <tr>
+                            <td>{$k.tuifei_id}</td>
+                            <td>{$k.customer_name}</td>
+                            <td>{$k.phone}</td>
+                            <td>{$k.create_time|substr=0,10}</td>
+                            <td>{$k.total_money}</td>
+                            <td>{$k.xfbeizhu}</td>
+                            <td class="caozuo">
+                                {if condition="($sessiongid==1)"}
+                                <span onclick="deltuifei(this);" attrid="{$k.tuifei_id}"> 删除</span>
+                                {/if}
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="charge" class="tab-pane">
+                    <div class=" cust_info">
+                        <div class="detail_bt" style="background: #e5e5e5 ;">
+                            <h1 class="page" style="">充值</h1>
+                        </div>
+                        <div style="margin: 15px">
+                            <label>门店：</label>
+                            <select name="chain_id" class="chain_id">
+                                <option value="0" >请选择充值门店</option>
+                                {foreach $chain as $k }
+                                <option value="{$k.id}" dd="" es="" ss="{$k.id}" taxrate=""  {if condition="(isset($userinfo) && ($k.id == $userinfo.chain_id))" } selected {/if} >{$k.name}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div class="self_money">
+                            <label>手机：</label>
+                            <input type="hidden" class="cust_id" value="{$userinfo.id ?? ''}" >
+                            <input type="hidden" class="cust_name" value="{$userinfo.name ?? ''}" >
+                            <input type="text" class="phone" value="{$userinfo.phone ?? ''}" onchange="if_unique(this);" placeholder="手机号" >
+                        </div>
+                        <div class="self_money">
+                            <label>卡号：</label>
+                            <input type="text" class="card_no" value="{$userinfo.card_no}" placeholder="请输入卡号">
+                        </div>
+                        <div class="self_money">
+                            <label>金额：</label>
+                            <input type="text" class="chargemoney" value="" placeholder="请输入充值金额">
+                        </div>
+                        <div style="margin:0px 15px 15px">
+                            <p style="text-align:center;background: #29b578; width: 9rem; height: 3rem; line-height: 3rem; color: #fff;  letter-spacing: 1px;margin-top: 1rem;">
+                                <sapn style="cursor: pointer;" onclick="confirmcharge(this);" attrid="">确定</sapn>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="detail_bt" style="background: #e5e5e5 ;">
+                        <h1 class="page" style="">充值记录</h1>
+                    </div>
+                    <table class="dataintable table addchargetable">
+                        <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>时间</th>
+                            <th>充值门店</th>
+                            <th>充值金额</th>
+                            <th>添加人</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {foreach $logcharge as $k }
+                        <tr>
+                            <td>{$userinfo.name}</td>
+                            <td>{$k.create_time|substr=0,10}</td>
+                            <td>{$chain[$k.chain_id]['name'] ?? ''}</td>
+                            <td>{$k.money}</td>
+                            <td>{$k.name}</td>
+                            <td class="caozuo" style="font-size: 14px">
+                                {if condition="($sessiongid==1)"}
+                                <span style="    background: #fff;padding: 2px 6px; border: 1px solid #ccc;border-radius: 5px;" onclick="delcharge(this);" attrid="{$k.caozuo_id}"> 作废</span>
+                                {/if}
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    <div class="detail_bt" style="background: #e5e5e5 ;">
+                        <h1 class="page" style="">划扣记录</h1>
+                    </div>
+                    <table class="dataintable table chargetable">
+                        <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>时间</th>
+                            <th>划扣门店</th>
+                            <th>划扣金额</th>
+                            <th>操作人</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach loghuakou as $k }
+                        <tr>
+                            <td>{$userinfo.name}</td>
+                            <td>{$k.create_time|substr=0,10}</td>
+                            <td>{$chain[$k.chain_id]['name'] ?? ''}</td>
+                            <td>{$k.money}</td>
+                            <td>{$k.name}</td>
+                        </tr>
+                        {/foreach}
+                        <tr><td colspan="7">当前总余额:<span class="custtotal">{$userinfo.money}</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="profile" class="tab-pane">
+                    <div class=" cust_info">
+                        <div class="detail_bt" style="background: #e5e5e5 ;">
+                            <h1 class="page" style="">用户信息</h1>
+                        </div>
+                        <div style="margin: 15px">
+                            <label>门店：</label>
+                            <select name="chain_id_user" class="chain_id_user">
+                                <option value="0" >请选择门店</option>
+                                {foreach $chain as $k }
+                                <option value="{$k.id}" dd="" es="" ss="{$k.id}"  {if condition="(isset($userinfo) && ($k.id == $userinfo.chain_id))" } selected {/if} taxrate="" >{$k.name}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div class="self_money">
+                            <label>名称：</label>
+                            <input type="hidden" class="cust_id" value="{$userinfo.id ?? ''}" >
+                            <input type="text" class="user_name" value="{$userinfo.name ?? ''}" placeholder="请输入姓名">
+                        </div>
+                        <div class="self_money">
+                            <label>手机：</label>
+                            <input type="text" class="user_phone" value="{$userinfo.phone ?? ''}" placeholder="请输入手机号"  autocomplete="off">
+                        </div>
+                        <div class="self_money">
+                            <label>生日：</label>
+                            <span id="date"><input type="text" class="user_birth" value="{$userinfo.birth ?? ''}" placeholder="请输入生日" id="inputdate" autocomplete="off"></span>
+                        </div>
+                        <div class="self_money">
+                            <label>性别：</label>
+                            <label class="user_sex_la"><input style="width: 20px;height: 11px;" type="radio" name="sex" {if condition="(isset($userinfo) && $userinfo.sex == 1)"}checked {/if} value="1">男
+                                <input style="width: 20px;height: 11px;" type="radio"  name="sex" {if condition="(isset($userinfo) && $userinfo.sex == 2)"}checked {/if} value="2">女</label>
+                        </div>
+                        <div class="self_money">
+                            <label>邮箱：</label>
+                            <input type="text" class="user_email" value="{$userinfo.email ?? ''}" placeholder="请输入邮箱">
+                        </div>
+                        <div class="self_money">
+                            <label>地址：</label>
+                            <input type="text" class="user_address" value="{$userinfo.address ?? ''}" placeholder="请输入地址">
+                        </div>
+                        <div style="margin: 15px">
+                            <label>来源：</label>
+                            <select name="source_from" class="source_from">
+                                <option value="0" >请选择来源</option>
+                                {foreach $source as $k }
+                                <option value="{$k.fromway_id}" {if condition="(isset($userinfo) && $userinfo.source_id == $k.fromway_id)"}selected="selected" {/if}>{$k.fromway_name}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div style="margin:0px 15px 15px">
+                            <p style="text-align:center;background: #29b578; width: 9rem; height: 3rem; line-height: 3rem; color: #fff;  letter-spacing: 1px;margin-top: 1rem;">
+                                <sapn style="cursor: pointer;" onclick="confim_ok(this);" attrid="{$userinfo.id}">确定</sapn>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="layui-layer-shade" style="z-index:19891019; background:url({$Think.const.IMG_URL}/kong.png); display:none;" id="xiugaiyynn">
+    <div class="layui-layer layui-anim layui-layer-page layer-ext-moon" style="z-index: 19891020; width:320px; height:200px; left:50%; margin-left:-155px;">
+        <div class="layui-layer-title" style="cursor: move;">还款</div>
+        <div class="layui-layer-content">
+            <div class="animated">
+                <!--                <form action="__URL__/managexf" method="post" class="form-horizontal">-->
+                <div class="ibox float-e-margins" style="margin-bottom:0px;">
+                    <div class="ibox-content">
+                        <div class="input-group m-b" style="padding-left: 1%;margin-bottom:5px;"><span class="input-group-addon">金额</span>
+                            <input type="hidden" name="zx_id" value="" class="zx_id_input">
+                            <input type="hidden" value="" class="caozuode">
+                            <input style="width: 98%" class="form-control" name="xf" type="text" id="fuzhi2" value="" onchange="ifnumber(this);"/>
+                        </div>
+                        <div class="input-group m-b" style="padding-left: 1%;;margin-bottom:5px;"><span class="input-group-addon">还款方式</span>
+                            <select name="payway_id" class="paywaytype" style=" height: 34px; width: 98%; border: 1px solid #ccc;">
+                                {foreach $payway as $k }
+                                <option value="{$k.payway_id}">
+                                    {$k.payway_name}
+                                </option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div class="" align="center" style="margin-bottom:5px;">
+                            <p style="background: #29b578; width: 7rem; height: 3rem; line-height: 3rem; color: #fff;  letter-spacing: 1px;margin-top: 1rem;">
+                                <sapn style="cursor: pointer;" onclick="confirclean();">确定修改</sapn></p>
+                        </div>
+                    </div>
+                </div>
+                <!--                </form>-->
+            </div>
+        </div>
+        <span class="layui-layer-setwin" id="xiugaiyyxx"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a></span>
+    </div>
+</div>
+<script>
+    function addown(e, id) {
+        $(e).addClass('clean' + id);
+        $('.zx_id_input').val('');
+        $('.zx_id_input').val(id);
+        $('#xiugaiyynn').show()
+        return false;
+    }
+
+    $('#xiugaiyyxx').on('click', function () {
+        $('#xiugaiyynn').hide()
+    });
+
+    function ifnumber(e) {
+        var regu = /^[0-9]+\.?[0-9]*$/;
+        var text = $(e).val();
+        if (text == '' || text == null || text == undefined) {
+            layer.msg('请输入消费金额！')
+            $("#fuzhi2").val("");
+            return false;
+        } else {
+            if (!regu.test(text)) {
+                layer.msg("请输入正确的金额");
+                $("#fuzhi2").val("");
+                return false;
+            }
+        }
+    }
+
+    function confirclean() {
+        var id = $('.zx_id_input').val();
+        var text = parseInt($('#fuzhi2').val());
+        var payway_id = parseInt($('.paywaytype').val());
+        if (!(text > 0)) {
+            alert('请输入正确金额！');
+            return false;
+        }
+        if (!(payway_id > 0)) {
+            alert('请选择还款方式！');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{$Think.const.DQURL}index/customers/addclean",
+            data: {"xf_id": id, 'owe': text, 'payway_id': payway_id},
+            dataType: "json",
+            success: function (data) {
+                var data = JSON.parse(data);
+                if (data.code == 200) {
+                    layer.msg(data.msg);
+                    if (data.owe > 0) {
+                        $('.clean' + id).parent().parent().find('.clean').text(data.owe);
+                    }
+                    $('#xiugaiyynn').hide()
+                } else {
+                    layer.msg(data.msg);
+                }
+            },
+            error: function (data) {
+                console.log(data.message);
+                return false;
+            }
+        });
+    }
+
+    function editxiaofei(e) {
+        var id = $(e).attr('attrid');
+        layer.ready(function () {
+            layer.open({
+                type: 2,
+                title: '添加消费',
+                maxmin: true,
+                area: ['50%', '60%'],
+                content: '{$Think.const.DQURL}index/customers/editxiaofei?id=' + id
+            })
+        })
+    }
+
+    function delxiaofei(e) {
+        var id = $(e).attr('attrid');
+        var msg = "您真的确定要删除吗？\n\n请确认！";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '{$Think.const.DQURL}index/customers/delxiaofei',// 获取自己系统后台用户信息接口
+                data: {"id": id},
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        var data = JSON.parse(data);
+                        if (data.code == 200) { //判断返回值，这里根据的业务内容可做调整
+                            $(e).parent().parent().remove();
+                        } else {
+                            alert(data.msg);
+                            $(e).removeAttr('disabled');
+                            return false;
+                        }
+                    }
+                },
+                error: function (data) {
+                    $(e).removeAttr('disabled');
+                    console.log(data.message);
+                }
+            });
+        } else {
+            return false;
+        }
+    }
+
+    function deltuifei(e) {
+        var id = $(e).attr('attrid');
+        var msg = "您真的确定要删除吗？\n\n请确认！";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '{$Think.const.DQURL}index/customers/deltuifei',// 获取自己系统后台用户信息接口
+                data: {"id": id},
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        var data = JSON.parse(data);
+                        if (data.code == 200) { //判断返回值，这里根据的业务内容可做调整
+                            $(e).parent().parent().remove();
+                        } else {
+                            alert(data.msg);
+                            $(e).removeAttr('disabled');
+                            return false;
+                        }
+                    }
+                },
+                error: function (data) {
+                    $(e).removeAttr('disabled');
+                    console.log(data.message);
+                }
+            });
+        } else {
+            return false;
+        }
+    }
+    function confirmcharge() {
+        var id = parseInt($('.cust_id').val());
+        var chain_id = $('.chain_id').val().replace(/(^\s*)|(\s*$)/g, "");
+        var chain_name = $('.chain_id').find("option:selected").text().replace(/(^\s*)|(\s*$)/g, "");
+        var card_no = $('.card_no').val();
+        var phone = $('.phone').val();
+        var chargemoney = $('.chargemoney').val();
+        var cust_name = $('.cust_name').val();
+        var myDate = new Date;
+        var year = myDate.getFullYear(); //获取当前年
+        var mon = myDate.getMonth() + 1; //获取当前月
+        var date = myDate.getDate(); //获取当前日
+        if( chain_id=='' || chain_name==undefined || chain_id==null || !(parseInt(chain_id)>0)){
+            layer.msg('门店不能为空');
+            return false;
+        }
+        if(!(Number(chargemoney)>0)){
+            layer.msg('金额必须大于0');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{$Think.const.DQURL}index/customers/addcharge",
+            data: {"cust_id": id, 'chain_id': chain_id, 'card_no': card_no,'phone':phone,'chargemoney':chargemoney},
+            dataType: "json",
+            success: function (data) {
+                var data = JSON.parse(data);
+                if (data.code == 200) {
+                    layer.msg(data.msg);
+                    var ss = '';
+                    ss += ' <tr>' +
+                        '                    <td>'+cust_name+'</td>' +
+                        '                    <td>'+year+'-'+mon+'-'+date+'</td>' +
+                        '                    <td>'+chain_name+'</td>' +
+                        '                    <td>'+chargemoney+'</td>' +
+                        '                    <td>'+data.addname+'</td>' +
+                        '                    <td class="caozuo" style="font-size: 14px"> ' +
+                        '<span style="background: #fff;padding: 2px 6px; border: 1px solid #ccc;border-radius: 5px;" onclick="delcharge(this);" attrid="'+data.id+'"> 作废</span>'+
+                        ' </td>';
+                    ss += ' </tr>' ;
+                    var mm = Number($('.custtotal').text()) + Number(chargemoney);
+                    $('.addchargetable tr').eq(1).before(ss);
+                    $('.custtotal').text(mm);
+
+                } else {
+                    layer.msg(data.msg);
+                }
+            },
+            error: function (data) {
+                console.log(data.message);
+                return false;
+            }
+        });
+    }
+    function delcharge(e) {
+        var id = $(e).attr('attrid');
+        var msg = "您真的确定要作废吗？\n\n请确认！";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '{$Think.const.DQURL}index/customers/delcharge',// 获取自己系统后台用户信息接口
+                data: {"id": id},
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        var data = JSON.parse(data);
+                        if (data.code == 200) { //判断返回值，这里根据的业务内容可做调整
+                            $(e).parent().parent().remove();
+                            var mm = data.money;
+                            $('.custtotal').text(mm);
+                            layer.msg(data.msg);
+                        } else {
+                            layer.msg(data.msg);
+                            $(e).removeAttr('disabled');
+                            return false;
+                        }
+                    }
+                },
+                error: function (data) {
+                    $(e).removeAttr('disabled');
+                    console.log(data.message);
+                }
+            });
+        } else {
+            return false;
+        }
+    }
+    function if_unique(e) {
+        var phone = $(e).val();
+        $.ajax({
+            url: '{$Think.const.DQURL}index/customers/if_exist',// 获取自己系统后台用户信息接口
+            data: {"phone": phone},
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    var data = JSON.parse(data);
+                    if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
+                        $(e).removeAttr('disabled');
+                    } else {
+                        alert(data.msg);
+                        $(e).removeAttr('disabled');
+                        return false;
+                    }
+                }
+            },
+            error: function (data) {
+                $(e).removeAttr('disabled');
+                console.log(data.message);
+            }
+        });
+    }
+    var d = new DateJs({
+        inputEl: '#inputdate',
+        el: '#date'
+    })
+    function confim_ok(e) {
+        var id = parseInt($(e).attr('attrid'));
+        $(e).attr('disabled','disabled');
+        var user_info = '';
+        var user_name = $('.user_name').val().replace(/(^\s*)|(\s*$)/g, "");
+        var user_birth = $('.user_birth').val().replace(/(^\s*)|(\s*$)/g, "");
+        var user_phone = $('.user_phone').val().replace(/(^\s*)|(\s*$)/g, "");
+        var user_email = $('.user_email').val().replace(/(^\s*)|(\s*$)/g, "");
+        var user_address = $('.user_address').val().replace(/(^\s*)|(\s*$)/g, "");
+        var source_id = parseInt($('.source_from').val());
+        var source_from = $('.source_from').find("option:selected").text().replace(/(^\s*)|(\s*$)/g, "");
+        var user_sex = parseInt($('input[name="sex"]:checked').val());
+        var chain_id =  $('.chain_id_user').find("option:selected").val().replace(/(^\s*)|(\s*$)/g, "");
+        if(!(/^1[3456789]\d{9}$/.test(user_phone))){
+            alert("手机号码有误，请重填");
+            $(e).removeAttr('disabled');
+            return false;
+        }
+        user_info = 'username*' + user_name + ','
+            + ',userbirth*' + user_birth
+            + ',sex*' + user_sex
+            + ',userphone*' + user_phone
+            + ',useremail*' + user_email
+            + ',useraddress*' + user_address
+            + ',sourceid*' + source_id
+            + ',sourcefrom*' + source_from
+            + ',chainid*' + chain_id;
+        $.ajax({
+            url: '{$Think.const.DQURL}index/customers/save_user?id='+id,// 获取自己系统后台用户信息接口
+            data: {"user_info": user_info},
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    var data = JSON.parse(data);
+                    if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
+                        $(e).removeAttr('disabled');
+                        window.location.reload();
+                    } else {
+                        alert(data.msg);
+                        $(e).removeAttr('disabled');
+                        return false;
+                    }
+                }
+            },
+            error: function (data) {
+                $(e).removeAttr('disabled');
+                // console.log(data.message);
+            }
+        });
+    }
+
+</script>
+{include file="template/footer.html"}

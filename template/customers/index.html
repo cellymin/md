@@ -48,6 +48,9 @@
         $('#main-menu').append(uls.clone());
     });
 </script>
+<style>
+
+</style>
 <!--Use of these features requires a premium license.-->
 <!--See http://www.portnine.com/bootstrap-themes for details.-->
 <!--After purchasing a premium license, the full source code will be available for download.-->
@@ -101,7 +104,7 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div style="background: #e5e5e5 ;">
-                    <div class="add_user" onclick="openedit();" style="float:right;cursor:pointer;font-size: 25px;width: 35px;height: 35px;margin-right:15px;line-height: 40px;text-align: center;margin-bottom: 2px">+</div>
+                    <div class="add_user" style="float:right;cursor:pointer;font-size: 25px;width: 35px;height: 35px;margin-right:15px;line-height: 40px;text-align: center;margin-bottom: 2px"><a href="{$Think.const.DQURL}index/customers/addcustinfo">+</a></div>
                     <h1 class="page">客户列表</h1>
                 </div>
                 <div style="overflow: scroll">
@@ -114,8 +117,8 @@
                         <th>创建时间</th>
                         <th>来源</th>
                         <th>电话</th>
-                        <th>服务单</th>
-                        <th>消费</th>
+                        <th>客户信息</th>
+                        <th>客户消费</th>
                         <th>操作</th>
                     </tr>
                     </thead>
@@ -138,7 +141,7 @@
                         <td>{if condition="($k.name != '') "} {$k.phone}
                             {elseif condition="$k.nickname !='' "/}无
                             {/if}</td>
-                        <td class="caozuo">
+                        <td class="caozuo" style="font-size: 14px">
                             {if condition="(empty($k.sid)) || $k.ostatus!=1 " }
                             <span attrid="{$k.id}">
                                 <a style="color: #999" href="{$Think.const.DQURL}index/customers/addserver?id={$k.id}" target="_blank">添加</a>
@@ -152,18 +155,18 @@
                             <span onclick="delserver(this);" attrid="{$k.sid}"> |删除</span>{/if}
                             {/if}
                         </td>
-                        <td class="xiaofei">
+                        <td class="xiaofei" style="font-size: 14px;">
                             {if condition="(isset($sign) && ($sign == '1' || $sign == '2') || $k.ser_id == $uid)"}
-                            <span onclick="addxiaofei(this);" attrid="{$k.id}"> 添加 |</span>
+                            <a style="color: #999" href="{$Think.const.DQURL}index/customers/addcustinfo?id={$k.id}"> 添加</a>
                             {/if}
-                            <a href="{$Think.const.DQURL}index/customers/viewxiaofei?id={$k.id}" attrid="{$k.id}" target="_brank"> 查看</a>
+<!--                            <a href="{$Think.const.DQURL}index/customers/viewxiaofei?id={$k.id}" attrid="{$k.id}" target="_brank"> 查看</a>-->
                         </td>
-                        <td>
-                            <span class="text-sm" style="margin-left: 10px">
-                                <a href="javascript:void(0)" attrid="{$k.id}" onclick="openedit(this);" data-toggle="modal" class="padding-right-small"><i class="fa fa-pencil "></i> 修改</a>
-                                  {if condition="(isset($sign) && $sign == '1') "}
-                                <a href="javascript:void(0)" attrid="{$k.id}" data-toggle="modal" onclick="deleteuser(this)"><i class="fa fa-trash-o "></i> 删除</a></span>
-                            {/if}
+                        <td style="font-size: 14px">
+                            <span class="text-sm" style="">
+                                <a href="{$Think.const.DQURL}index/customers/detailinfo?id={$k.id}" attrid="{$k.id}" style="color: inherit; background: white; border: 1px solid #e7eaec;border-radius: 3px;padding: 3px 8px;"  data-toggle="modal" class="padding-right-small">查看详情 </a>
+<!--                                  {if condition="(isset($sign) && $sign == '1') "}-->
+<!--                                <a href="javascript:void(0)" attrid="{$k.id}" data-toggle="modal" onclick="deleteuser(this)"><i class="fa fa-trash-o "></i> 删除</a></span>-->
+<!--                            {/if}-->
                         </td>
                     </tr>
                     {/foreach}

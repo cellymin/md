@@ -90,7 +90,7 @@ class Tongji extends Base
         $custxf = [];
         $feihuan = [];
         $xiaofeitotal = 0;
-        $xiaofeilist = Db::query('SELECT x.total_money xiaofei,x.xiaofei_id,h.huankuan_id,x.owe,h.huan_money huankuan,x.customer_id customer_id,x.payway_id xfpayway_id,h.payway_id hkpayway_id,x.firvisit,x.package_id,x.jishi_id,x.jishi_name,x.serchain_id,x.xfchain_id,h.status hstatus FROM mbs_xiaofei x LEFT JOIN mbs_xfhuankuan h ON x.xiaofei_id = h.xiaofei_id WHERE x.status=1 ' . $xfwhere . ' ORDER BY x.xiaofei_id ASC');
+        $xiaofeilist = Db::query('SELECT x.total_money xiaofei,x.xiaofei_id,h.huankuan_id,x.owe,x.huakou,h.huan_money huankuan,x.customer_id customer_id,x.payway_id xfpayway_id,h.payway_id hkpayway_id,x.firvisit,x.package_id,x.jishi_id,x.jishi_name,x.serchain_id,x.xfchain_id,h.status hstatus FROM mbs_xiaofei x LEFT JOIN mbs_xfhuankuan h ON x.xiaofei_id = h.xiaofei_id WHERE x.status=1 ' . $xfwhere . ' ORDER BY x.xiaofei_id ASC');
         foreach ($xiaofeilist as $k => $v) {
             $feihuan[$v['xiaofei']][] = $v['xiaofei'];
             if (count($feihuan[$v['xiaofei']]) > 1) {
@@ -107,6 +107,7 @@ class Tongji extends Base
 
                 $custxflist[$v['customer_id']][$k]['xiaofei_id'] = $v['xiaofei_id'];
                 $customowe[$v['customer_id']][$v['xiaofei_id']]['owe'] = $v['owe'];
+                $custxflist[$v['customer_id']][$k]['huakou'] = $v['huakou'];
                 if ($v['serchain_id'] != $v['xfchain_id']) {
                     $custxflist[$v['customer_id']][$k]['jdpayway_id'] = $v['xfpayway_id'];
                     $custxflist[$v['customer_id']][$k]['jdxiaofei'] = $v['xiaofei'];
@@ -127,12 +128,12 @@ class Tongji extends Base
                 $custxflist[$v['customer_id']][$k]['serchain_id'] = $v['serchain_id'];
                 $custxflist[$v['customer_id']][$k]['xfchain_id'] = $v['xfchain_id'];
                 if (!empty($v['hstatus'])) {
-                    $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huankuan'];
+                    $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huankuan'] + $v['huakou'];
                 } else {
-                    $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'];
+                    $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huakou'];
                 }
                 if (!empty($v['huankuan_id']) && !empty($v['hstatus'])) {
-                    $xfc [$v['xiaofei_id']][] = $v['huankuan_id'] . ',' . $v['owe'] . ',' . $v['xiaofei'] . ',' . $v['xfchain_id'] . ',' . $v['huankuan'] . ',' . $v['xiaofei_id'];
+                    $xfc [$v['xiaofei_id']][] = $v['huankuan_id'] . ',' . $v['owe'] . ',' . $v['xiaofei'] . ',' . $v['xfchain_id'] . ',' . $v['huankuan'] . ',' . $v['xiaofei_id'] .','.$v['huakou'];
                 }
             } else {
                 if (count($feihuan[$v['xiaofei']]) > 1) {
@@ -144,6 +145,7 @@ class Tongji extends Base
                     $jishixf[] = "'" . $v['jishi_id'] . "'";
 
                     $custxflist[$v['customer_id']][$k]['xiaofei_id'] = $v['xiaofei_id'];
+                    $custxflist[$v['customer_id']][$k]['huakou'] = $v['huakou'];
                     $customowe[$v['customer_id']][$v['xiaofei_id']]['owe'] = $v['owe'];
                     if ($v['serchain_id'] != $v['xfchain_id']) {
                         $custxflist[$v['customer_id']][$k]['jdpayway_id'] = $v['xfpayway_id'];
@@ -165,19 +167,19 @@ class Tongji extends Base
                     $custxflist[$v['customer_id']][$k]['serchain_id'] = $v['serchain_id'];
                     $custxflist[$v['customer_id']][$k]['xfchain_id'] = $v['xfchain_id'];
                     if (!empty($v['hstatus'])) {
-                        $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huankuan'];
+                        $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huankuan'] + $v['huakou'];
                     } else {
-                        $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'];
+                        $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huakou'];
                     }
 
                     if (!empty($v['huankuan_id']) && !empty($v['hstatus'])) {
-                        $xfc [$v['xiaofei_id']][] = $v['huankuan_id'] . ',' . $v['owe'] . ',' . $v['xiaofei'] . ',' . $v['xfchain_id'] . ',' . $v['huankuan'] . ',' . $v['xiaofei_id'];
+                        $xfc [$v['xiaofei_id']][] = $v['huankuan_id'] . ',' . $v['owe'] . ',' . $v['xiaofei'] . ',' . $v['xfchain_id'] . ',' . $v['huankuan'] . ',' . $v['xiaofei_id'] .','.$v['huakou'];
                     }
                 }
             }
 
         }
-//        echo '<pre/>';var_dump($customowe);die();
+//        echo '<pre/>';var_dump($custxflist);die();
         //当天之内多次还款
         foreach ($xfc as $k => $v) {
             $aa = count($v);
@@ -186,17 +188,19 @@ class Tongji extends Base
                 if ($kk == 0) {
                     $xfcount[$k][$tt[0]]['row'] = $aa;
                     $xfcount[$k][$tt[0]]['owe'] = $tt[1];
+                    $xfcount[$k][$tt[0]]['huakou'] = $tt[6];
                     $xfcount[$k][$tt[0]]['xiaofei'] = $tt[2];
                     $xfcount[$k][$tt[0]]['xfchain_id'] = $tt[3];
-                    $xfcount[$k]['kfje'][$tt[5]]['kfje'] = $tt[1] + $tt[2] + $tt[4];
+                    $xfcount[$k]['kfje'][$tt[5]]['kfje'] = $tt[1] + $tt[2] + $tt[4] + $tt[6];
 
 
                 } else {
                     $xfcount[$k][$tt[0]]['row'] = null;
                     $xfcount[$k][$tt[0]]['owe'] = null;
+                    $xfcount[$k][$tt[0]]['huakou'] = null;
                     $xfcount[$k][$tt[0]]['xiaofei'] = null;
                     $xfcount[$k][$tt[0]]['xfchain_id'] = null;
-                    $xfcount[$k]['kfje'][$tt[5]]['kfje'] = $xfcount[$k]['kfje'][$tt[5]]['kfje'] + $tt[4];
+                    $xfcount[$k]['kfje'][$tt[5]]['kfje'] = $xfcount[$k]['kfje'][$tt[5]]['kfje'] + $tt[4] + $tt[6];
 
                 }
 
@@ -498,9 +502,6 @@ class Tongji extends Base
             $cid = intval($_GET['chain_id']);
         } else {
             $cid = $_SESSION['CID'];
-        }
-        if (!$cid > 0) {
-            $cid = 1;
         }
         $where .= ' AND serchain_id =\' ' . $cid . '\'';
         $dswhere .= ' AND xfchain_id =\' ' . $cid . '\' AND xfchain_id!=serchain_id ';

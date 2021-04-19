@@ -130,7 +130,7 @@
                 <table id="data_list" class="dataintable table" style="font-size: 14px">
                     <thead>
                     <tr class="firtr">
-                        <td colspan="35">{if condition="($cid>0)"}{$chainlist[$cid]['name']}{else /}门店{/if}日报表</td>
+                        <td colspan="36">{if condition="($cid>0)"}{$chainlist[$cid]['name']}{else /}门店{/if}日报表</td>
                     </tr>
                     <tr class="sectr">
                         <td rowspan="3">序号</td>
@@ -141,6 +141,7 @@
                         <td rowspan="3">诊疗项目</td>
                         <td rowspan="3">消费明细</td>
                         <td rowspan="3">开发金额</td>
+                        <td rowspan="3">划扣金额</td>
                         <td colspan="19" class="xfjine">收款金额</td>
                         <td rowspan="3">欠款</td>
                         <td colspan="6" class="hkjine">还款</td>
@@ -196,6 +197,7 @@
                             rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}> {$xfcount[$kk.xiaofei_id]['kfje'][$kk.xiaofei_id]['kfje'] ?? ''}
                         </td>
                         {/if}
+                        <td class="huakje">{$kk.huakou}</td>
                         <!--                        <td class="jine">{$kk.xiaofei}</td>-->
                         {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
                         <td class="xf_{$xfpay.xj} xfxj"></td>
@@ -301,6 +303,7 @@
                         <td class="xiangmu">退款</td>
                         <td class="mingxi"></td>
                         <td class="kfje"></td>
+                        <td class="huakje"></td>
                         <td class="xf_{$xfpay.xj} xfxj"></td>
                         <td class="xf_{$xfpay.sk} xfsk"></td>
                         <td class="xf_{$xfpay.jsm} xfjsm"></td>
@@ -334,7 +337,7 @@
 
                     {/foreach}
                     <tr class="lasttr">
-                        <td colspan="7">合计</td><td class="kfjeall"></td><td class="xfxjall"></td><td class="xfskall"></td><td class="xfjsmall"></td>
+                        <td colspan="7">合计</td><td class="kfjeall"></td><td class="huakjeall"></td><td class="xfxjall"></td><td class="xfskall"></td><td class="xfjsmall"></td>
                         <td class="xfzfbkball"></td><td class="xfnbmall"></td><td class="xfjfqall"></td><td class="xfmsall"></td><td class="xfymjfqall"></td>
                         <td class="xfmhfqall"></td><td class="xfmsfqall"></td><td class="xfjxfqall"></td><td class="md"></td><td class="jdjsmall"></td>
                         <td class="jdskall"></td><td class="jdylewmall"></td><td class="jdnbmall"></td><td class="xfbbfqall"></td><td class="xfqt1all"></td>
@@ -343,7 +346,7 @@
                     </tr>
                     <tr></tr>
                     <tr class="hjfir" style="font-weight: 600">
-                        <td colspan="5" rowspan="3">当日总收入</td>
+                        <td colspan="6" rowspan="4">当日总收入</td>
                         <td colspan="4">疗程销售收入</td>
                         <td colspan="4" class="daylcxssr">{$paktotal[$pakid.liaochengyeji]['total'] ?? 0}</td>
                         <td colspan="4">产品收入</td>
@@ -393,7 +396,7 @@
 
                     <tr></tr>
                     <tr class="mrsfir">
-                        <td rowspan="{$countjishi ?? ''}" colspan="5">当天美容师个人业绩</td>
+                        <td rowspan="{$countjishi ?? ''}" colspan="6">当天美容师个人业绩</td>
                         <td colspan="4">岗位</td>
                         <td colspan="4">治疗师姓名</td>
                         <td colspan="4">祛斑</td>
@@ -420,7 +423,7 @@
                     {/foreach}
                     {/if}
                     <tr class="mryfir">
-                        <td rowspan="{$countchain ?? ''}" colspan="5">当天代收其他门店费用</td>
+                        <td rowspan="{$countchain ?? ''}" colspan="6">当天代收其他门店费用</td>
                         <td colspan="4">其他门店</td>
                         <td colspan="4">门店名称</td>
                         <td colspan="4">祛斑</td>
@@ -473,7 +476,7 @@
             $(this).find('.hk_' + hkpayid).text(hk);
             $(this).find('.jd_' + jdpayid).text(jd);
         })
-        num('kfje');num('xfxj');num('xfsk');num('xfjsm');num('xfzfbkb');num('xfnbm');num('xfjfq');num('xfms');num('xfymjfq');num('xfmhfq');num('xfmsfq');
+        num('kfje');num('huakje');num('xfxj');num('xfsk');num('xfjsm');num('xfzfbkb');num('xfnbm');num('xfjfq');num('xfms');num('xfymjfq');num('xfmhfq');num('xfmsfq');
         num('xfjxfq');num('jdjsm');num('jdsk');num('jdylewm');num('jdnbm');num('xfbbfq');num('xfqt1');num('xfqt2');num('qiankuan');num('hkxj');num('hksk');
         num('hkjsm');num('hkzfbkb');num('hknbm');num('hkqt');
         $('.xuhao').each(function (i) {
@@ -537,7 +540,7 @@
             $('.hkjine').remove();
         }
         if(i<=14 && j<5 && k<=6) {
-            $('.firtr td').attr('colspan',35-i-j-k);
+            $('.firtr td').attr('colspan',36-i-j-k);
         }
         console.log(i+k+j);
         if(i+j+k<=4){
@@ -546,10 +549,10 @@
             $('.mrsfir').children().eq(0).attr('colspan',5-i-j-k);
             $('.mryfir').children().eq(0).attr('colspan',5-i-j-k);
         }else{
-            $('.hjfir').children().eq(0).attr('colspan',1);
+            $('.hjfir').children().eq(0).attr('colspan',2);
             $('.hjthr').children().eq(0).attr('colspan',34-i-j-k);
-            $('.mrsfir').children().eq(0).attr('colspan',1);
-            $('.mryfir').children().eq(0).attr('colspan',1);
+            $('.mrsfir').children().eq(0).attr('colspan',2);
+            $('.mryfir').children().eq(0).attr('colspan',2);
             //剩余
             var a = i+j+k - 4;
             //取余

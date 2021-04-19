@@ -20,6 +20,7 @@
     <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/premium.css">
     <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/mbscom.css">
     <link rel="stylesheet" type="text/css" href="/public/static/stylesheets/xiaofei.css">
+    <link rel="stylesheet" href="assets/css/ace.min.css" />
 </head>
 <body>
 <style>
@@ -46,6 +47,29 @@
     }
     h1{
         margin-block-start: 0;
+    }
+     .spinner-preview {
+         width:100px;
+         height:100px;
+         text-align:center;
+         margin-top:60px;
+     }
+
+    .dropdown-preview {
+        margin:0 5px;
+        display:inline-block;
+    }
+    .dropdown-preview  > .dropdown-menu {
+        display: block;
+        position: static;
+        margin-bottom: 5px;
+    }
+    .nav-tabs {
+        border-color: #c5d0dc;
+        margin-bottom: 0;
+        margin-left: 0;
+        position: relative;
+        top: 1px;
     }
 </style>
 {include file="template/sidebar.html"}
@@ -81,91 +105,103 @@
 <!--        </form>-->
 
 <!--    </div>-->
+
     <div class="main-content" style="clear: both;margin-top: 10px;">
         <!--                <h1 class="page">用户列表</h1>-->
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div style="background: #e5e5e5 ;">
-                    <h1 class="page">消费列表</h1>
-                </div>
-                <table class="dataintable table">
-                    <thead>
-                    <tr>
-                        <th style="width: 50px;">序号</th>
-                        <th>姓名</th>
-                        <th>手机</th>
-                        <th>诊疗项目</th>
-                        <th>金额</th>
-                        <th>欠款</th>
-                        <th>备注</th>
-                        <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {foreach $xiaofeilist as $k }
-                    <tr>
-                        <td>{$k.xiaofei_id}</td>
-                        <td>{$k.customer_name}</td>
-                        <td>{$k.phone}</td>
-                        <td>{$k.package_name}</td>
-                        <td>{$k.total_money}</td>
-                        <td class="clean">{$k.owe}</td>
-                        <td>{$k.xfbeizhu}</td>
-                        <td class="caozuo">
-                            {if condition="($usign==1)"}
-                            <span onclick="editxiaofei(this);" attrid="{$k.xiaofei_id}">编辑|</span>
-                            {/if}
-                            {if condition="($k.clean==2)"}
-                            <span onclick="addown(this,'{$k.xiaofei_id}');" attrid="{$k.xiaofei_id}">还款|</span>
-                            {/if}
-                            <span onclick="delxiaofei(this);" attrid="{$k.xiaofei_id}"> 删除</span>
+        <div class="tabbable">
+            <ul class="nav nav-tabs" id="myTab">
+        <li class="active">
+            <a data-toggle="tab" href="#home">
+                <i class="green icon-home bigger-110"></i>
+                Home
+            </a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#profile">
+                Messages
+                <span class="badge badge-danger">4</span>
+            </a>
+        </li>
+        <li class="dropdown">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                Dropdown &nbsp;
+                <i class="icon-caret-down bigger-110 width-auto"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-info">
+                <li>
+                    <a data-toggle="tab" href="#dropdown1">@fat</a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#dropdown2">@mdo</a>
+                </li>
+            </ul>
+        </li>
+        </ul>
+            <div class="tab-content">
+                <div id="home" class="tab-pane in active">
+                    <table class="dataintable table">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;">序号</th>
+                            <th>姓名</th>
+                            <th>手机</th>
+                            <th>诊疗项目</th>
+                            <th>金额</th>
+                            <th>欠款</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
 
-                        </td>
-                    </tr>
-                    {/foreach}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="main-content" style="clear: both;margin-top: 10px;">
-        <!--                <h1 class="page">用户列表</h1>-->
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div style="background: #e5e5e5 ;">
-                    <h1 class="page">退费列表</h1>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="clean"></td>
+                            <td></td>
+                            <td class="caozuo">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <table class="dataintable table">
-                    <thead>
-                    <tr>
-                        <th style="width: 50px;">序号</th>
-                        <th>姓名</th>
-                        <th>手机</th>
-                        <th>诊疗项目</th>
-                        <th>金额</th>
-                        <th>备注</th>
-                        <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {foreach $tfxiaofeilist as $k }
-                    <tr>
-                        <td>{$k.tuifei_id}</td>
-                        <td>{$k.customer_name}</td>
-                        <td>{$k.phone}</td>
-                        <td>{$k.package_name}</td>
-                        <td>{$k.total_money}</td>
-                        <td>{$k.xfbeizhu}</td>
-                        <td class="caozuo">
-                            {if condition="($usign==1)"}
-                            {/if}
-                            <span onclick="delxiaofei(this);" attrid="{$k.tuifei_id}"> 删除</span>
+                <div id="profile" class="tab-pane">
+                    <table class="dataintable table">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;">序号</th>
+                            <th>姓名</th>
+                            <th>手机</th>
+                            <th>诊疗项目</th>
+                            <th>金额</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
 
-                        </td>
-                    </tr>
-                    {/foreach}
-                    </tbody>
-                </table>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="caozuo"
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="dropdown1" class="tab-pane">
+                    <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade.</p>
+                </div>
+                <div id="dropdown2" class="tab-pane">
+                    <p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin.</p>
+                </div>
             </div>
         </div>
     </div>

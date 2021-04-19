@@ -2827,113 +2827,360 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             } else {
                 if (intval($data['money']) > 0) {
                     //无划扣 有充值
+                    if (!empty($cardinfo)){
+                        //有卡
+                        if ((intval($custinfo['money']) + $oldhuakou - intval($dataxf['huakou'])) >= 0) {
+                            //修改客户
+                            //原始划扣
+                            $oldowe = intval($xiaofeiinfo['owe']);
+                            if ($oldhuakou != intval($dataxf['huakou'])) {
+                                //划扣金额修改 跟之前不一样
+                                Db::startTrans();
+                                try {
+                                    if (intval($dataxf['owe']) != $oldowe) {
+                                        // 欠款不一致//作废相关还款
+                                        $datahk['status'] = 0;
+                                        $ifhave = Db::table('mbs_xfhuankuan')
+                                            ->where('xiaofei_id', $xiaofei_id)
+                                            ->where('status', 1)
+                                            ->select();
 
-                    Db::startTrans();
-                    try {
-                        $oldowe = intval($xiaofeiinfo['owe']);
-                        if (intval($dataxf['owe']) != $oldowe) {
-                            // 欠款不一致//作废相关还款
-                            $datahk['status'] = 0;
-                            $ifhave = Db::table('mbs_xfhuankuan')
-                                ->where('xiaofei_id', $xiaofei_id)
-                                ->where('status', 1)
-                                ->select();
+                                        $re0 = Db::table('mbs_xfhuankuan')
+                                            ->where('xiaofei_id', $xiaofei_id)
+                                            ->update($datahk);
+                                    }
 
-                            $re0 = Db::table('mbs_xfhuankuan')
-                                ->where('xiaofei_id', $xiaofei_id)
-                                ->update($datahk);
-                        }
-                        //修改客户
-                        $re = Db::table('mbs_customers')
-                            ->where('id', $customer_id)
-                            ->update($data);
-                        //建卡
-                        $chdata['customer_id'] = $customer_id;
-                        $chdata['card_no'] = time() . mt_rand(1, 100);;
-                        $chdata['phone'] = $data['phone'];
-                        $chdata['money'] = $data['money'];
-                        $chdata['chain_id'] = $data['chain_id'];
-                        $chdata['add_user'] = intval($_SESSION['UID']);
-                        $chdata['type'] = 1;
-                        $chdata['create_time'] = date('Y-m-d h:i:s', time());
-                        $re7 = Db::table('mbs_customer_card')
-                            ->insertGetId($chdata);
-                        //卡创建充值操作
-                        $cadata['card_id'] = intval($re7);
-                        $cadata['customer_id'] = $customer_id;
-                        $cadata['type'] = 1;
-                        $cadata['money'] = $data['money'];
-                        $cadata['chain_id'] = $data['chain_id'];
-                        $cadata['add_user'] = intval($_SESSION['UID']);
-                        $cadata['create_time'] = date('Y-m-d h:i:s', time());
-                        $re1 = Db::table('mbs_caozuocard')
-                            ->insertGetId($cadata);
+                                    $data['money'] = intval($custinfo['money']) + $oldhuakou - intval($dataxf['huakou']);
+                                    //更新客户余额
+                                    $re = Db::table('mbs_customers')
+                                        ->where('id', $customer_id)
+                                        ->update($data);
 
-                        //添加充值日志
-                        $logcadata['xf_id'] = intval($re1);
-                        $logcadata['user_id'] = $_SESSION['UID'];
-                        $logcadata['customer_id'] = $customer_id;
-                        $logcadata['logType'] = 5;
-                        $logcadata['logContent'] = '添加消费充值记录，充值金额' . intval($cadata['money']);
-                        $logcadata['money'] = intval($cadata['money']);
-                        $logcadata['createTime'] = date('Y-m-d H:i:s', time());
-                        $re5 = Db::table('mbs_xiaofei_log')
-                            ->insert($logcadata);
+                                    //修改卡余额
+                                    $xgdata['money'] = intval($custinfo['money']) + $oldhuakou - intval($dataxf['huakou']);
+                                    $re6 = Db::table('mbs_customer_card')
+                                        ->where('card_id', intval($cardinfo['card_id']))
+                                        ->where('status', 1)
+                                        ->update($xgdata);
 
-                        $dataxf['card_id'] = intval($re7);
-                        $dataxf['cz_caozuoid'] = intval($re1);
-                        $dataxf['update_time'] = date('Y-m-d H:i:s', time());
-                        $rexf = Db::table('mbs_xiaofei')
-                            ->where('xiaofei_id', $xiaofei_id)
-                            ->update($dataxf);
+                                    //修改卡划扣操作
+                                    $cdata['money'] = $dataxf['huakou'];
 
-                        //添加消费日志
-                        $logdata['xf_id'] = intval($rexf);
-                        $logdata['user_id'] = $_SESSION['UID'];
-                        $logdata['customer_id'] = $customer_id;
-                        $logdata['logType'] = 5;
-                        $logdata['logContent'] = '修改消费中充值，充值金额' . $cadata['money'];
-                        $logdata['money'] = $dataxf['total_money'];
-                        $logdata['createTime'] = date('Y-m-d H:m:s', time());
-                        $re2 = Db::table('mbs_xiaofei_log')
-                            ->insert($logdata);
+                                    $ifhashuakou = Db::table('mbs_caozuocard')
+                                        ->where('caozuo_id', intval($xiaofeiinfo['hk_caozuoid']))
+                                        ->find();
+                                    if (!empty($ifhashuakou)) {
+                                        $re1 = Db::table('mbs_caozuocard')
+                                            ->where('caozuo_id', intval($xiaofeiinfo['hk_caozuoid']))
+                                            ->update($cdata);
+                                        $logdata['xf_id'] = intval($xiaofeiinfo['hk_caozuoid']);
+                                        $logdata['user_id'] = $_SESSION['UID'];
+                                        $logdata['customer_id'] = $customer_id;
+                                        $logdata['logType'] = 8;
+                                        $logdata['logContent'] = '修改划扣记录记录，划扣金额' . $dataxf['huakou'] . '，原金额' . $oldhuakou;
+                                        $logdata['money'] = $dataxf['huakou'];
+                                        $logdata['createTime'] = date('Y-m-d H:i:s', time());
+                                        $re4 = Db::table('mbs_xiaofei_log')
+                                            ->insert($logdata);
 
-                        if (intval($dataxf['owe']) != $oldowe && !empty($ifhave)) {
-                            if ($re && $re7 && $re1 && $re5 && $re0) {
-                                Db::commit();//提交事务
-                                unset($data);
-                                $data['code'] = 200;
-                                $data['msg'] = '保存成功';
-                                return json_encode($data);
+                                        $dataxf['update_time'] = date('Y-m-d H:i:s', time());
+                                        $dataxf['kaifa_money'] = $dataxf['total_money'] + $dataxf['owe'] + intval($dataxf['huakou']);
+                                    }
+                                    //修改消费
+                                    $rexf = Db::table('mbs_xiaofei')
+                                        ->where('xiaofei_id', $xiaofei_id)
+                                        ->where('status', 1)
+                                        ->update($dataxf);
+
+                                    //添加消费日志
+                                    $logdata['xf_id'] = intval($rexf);
+                                    $logdata['user_id'] = $_SESSION['UID'];
+                                    $logdata['customer_id'] = $customer_id;
+                                    $logdata['logType'] = 3;
+                                    $logdata['logContent'] = '修改消费记录，消费金额' . $dataxf['total_money'] . ',划扣金额为' . intval($dataxf['huakou']) . '，原划扣金额' . $oldhuakou;
+                                    $logdata['money'] = $dataxf['total_money'];
+                                    $logdata['createTime'] = date('Y-m-d H:m:s', time());
+
+                                    $re2 = Db::table('mbs_xiaofei_log')
+                                        ->insert($logdata);
+                                    if (!empty($ifhashuakou)) {
+                                        if (intval($dataxf['owe']) != $oldowe && !empty($ifhave)) {
+                                            if ($re && $rexf && $re1 && $re2 && $re4 && $re6 && $re0) {
+                                                Db::commit();//提交事务
+                                                unset($data);
+                                                $data['code'] = 200;
+                                                $data['msg'] = '保存成功';
+                                                return json_encode($data);
+                                            } else {
+                                                Db::rollback();//回滚事务
+                                                unset($data);
+                                                $data['code'] = 0;
+                                                $data['msg'] = '保存失败';
+                                                return json_encode($data);
+                                            }
+                                        } else {
+                                            if ($re && $rexf && $re1 && $re2 && $re4 && $re6) {
+                                                Db::commit();//提交事务
+                                                unset($data);
+                                                $data['code'] = 200;
+                                                $data['msg'] = '保存成功';
+                                                return json_encode($data);
+                                            } else {
+                                                Db::rollback();//回滚事务
+                                                unset($data);
+                                                $data['code'] = 0;
+                                                $data['msg'] = '保存失败';
+                                                return json_encode($data);
+                                            }
+                                        }
+                                    } else {
+                                        if (intval($dataxf['owe']) != $oldowe && !empty($ifhave)) {
+
+                                            if ($re && $rexf && $re3 && $re2 && $re4 && $re6) {
+                                                Db::commit();//提交事务
+                                                unset($data);
+                                                $data['code'] = 200;
+                                                $data['msg'] = '保存成功';
+                                                return json_encode($data);
+                                            } else {
+                                                Db::rollback();//回滚事务
+                                                unset($data);
+                                                $data['code'] = 0;
+                                                $data['msg'] = '保存失败';
+                                                return json_encode($data);
+                                            }
+
+                                        } else {
+                                            if ($re && $rexf && $re3 && $re2 && $re4 && $re6) {
+                                                Db::commit();//提交事务
+                                                unset($data);
+                                                $data['code'] = 200;
+                                                $data['msg'] = '保存成功';
+                                                return json_encode($data);
+                                            } else {
+                                                Db::rollback();//回滚事务
+                                                unset($data);
+                                                $data['code'] = 0;
+                                                $data['msg'] = '保存失败';
+                                                return json_encode($data);
+                                            }
+                                        }
+                                    }
+                                } catch (\Exception $e) {
+                                    Db::rollback();//回滚事务
+                                    unset($data);
+                                    $data['code'] = 0;
+                                    $data['msg'] = '保存失败';
+                                    return json_encode($data);
+                                }
                             } else {
-                                Db::rollback();//回滚事务
-                                unset($data);
-                                $data['code'] = 0;
-                                $data['msg'] = '保存失败';
-                                return json_encode($data);
+                                //划扣金额无修改 跟之前一样
+                                //修改客户
+                                if ($customer_id > 0) {
+                                    $customer = Db::table('mbs_customers')
+                                        ->where('id', $customer_id)
+                                        ->find();
+                                } else {
+                                    $data['code'] = 0;
+                                    $data['msg'] = '操作失败';
+                                    return json_encode($data);
+                                }
+                                $re = Db::table('mbs_customers')
+                                    ->where('id', $customer_id)
+                                    ->update($data);
+
+                                if ($customer) {
+                                    $dataxf['fromway_id'] = $customer['source_id'];
+                                }
+                                //消费
+                                Db::startTrans();
+                                try {
+
+                                    if (intval($dataxf['owe']) != $oldowe) {
+                                        // 欠款不一致//作废相关还款
+                                        $datahk['status'] = 0;
+                                        $ifhave = Db::table('mbs_xfhuankuan')
+                                            ->where('xiaofei_id', $xiaofei_id)
+                                            ->where('status', 1)
+                                            ->select();
+
+                                        $re0 = Db::table('mbs_xfhuankuan')
+                                            ->where('xiaofei_id', $xiaofei_id)
+                                            ->update($datahk);
+                                    }
+
+                                    //修改消费
+                                    $dataxf['update_time'] = date('Y-m-d H:i:s', time());
+                                    $dataxf['kaifa_money'] = $dataxf['total_money'] + $dataxf['owe'] + intval($dataxf['huakou']);
+                                    $rexf = Db::table('mbs_xiaofei')
+                                        ->where('xiaofei_id', $xiaofei_id)
+                                        ->update($dataxf);
+
+                                    //操作日志
+                                    $logdata['xf_id'] = $xiaofei_id;
+                                    $logdata['user_id'] = $_SESSION['UID'];
+                                    $logdata['customer_id'] = $customer_id;
+                                    $logdata['logType'] = 3;
+                                    $logdata['logContent'] = '修改消费记录，消费金额' . $dataxf['total_money'];
+                                    $logdata['money'] = $dataxf['total_money'];
+                                    $logdata['createTime'] = date('Y-m-d H:i:s', time());
+
+                                    $re1 = Db::table('mbs_xiaofei_log')
+                                        ->insert($logdata);
+                                    if (intval($dataxf['owe']) != $oldowe && !empty($ifhave)) {
+                                        if ($re && $re1 && $re0) {
+                                            Db::commit();//提交事务
+                                            unset($data);
+                                            $data['code'] = 200;
+                                            $data['msg'] = '保存成功';
+                                            return json_encode($data);
+                                        } else {
+                                            Db::rollback();//回滚事务
+                                            unset($data);
+                                            $data['code'] = 0;
+                                            $data['msg'] = '保存失败';
+                                            return json_encode($data);
+                                        }
+                                    } else {
+                                        if ($rexf && $re1) {
+                                            Db::commit();//提交事务
+                                            unset($data);
+                                            $data['code'] = 200;
+                                            $data['msg'] = '保存成功';
+                                            return json_encode($data);
+                                        } else {
+                                            Db::rollback();//回滚事务
+                                            unset($data);
+                                            $data['code'] = 0;
+                                            $data['msg'] = '保存失败';
+                                            return json_encode($data);
+                                        }
+                                    }
+                                } catch (\Exception $e) {
+                                    Db::rollback();//回滚事务
+                                    unset($data);
+                                    $data['code'] = 0;
+                                    $data['msg'] = '保存失败';
+                                    return json_encode($data);
+                                }
                             }
+
                         } else {
-                            if ($re && $re7 && $re1 && $re5) {
-                                Db::commit();//提交事务
-                                unset($data);
-                                $data['code'] = 200;
-                                $data['msg'] = '保存成功';
-                                return json_encode($data);
-                            } else {
-                                Db::rollback();//回滚事务
-                                unset($data);
-                                $data['code'] = 0;
-                                $data['msg'] = '保存失败';
-                                return json_encode($data);
-                            }
+                            $data['code'] = 0;
+                            $data['msg'] = '修改划扣不能大于原始卡内余额';
+                            return json_encode($data);
                         }
-                    } catch (\Exception $e) {
-                        Db::rollback();//回滚事务
-                        unset($data);
-                        $data['code'] = 0;
-                        $data['msg'] = '保存失败';
-                        return json_encode($data);
+
+                    }else{
+                        //无卡
+                        Db::startTrans();
+                        try {
+                            $oldowe = intval($xiaofeiinfo['owe']);
+                            if (intval($dataxf['owe']) != $oldowe) {
+                                // 欠款不一致//作废相关还款
+                                $datahk['status'] = 0;
+                                $ifhave = Db::table('mbs_xfhuankuan')
+                                    ->where('xiaofei_id', $xiaofei_id)
+                                    ->where('status', 1)
+                                    ->select();
+
+                                $re0 = Db::table('mbs_xfhuankuan')
+                                    ->where('xiaofei_id', $xiaofei_id)
+                                    ->update($datahk);
+                            }
+                            //修改客户
+                            $re = Db::table('mbs_customers')
+                                ->where('id', $customer_id)
+                                ->update($data);
+                            //建卡
+                            $chdata['customer_id'] = $customer_id;
+                            $chdata['card_no'] = time() . mt_rand(1, 100);;
+                            $chdata['phone'] = $data['phone'];
+                            $chdata['money'] = $data['money'];
+                            $chdata['chain_id'] = $data['chain_id'];
+                            $chdata['add_user'] = intval($_SESSION['UID']);
+                            $chdata['type'] = 1;
+                            $chdata['create_time'] = date('Y-m-d h:i:s', time());
+                            $re7 = Db::table('mbs_customer_card')
+                                ->insertGetId($chdata);
+                            //卡创建充值操作
+                            $cadata['card_id'] = intval($re7);
+                            $cadata['customer_id'] = $customer_id;
+                            $cadata['type'] = 1;
+                            $cadata['money'] = $data['money'];
+                            $cadata['chain_id'] = $data['chain_id'];
+                            $cadata['add_user'] = intval($_SESSION['UID']);
+                            $cadata['create_time'] = date('Y-m-d h:i:s', time());
+                            $re1 = Db::table('mbs_caozuocard')
+                                ->insertGetId($cadata);
+
+                            //添加充值日志
+                            $logcadata['xf_id'] = intval($re1);
+                            $logcadata['user_id'] = $_SESSION['UID'];
+                            $logcadata['customer_id'] = $customer_id;
+                            $logcadata['logType'] = 5;
+                            $logcadata['logContent'] = '添加消费充值记录，充值金额' . intval($cadata['money']);
+                            $logcadata['money'] = intval($cadata['money']);
+                            $logcadata['createTime'] = date('Y-m-d H:i:s', time());
+                            $re5 = Db::table('mbs_xiaofei_log')
+                                ->insert($logcadata);
+
+                            $dataxf['card_id'] = intval($re7);
+                            $dataxf['cz_caozuoid'] = intval($re1);
+                            $dataxf['update_time'] = date('Y-m-d H:i:s', time());
+                            $rexf = Db::table('mbs_xiaofei')
+                                ->where('xiaofei_id', $xiaofei_id)
+                                ->update($dataxf);
+
+                            //添加消费日志
+                            $logdata['xf_id'] = intval($xiaofei_id);
+                            $logdata['user_id'] = $_SESSION['UID'];
+                            $logdata['customer_id'] = $customer_id;
+                            $logdata['logType'] = 5;
+                            $logdata['logContent'] = '修改消费中充值，充值金额' . $cadata['money'];
+                            $logdata['money'] = $dataxf['total_money'];
+                            $logdata['createTime'] = date('Y-m-d H:m:s', time());
+                            $re2 = Db::table('mbs_xiaofei_log')
+                                ->insert($logdata);
+
+                            if (intval($dataxf['owe']) != $oldowe && !empty($ifhave)) {
+                                if ($re && $re7 && $re1 && $re5 && $re0) {
+                                    Db::commit();//提交事务
+                                    unset($data);
+                                    $data['code'] = 200;
+                                    $data['msg'] = '保存成功';
+                                    return json_encode($data);
+                                } else {
+                                    Db::rollback();//回滚事务
+                                    unset($data);
+                                    $data['code'] = 0;
+                                    $data['msg'] = '保存失败';
+                                    return json_encode($data);
+                                }
+                            } else {
+                                if ($re && $re7 && $re1 && $re5) {
+                                    Db::commit();//提交事务
+                                    unset($data);
+                                    $data['code'] = 200;
+                                    $data['msg'] = '保存成功';
+                                    return json_encode($data);
+                                } else {
+                                    Db::rollback();//回滚事务
+                                    unset($data);
+                                    $data['code'] = 0;
+                                    $data['msg'] = '保存失败';
+                                    return json_encode($data);
+                                }
+                            }
+                        } catch (\Exception $e) {
+                            Db::rollback();//回滚事务
+                            unset($data);
+                            $data['code'] = 0;
+                            $data['msg'] = '保存失败';
+                            return json_encode($data);
+                        }
                     }
+
 
                 } else {
                     //没有划扣 无充值

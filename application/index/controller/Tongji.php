@@ -34,26 +34,6 @@ class Tongji extends Base
         $cheif = $config['chief_dean'];
         //院长
         $dean = intval($config['dean']);
-        if (!empty($_SESSION['CID'])) {
-            if ($_SESSION['GID'] == $cheif || $_SESSION['GID'] == 1) {//总院长或者超级管理员
-                $this->assign('sign',1);
-            } else {
-                if ($_SESSION['GID'] == $dean) {
-                    //院长
-                    $cid = intval($_GET['chain_id']);
-                    $this->assign('cid', $cid);
-                    $this->assign('sign',2);
-                }
-            }
-        } else {
-            if ($_SESSION['GID'] == 1 || $_SESSION['GID'] == $cheif) {
-                //总院长和超级管理员没有所属门店
-                $this->assign('sign',1);
-            } else {
-                return redirect('/index.php/index/login');
-            }
-        }
-
         if (isset($_GET['chain_id']) && intval($_GET['chain_id']) > 0) {
             $cid = intval($_GET['chain_id']);
             $this->assign('cid', $cid);
@@ -61,6 +41,26 @@ class Tongji extends Base
             $cid = $_SESSION['CID'];
             $this->assign('cid', $cid);
         }
+        if (!empty($_SESSION['CID'])) {
+            if ($_SESSION['GID'] == $cheif || $_SESSION['GID'] == 1) {//总院长或者超级管理员
+                $this->assign('sign', 1);
+            } else {
+                if ($_SESSION['GID'] == $dean) {
+                    //院长
+                    $this->assign('cid', $cid);
+                    $this->assign('sign', 2);
+                }
+            }
+        } else {
+            if ($_SESSION['GID'] == 1 || $_SESSION['GID'] == $cheif) {
+                //总院长和超级管理员没有所属门店
+                $this->assign('sign', 1);
+            } else {
+                return redirect('/index.php/index/login');
+            }
+        }
+
+
         //日报表
         $xfwhere = '';
         $tfwhere = '';
@@ -70,8 +70,8 @@ class Tongji extends Base
         $daituiwhere = '';
         if (!isset($_GET['create_time']) || empty($_GET['create_time'])) {
 //            默认当日
-            $star_t = date('Y-m-d 00:00:00',time());
-            $end_t = date('Y-m-d 23:59:59',time());
+            $star_t = date('Y-m-d 00:00:00', time());
+            $end_t = date('Y-m-d 23:59:59', time());
             $xfwhere .= ' AND (x.create_time >\'' . $star_t . '\' AND x.create_time <\'' . $end_t . '\' ';
             $xfwhere .= ' OR (h.create_time >\'' . $star_t . '\' AND h.create_time <\'' . $end_t . '\')) ';
             $tfwhere .= ' AND create_time >\'' . $star_t . '\' AND create_time <\'' . $end_t . '\' ';
@@ -81,9 +81,9 @@ class Tongji extends Base
             $daituiwhere .= ' AND create_time >\'' . $star_t . '\' AND create_time <\'' . $end_t . '\' ';
         } else if (!empty($_GET['create_time'])) {
             $star_t = $_GET['create_time'] . ' 00:00:00';
-            $end_t = $_GET['create_time'] . ';23:59:59';
+            $end_t = $_GET['create_time'] . ' 23:59:59';
             $this->assign('create_time', date('Y-m-d', time()));
-            $xfwhere .= ' AND (x.create_time >\'' . $star_t . '\' AND x.create_time <\'' . $end_t . '\' ';
+            $xfwhere .= ' AND (x.create_time >\'' . $star_t . '\' AND x.create_time <\'' . $end_t . '\'';
             $xfwhere .= ' OR (h.create_time >\'' . $star_t . '\' AND h.create_time <\'' . $end_t . '\')) ';
             $tfwhere .= ' AND create_time >\'' . $star_t . '\' AND create_time <\'' . $end_t . '\' ';
             $pakwhere .= ' AND create_time >\'' . $star_t . '\' AND create_time <\'' . $end_t . '\' ';
@@ -114,64 +114,36 @@ class Tongji extends Base
         $jishixf = [];
         $custxf = [];
         $feihuan = [];
+        $ifexist = [];
         $xiaofeitotal = 0;
-        $xiaofeilist = Db::query('SELECT x.total_money xiaofei,x.xiaofei_id,h.huankuan_id,x.owe,x.huakou,h.huan_money huankuan,x.customer_id customer_id,x.payway_id xfpayway_id,h.payway_id hkpayway_id,x.firvisit,x.package_id,x.jishi_id,x.jishi_name,x.serchain_id,x.xfchain_id,h.status hstatus FROM mbs_xiaofei x LEFT JOIN mbs_xfhuankuan h ON x.xiaofei_id = h.xiaofei_id WHERE x.status=1 ' . $xfwhere . ' ORDER BY x.xiaofei_id ASC');
+        $xiaofeilist = Db::query('SELECT x.total_money xiaofei,x.xiaofei_id,h.huankuan_id,x.owe,x.huakou,h.huan_money huankuan,x.customer_id customer_id,x.payway_id xfpayway_id,h.payway_id hkpayway_id,x.firvisit,x.package_id,x.jishi_id,x.jishi_name,x.serchain_id,x.xfchain_id,h.status hstatus,x.create_time,h.create_time hcreate_time FROM mbs_xiaofei x LEFT JOIN mbs_xfhuankuan h ON x.xiaofei_id = h.xiaofei_id WHERE x.status=1 ' . $xfwhere . ' ORDER BY x.xiaofei_id ASC');
+        $star_tstr = strtotime($star_t);
+        $end_tstr = strtotime($end_t);
         foreach ($xiaofeilist as $k => $v) {
-            $feihuan[$v['xiaofei']][] = $v['xiaofei'];
-            if (count($feihuan[$v['xiaofei']]) > 1) {
-                //已记录
-            } else {
-                //未记录
-                if ($v['xiaofei'] > 0) {
-                    $xiaofeitotal = $v['xiaofei'] + $xiaofeitotal;
-                }
-            }
-            if (!empty($v['hstatus'])) {
-                $custxf[] = "'" . $v['customer_id'] . "'";
-                $jishixf[] = "'" . $v['jishi_id'] . "'";
-
-                $custxflist[$v['customer_id']][$k]['xiaofei_id'] = $v['xiaofei_id'];
-                $customowe[$v['customer_id']][$v['xiaofei_id']]['owe'] = $v['owe'];
-                $custxflist[$v['customer_id']][$k]['huakou'] = $v['huakou'];
-                if ($v['serchain_id'] != $v['xfchain_id']) {
-                    $custxflist[$v['customer_id']][$k]['jdpayway_id'] = $v['xfpayway_id'];
-                    $custxflist[$v['customer_id']][$k]['jdxiaofei'] = $v['xiaofei'];
-                    $custxflist[$v['customer_id']][$k]['xfpayway_id'] = '';
-                    $custxflist[$v['customer_id']][$k]['xiaofei'] = '';
-                } else {
-                    $custxflist[$v['customer_id']][$k]['xfpayway_id'] = $v['xfpayway_id'];
-                    $custxflist[$v['customer_id']][$k]['xiaofei'] = $v['xiaofei'];
-                    $custxflist[$v['customer_id']][$k]['jdpayway_id'] = '';
-                    $custxflist[$v['customer_id']][$k]['jdxiaofei'] = '';
-                }
-                $custxflist[$v['customer_id']][$k]['huankuan_id'] = $v['huankuan_id'];
-                $custxflist[$v['customer_id']][$k]['hkpayway_id'] = $v['hkpayway_id'];
-                $custxflist[$v['customer_id']][$k]['huankuan'] = $v['huankuan'];
-                $custxflist[$v['customer_id']][$k]['firvisit'] = $v['firvisit'];
-                $custxflist[$v['customer_id']][$k]['package_id'] = $v['package_id'];
-                $custxflist[$v['customer_id']][$k]['jishi_name'] = $v['jishi_name'];
-                $custxflist[$v['customer_id']][$k]['serchain_id'] = $v['serchain_id'];
-                $custxflist[$v['customer_id']][$k]['xfchain_id'] = $v['xfchain_id'];
-                if (!empty($v['hstatus'])) {
-                    $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huankuan'] + $v['huakou'];
-                } else {
-                    $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huakou'];
-                }
-                if (!empty($v['huankuan_id']) && !empty($v['hstatus'])) {
-                    $xfc [$v['xiaofei_id']][] = $v['huankuan_id'] . ',' . $v['owe'] . ',' . $v['xiaofei'] . ',' . $v['xfchain_id'] . ',' . $v['huankuan'] . ',' . $v['xiaofei_id'] .','.$v['huakou'];
-                }
-            } else {
-                if (count($feihuan[$v['xiaofei']]) > 1) {
-
+            if (intval($v['huankuan']) > 0) {
+                $feihuan[$v['xiaofei_id']][] = $v['huankuan'];
+                if (count($feihuan[$v['xiaofei_id']]) > 1) {
                     //已记录
                 } else {
                     //未记录
+                    if ((strtotime($v['create_time']) >= $star_tstr) && (strtotime($v['create_time']) < $end_tstr)) {
+
+                        if ($v['xiaofei'] > 0) {
+                            $xiaofeitotal = $v['xiaofei'] + $xiaofeitotal;
+                        }
+                    }
+                }
+            }
+            if (!empty($v['hstatus'])) {
+                //有还款
+                if ((strtotime($v['hcreate_time']) >= $star_tstr) && (strtotime($v['hcreate_time']) < $end_tstr)) {
+                    //还款时间合法
                     $custxf[] = "'" . $v['customer_id'] . "'";
                     $jishixf[] = "'" . $v['jishi_id'] . "'";
 
                     $custxflist[$v['customer_id']][$k]['xiaofei_id'] = $v['xiaofei_id'];
-                    $custxflist[$v['customer_id']][$k]['huakou'] = $v['huakou'];
                     $customowe[$v['customer_id']][$v['xiaofei_id']]['owe'] = $v['owe'];
+                    $custxflist[$v['customer_id']][$k]['huakou'] = $v['huakou'];
                     if ($v['serchain_id'] != $v['xfchain_id']) {
                         $custxflist[$v['customer_id']][$k]['jdpayway_id'] = $v['xfpayway_id'];
                         $custxflist[$v['customer_id']][$k]['jdxiaofei'] = $v['xiaofei'];
@@ -183,9 +155,9 @@ class Tongji extends Base
                         $custxflist[$v['customer_id']][$k]['jdpayway_id'] = '';
                         $custxflist[$v['customer_id']][$k]['jdxiaofei'] = '';
                     }
-                    $custxflist[$v['customer_id']][$k]['huankuan_id'] = null;
-                    $custxflist[$v['customer_id']][$k]['hkpayway_id'] = null;
-                    $custxflist[$v['customer_id']][$k]['huankuan'] = null;
+                    $custxflist[$v['customer_id']][$k]['huankuan_id'] = $v['huankuan_id'];
+                    $custxflist[$v['customer_id']][$k]['hkpayway_id'] = $v['hkpayway_id'];
+                    $custxflist[$v['customer_id']][$k]['huankuan'] = $v['huankuan'];
                     $custxflist[$v['customer_id']][$k]['firvisit'] = $v['firvisit'];
                     $custxflist[$v['customer_id']][$k]['package_id'] = $v['package_id'];
                     $custxflist[$v['customer_id']][$k]['jishi_name'] = $v['jishi_name'];
@@ -196,10 +168,78 @@ class Tongji extends Base
                     } else {
                         $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huakou'];
                     }
-
                     if (!empty($v['huankuan_id']) && !empty($v['hstatus'])) {
-                        $xfc [$v['xiaofei_id']][] = $v['huankuan_id'] . ',' . $v['owe'] . ',' . $v['xiaofei'] . ',' . $v['xfchain_id'] . ',' . $v['huankuan'] . ',' . $v['xiaofei_id'] .','.$v['huakou'];
+                        $xfc [$v['xiaofei_id']][] = $v['huankuan_id'] . ',' . $v['owe'] . ',' . $v['xiaofei'] . ',' . $v['xfchain_id'] . ',' . $v['huankuan'] . ',' . $v['xiaofei_id'] . ',' . $v['huakou'];
                     }
+                } else if ((strtotime($v['create_time']) >= $star_tstr) && (strtotime($v['create_time']) < $end_tstr)) {
+                    //消费创建时间合法
+                    $custxf[] = "'" . $v['customer_id'] . "'";
+                    $jishixf[] = "'" . $v['jishi_id'] . "'";
+                    if (!in_array($v['xiaofei_id'], $ifexist)) {
+                        $ifexist[] = $v['xiaofei_id'];
+                        $custxflist[$v['customer_id']][$k]['xiaofei_id'] = $v['xiaofei_id'];
+                        $customowe[$v['customer_id']][$v['xiaofei_id']]['owe'] = $v['owe'];
+                        $custxflist[$v['customer_id']][$k]['huakou'] = $v['huakou'];
+                        if ($v['serchain_id'] != $v['xfchain_id']) {
+                            $custxflist[$v['customer_id']][$k]['jdpayway_id'] = $v['xfpayway_id'];
+                            $custxflist[$v['customer_id']][$k]['jdxiaofei'] = $v['xiaofei'];
+                            $custxflist[$v['customer_id']][$k]['xfpayway_id'] = '';
+                            $custxflist[$v['customer_id']][$k]['xiaofei'] = '';
+                        } else {
+                            $custxflist[$v['customer_id']][$k]['xfpayway_id'] = $v['xfpayway_id'];
+                            $custxflist[$v['customer_id']][$k]['xiaofei'] = $v['xiaofei'];
+                            $custxflist[$v['customer_id']][$k]['jdpayway_id'] = '';
+                            $custxflist[$v['customer_id']][$k]['jdxiaofei'] = '';
+                        }
+                        $custxflist[$v['customer_id']][$k]['huankuan_id'] = $v['huankuan_id'];
+                        $custxflist[$v['customer_id']][$k]['hkpayway_id'] = $v['hkpayway_id'];
+                        $custxflist[$v['customer_id']][$k]['huankuan'] = 0;
+                        $custxflist[$v['customer_id']][$k]['firvisit'] = $v['firvisit'];
+                        $custxflist[$v['customer_id']][$k]['package_id'] = $v['package_id'];
+                        $custxflist[$v['customer_id']][$k]['jishi_name'] = $v['jishi_name'];
+                        $custxflist[$v['customer_id']][$k]['serchain_id'] = $v['serchain_id'];
+                        $custxflist[$v['customer_id']][$k]['xfchain_id'] = $v['xfchain_id'];
+                        $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huakou'];
+                    }
+                }
+            } else {
+                if ($v['xiaofei'] > 0) {
+                    $xiaofeitotal = $v['xiaofei'] + $xiaofeitotal;
+                }
+                //未记录
+                $custxf[] = "'" . $v['customer_id'] . "'";
+                $jishixf[] = "'" . $v['jishi_id'] . "'";
+
+                $custxflist[$v['customer_id']][$k]['xiaofei_id'] = $v['xiaofei_id'];
+                $custxflist[$v['customer_id']][$k]['huakou'] = $v['huakou'];
+                $customowe[$v['customer_id']][$v['xiaofei_id']]['owe'] = $v['owe'];
+                if ($v['serchain_id'] != $v['xfchain_id']) {
+                    $custxflist[$v['customer_id']][$k]['jdpayway_id'] = $v['xfpayway_id'];
+                    $custxflist[$v['customer_id']][$k]['jdxiaofei'] = $v['xiaofei'];
+                    $custxflist[$v['customer_id']][$k]['xfpayway_id'] = '';
+                    $custxflist[$v['customer_id']][$k]['xiaofei'] = '';
+                } else {
+                    $custxflist[$v['customer_id']][$k]['xfpayway_id'] = $v['xfpayway_id'];
+                    $custxflist[$v['customer_id']][$k]['xiaofei'] = $v['xiaofei'];
+                    $custxflist[$v['customer_id']][$k]['jdpayway_id'] = '';
+                    $custxflist[$v['customer_id']][$k]['jdxiaofei'] = '';
+                }
+                $custxflist[$v['customer_id']][$k]['huankuan_id'] = null;
+                $custxflist[$v['customer_id']][$k]['hkpayway_id'] = null;
+                $custxflist[$v['customer_id']][$k]['huankuan'] = null;
+                $custxflist[$v['customer_id']][$k]['firvisit'] = $v['firvisit'];
+                $custxflist[$v['customer_id']][$k]['package_id'] = $v['package_id'];
+                $custxflist[$v['customer_id']][$k]['jishi_name'] = $v['jishi_name'];
+                $custxflist[$v['customer_id']][$k]['serchain_id'] = $v['serchain_id'];
+                $custxflist[$v['customer_id']][$k]['xfchain_id'] = $v['xfchain_id'];
+                if (!empty($v['hstatus'])) {
+                    $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huankuan'] + $v['huakou'];
+                } else {
+                    $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huakou'];
+                }
+
+                if (!empty($v['huankuan_id']) && !empty($v['hstatus'])) {
+                    $xfc [$v['xiaofei_id']][] = $v['huankuan_id'] . ',' . $v['owe'] . ',' . $v['xiaofei'] . ',' . $v['xfchain_id'] . ',' . $v['huankuan'] . ',' . $v['xiaofei_id'] . ',' . $v['huakou'] . ',' . $v['hcreate_time'];
                 }
             }
 
@@ -217,7 +257,6 @@ class Tongji extends Base
                     $xfcount[$k][$tt[0]]['xiaofei'] = $tt[2];
                     $xfcount[$k][$tt[0]]['xfchain_id'] = $tt[3];
                     $xfcount[$k]['kfje'][$tt[5]]['kfje'] = $tt[1] + $tt[2] + $tt[4] + $tt[6];
-
 
                 } else {
                     $xfcount[$k][$tt[0]]['row'] = null;
@@ -512,11 +551,11 @@ class Tongji extends Base
         $dswhere = '';
         if (!isset($_GET['create_time']) || empty($_GET['create_time'])) {
             //默认当日
-            $star_t = date('Y-m-01 00:00:00',time());
-            $end_t = date('Y-m-d 23:59:59',time());
-            $where .=  ' AND create_time >\''.$star_t.'\' AND create_time <\''.$end_t.'\' ';
+            $star_t = date('Y-m-01 00:00:00', time());
+            $end_t = date('Y-m-d 23:59:59', time());
+            $where .= ' AND create_time >\'' . $star_t . '\' AND create_time <\'' . $end_t . '\' ';
         } else if (!empty($_GET['create_time'])) {
-            $star_t = date('Y-m-01 00:00:00',strtotime($_GET['create_time'] . ' 00:00:00'));
+            $star_t = date('Y-m-01 00:00:00', strtotime($_GET['create_time'] . ' 00:00:00'));
             $end_t = $_GET['create_time'] . '23:59:59';
             $where .= ' AND create_time >\'' . $star_t . '\' AND create_time <\'' . $end_t . '\' ';
             $dswhere .= ' AND create_time >\'' . $star_t . '\' AND create_time <\'' . $end_t . '\' ';
@@ -548,14 +587,14 @@ class Tongji extends Base
 
             $jsyjlist[$v['jishi_id']][$v['package_id']]['xiaofei'] = $v['xiaofei'];
             $jsyjlist[$v['jishi_id']][$v['package_id']]['kaifa'] = $v['kaifa'];
-            if(!empty($jsyjlist[$v['jishi_id']]['xiaofeitotal'])){
-                $jsyjlist[$v['jishi_id']]['xiaofeitotal'] = $v['xiaofei'] +  $jsyjlist[$v['jishi_id']]['xiaofeitotal'] ;
-            }else{
+            if (!empty($jsyjlist[$v['jishi_id']]['xiaofeitotal'])) {
+                $jsyjlist[$v['jishi_id']]['xiaofeitotal'] = $v['xiaofei'] + $jsyjlist[$v['jishi_id']]['xiaofeitotal'];
+            } else {
                 $jsyjlist[$v['jishi_id']]['xiaofeitotal'] = $v['xiaofei'];
             }
-            if(!empty($jsyjlist[$v['jishi_id']]['kaifatotal'])){
-                $jsyjlist[$v['jishi_id']]['kaifatotal'] = $v['kaifa'] + $jsyjlist[$v['jishi_id']]['kaifatotal'] ;
-            }else{
+            if (!empty($jsyjlist[$v['jishi_id']]['kaifatotal'])) {
+                $jsyjlist[$v['jishi_id']]['kaifatotal'] = $v['kaifa'] + $jsyjlist[$v['jishi_id']]['kaifatotal'];
+            } else {
                 $jsyjlist[$v['jishi_id']]['kaifatotal'] = $v['kaifa'];
             }
 
@@ -579,10 +618,10 @@ class Tongji extends Base
             FROM mbs_tuifei WHERE status = 1 ' . $where . ' GROUP BY jishi_id,package_id ORDER BY jishi_id ASC');
         foreach ($res1 as $k => $v) {
             $jishiids[] = "'" . $v['jishi_id'] . "'";
-            if(!empty($jsyjlist[$v['jishi_id']]['xiaofeitotal'])){
-                $jsyjlist[$v['jishi_id']]['xiaofeitotal'] =  intval($jsyjlist[$v['jishi_id']]['xiaofeitotal']) - $v['tuifei'];
-            }else{
-                $jsyjlist[$v['jishi_id']]['xiaofeitotal'] =  0 - $v['tuifei'];
+            if (!empty($jsyjlist[$v['jishi_id']]['xiaofeitotal'])) {
+                $jsyjlist[$v['jishi_id']]['xiaofeitotal'] = intval($jsyjlist[$v['jishi_id']]['xiaofeitotal']) - $v['tuifei'];
+            } else {
+                $jsyjlist[$v['jishi_id']]['xiaofeitotal'] = 0 - $v['tuifei'];
             }
 
 
@@ -608,14 +647,14 @@ class Tongji extends Base
             } else {
                 $jsyjlist[$v['jishi_id']]['chain'][$v['serchain_id']]['xiaofei'] = $v['xiaofei'];
             }
-            if(!empty($jsyjlist[$v['jishi_id']]['dstotal'])){
+            if (!empty($jsyjlist[$v['jishi_id']]['dstotal'])) {
                 $jsyjlist[$v['jishi_id']]['dstotal'] = $v['xiaofei'] + $jsyjlist[$v['jishi_id']]['dstotal'];
-            }else{
+            } else {
                 $jsyjlist[$v['jishi_id']]['dstotal'] = $v['xiaofei'];
             }
-            if(!empty($jsyjlist[$v['jishi_id']]['xiaofeitotal'])){
+            if (!empty($jsyjlist[$v['jishi_id']]['xiaofeitotal'])) {
                 $jsyjlist[$v['jishi_id']]['moneytotal'] = $jsyjlist[$v['jishi_id']]['xiaofeitotal'] + $jsyjlist[$v['jishi_id']]['dstotal'];
-            }else{
+            } else {
                 $jsyjlist[$v['jishi_id']]['moneytotal'] = $jsyjlist[$v['jishi_id']]['dstotal'];
             }
 

@@ -145,7 +145,7 @@
                         <td rowspan="3">开发金额</td>
                         <td rowspan="3">划扣金额</td>
                         <td colspan="19" class="xfjine">收款金额</td>
-                        <td rowspan="3">欠款</td>
+                        <td rowspan="3">现欠款</td>
                         <td colspan="6" class="hkjine">还款</td>
                         <td rowspan="3">治疗师姓名</td>
                     <tr class="threetr">
@@ -186,20 +186,37 @@
                     <tr class="fivtr contenttr" xfpayid="{$kk.xfpayway_id}" hkpayid="{$kk.hkpayway_id}"  jdpayid="{$kk.jdpayway_id ?? ''}"
                         xf="{$kk.xiaofei}" hk="{$kk.huankuan}" jd="{$kk.jdxiaofei ?? ''}">
                         <td class="xuhao"></td>
+
+                        {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
                         <td class="chuzhen">{if condition="($kk.firvisit==1)"}√{/if}</td>
                         <td class="fuzhen">{if condition="($kk.firvisit==2)"}√{/if}</td>
                         <td class="custname">{$k.name}</td>
                         <td class="laiyuan">{$k.source_from}</td>
                         <td class="xiangmu">{$package[$kk.package_id]['package_name'] ?? ''}</td>
                         <td class="mingxi"></td>
-                        {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
                         <td class="kfje">{$kk.kfje}</td>
+                        <td class="huakje">{$kk.huakou}</td>
                         {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+                        <td class="chuzhen" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{if condition="($kk.firvisit==1)"}√{/if}</td>
+                        <td class="fuzhen" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{if condition="($kk.firvisit==2)"}√{/if}</td>
+                        <td class="custname" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{$k.name}</td>
+                        <td class="laiyuan" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{$k.source_from}</td>
+                        <td class="xiangmu" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{$package[$kk.package_id]['package_name'] ?? ''}</td>
+                        <td class="mingxi" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}></td>
                         <td class="kfje" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
                             rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}> {$xfcount[$kk.xiaofei_id]['kfje'][$kk.xiaofei_id]['kfje'] ?? ''}
                         </td>
+                        <td class="huakje" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                        rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}> {$kk.huakou}
+                        </td>
                         {/if}
-                        <td class="huakje">{$kk.huakou}</td>
+
                         <!--                        <td class="jine">{$kk.xiaofei}</td>-->
                         {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
                         <td class="xf_{$xfpay.xj} xfxj"></td>
@@ -289,7 +306,14 @@
                         <td class="hk_{$hkpay.zfbkb} hkzfbkb"></td>
                         <td class="hk_{$hkpay.nbm} hknbm"></td>
                         <td class="hk_{$hkpay.qt} hkqt"></td>
+
+                        {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
                         <td>{$kk.jishi_name}</td>
+                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+                        <td {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{$kk.jishi_name}</td>
+                        {/if}
+
                     </tr>
                     {/foreach}
                     {/if}
@@ -554,6 +578,7 @@
             $('.hjfir').children().eq(0).attr('colspan',2);
             $('.hjthr').children().eq(0).attr('colspan',34-i-j-k);
             $('.mrsfir').children().eq(0).attr('colspan',2);
+            $('.mrsfir').children().eq(0).attr('rowspan',1);
             $('.mryfir').children().eq(0).attr('colspan',2);
             //剩余
             var a = i+j+k - 4;
@@ -615,7 +640,7 @@
         var sk = Number($('.hkskall').text());
         var jsm = Number($('.hkjsmall').text());
         var zfbkb = Number($('.hkzfbkball').text());
-        var nbm = Number($('.hknball').text());
+        var nbm = Number($('.hknbmall').text());
         var qt = Number($('.hkqtall').text());
         $('.dayhk').text(parseFloat(xj+sk+jsm+zfbkb+nbm+qt));
 

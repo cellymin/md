@@ -138,9 +138,10 @@ class Tongji extends Base
                 //有还款
                 if ((strtotime($v['hcreate_time']) >= $star_tstr) && (strtotime($v['hcreate_time']) < $end_tstr)) {
                     //还款时间合法
-                    $custxf[] = "'" . $v['customer_id'] . "'";
-                    $jishixf[] = "'" . $v['jishi_id'] . "'";
-
+                    if ((strtotime($v['create_time']) >= $star_tstr) && (strtotime($v['create_time']) < $end_tstr)) {
+                        $custxf[] = "'" . $v['customer_id'] . "'";
+                        $jishixf[] = "'" . $v['jishi_id'] . "'";
+                    }
                     $custxflist[$v['customer_id']][$k]['xiaofei_id'] = $v['xiaofei_id'];
                     $customowe[$v['customer_id']][$v['xiaofei_id']]['owe'] = $v['owe'];
                     $custxflist[$v['customer_id']][$k]['huakou'] = $v['huakou'];
@@ -511,7 +512,6 @@ class Tongji extends Base
             }
             $this->assign('dschain', $dschain);
             $this->assign('dstotal', $dstotal);
-
             $jswherestr = implode(',', array_unique($jishiall));
             $jswhere = '';
             if (!empty($jishiids)) {
@@ -523,7 +523,6 @@ class Tongji extends Base
                 $jishi = array();
             }
 
-//        echo '<pre/>'; var_dump($yejilist);die();
             $this->assign('countjishi', count($jishi) + 1);
             $this->assign('jishi', $jishi);
             $chainarr = array();

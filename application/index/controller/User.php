@@ -27,17 +27,26 @@ class User extends Base
         $cheif = $config['chief_dean'];
         //院长
         $dean = intval($config['dean']);
+
+        if (!empty($_GET['chain_id']) && intval($_GET['chain_id']) > 0) {
+            $map['chain_id'] = intval($_GET['chain_id']);
+            $where .= ' AND chain_id=\'' . intval($_GET['chain_id']) . '\' ';
+            $this->assign('cid', intval($_GET['chain_id']));
+        }
         if (!empty($_SESSION['CID'])) {
             if ($_SESSION['GID'] == $cheif || $_SESSION['GID'] == 1) {//总院长或者超级管理员
-
+                $this->assign('sign',1);
             } else {
                 if ($_SESSION['GID'] == $dean) {
                     //院长
                     $map['chain_id'] = $_SESSION['CID'];
                     $where .= ' AND chain_id='.$_SESSION['CID'].' ';
+                    $this->assign('sign',2);
                 } else {
+                    //查看本人
                     $map['id'] = $_SESSION['UID'];
                     $where .= ' AND id='.$_SESSION['UID'].' ';
+                    $this->assign('sign',5);
                 }
             }
 
@@ -67,14 +76,10 @@ class User extends Base
         }
         $this->assign('grouplist', $grouplist);
 
-        if (!empty($_GET['chain_id']) && intval($_GET['chain_id']) > 0) {
-            $map['chain_id'] = intval($_GET['chain_id']);
-            $where = ' AND chain_id=\'' . intval($_GET['chain_id']) . '\' ';
-            $this->assign('cid', intval($_GET['chain_id']));
-        }
+
         if (!empty($_GET['group']) && intval($_GET['group']) > 0) {
             $map['user_group'] = intval($_GET['group']);
-            $where = ' AND user_group=\'' . intval($_GET['group']) . '\' ';
+            $where .= ' AND user_group=\'' . intval($_GET['group']) . '\' ';
             $this->assign('group', intval($_GET['group']));
         }
         if (!empty($_GET['keywords'])) {
@@ -92,7 +97,6 @@ class User extends Base
                 ->where($map)
                 ->count();
         }
-
         $pagesize = 20;
         Loader::import('page.Page', EXTEND_PATH, '.class.php');
         $page = new \page($total, $pagesize);

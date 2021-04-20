@@ -64,6 +64,7 @@
                 <!--                <div class="sousuo_form">-->
                 <!--                    门店： <input type="text" name="chain_name">-->
                 <!--                </div>-->
+                {if condition="($sign==1)"}
                 <div class="sousuo_form">
                      <span>
                            <select style="" class="chain_id" name="chain_id" autocomplete="off">
@@ -76,6 +77,7 @@
                            </select>
                      </span>
                 </div>
+                {/if}
                 <div class="sousuo_form">
                     <input type="text" value="{$Think.get.keywords}" name="keywords" autocomplete="off" placeholder="请输入名称/编号" >
                 </div>

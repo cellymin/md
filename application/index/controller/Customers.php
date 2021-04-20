@@ -30,10 +30,11 @@ class Customers extends Base
         } else if ($_SESSION['GID'] == $config['admin']) {
             //超级管理员
             $this->assign('sign', 1);
-        }
-        if ($_SESSION['GID'] == $config['chief_dean']) {
+        }else if ($_SESSION['GID'] == $config['chief_dean']) {
             //总院长
             $this->assign('sign', 1);
+        }else{
+            $this->assign('sign', 5);
         }
         $chain = Db::table('mbs_chain')
             ->where('status', 1)
@@ -47,11 +48,17 @@ class Customers extends Base
         $ormap = array();
         $where = '';
         $orwhere = '';
+
+        if (!empty($_GET['chain_id']) && intval($_GET['chain_id']) > 0) {
+            $map['a.chain_id'] = intval($_GET['chain_id']);
+            $where .= ' AND a.chain_id=\'' . intval($_GET['chain_id']) . '\' ';
+            $this->assign('cid', intval($_GET['chain_id']));
+        }
         //院长能看本院所有客户
         if ($_SESSION['GID'] == $config['dean']) {
             //院长
             $map['a.chain_id'] = intval($_SESSION['CID']);
-            $where = ' AND a.chain_id=\'' . intval($_SESSION['CID']) . '\' ';
+            $where .= ' AND a.chain_id=\'' . intval($_SESSION['CID']) . '\' ';
         }
 
         //普通技师能看自己负责的客人
@@ -73,11 +80,7 @@ class Customers extends Base
                 $where .= ' AND a.id in (' . $owestr . ')';
             }
         }
-        if (!empty($_GET['chain_id']) && intval($_GET['chain_id']) > 0) {
-            $map['a.chain_id'] = intval($_GET['chain_id']);
-            $where = ' AND a.chain_id=\'' . intval($_GET['chain_id']) . '\' ';
-            $this->assign('cid', intval($_GET['chain_id']));
-        }
+
         if (!empty($_GET['keywords'])) {
             $ormap['a.name'] = ['like', '%' . $_GET['keywords'] . '%'];
             $ormap['a.phone'] = ['like', '%' . $_GET['keywords'] . '%'];
@@ -90,7 +93,7 @@ class Customers extends Base
             $star_t = date('Y-m-d 00:00:00', $create_time);
             $end_t = date('Y-m-d 23:59:59', $create_time);
             $map['o.create_time'] = ['between time', [$star_t, $end_t]];
-            $where = ' AND o.create_time>\'' . $star_t . '\' AND o.create_time<\'' . $end_t . '\' ';
+            $where .= ' AND o.create_time>\'' . $star_t . '\' AND o.create_time<\'' . $end_t . '\' ';
         }
         $map['a.status'] = 1;
         $pagesize = 20;

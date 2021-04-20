@@ -29,6 +29,31 @@ class Tongji extends Base
         }
         $this->assign('chain', $chain);
         $this->assign('chainlist', $chainlist);
+        $config = config('group');
+        //总院长
+        $cheif = $config['chief_dean'];
+        //院长
+        $dean = intval($config['dean']);
+        if (!empty($_SESSION['CID'])) {
+            if ($_SESSION['GID'] == $cheif || $_SESSION['GID'] == 1) {//总院长或者超级管理员
+                $this->assign('sign',1);
+            } else {
+                if ($_SESSION['GID'] == $dean) {
+                    //院长
+                    $cid = intval($_GET['chain_id']);
+                    $this->assign('cid', $cid);
+                    $this->assign('sign',2);
+                }
+            }
+        } else {
+            if ($_SESSION['GID'] == 1 || $_SESSION['GID'] == $cheif) {
+                //总院长和超级管理员没有所属门店
+                $this->assign('sign',1);
+            } else {
+                return redirect('/index.php/index/login');
+            }
+        }
+
         if (isset($_GET['chain_id']) && intval($_GET['chain_id']) > 0) {
             $cid = intval($_GET['chain_id']);
             $this->assign('cid', $cid);

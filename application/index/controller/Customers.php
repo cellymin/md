@@ -3653,7 +3653,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             ->order('payway_id asc')
             ->select();
         $this->assign('payway', $payway);
-        $this->assign('payway', $payway);
 
         return $this->view->fetch();
     }

@@ -1016,6 +1016,14 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
         $dataxf['reception_id'] = intval($dataxf['reception_id']);
         if (isset($_GET['id']) && intval($_GET['id']) > 0) {
             //不是新客户 id为客户id
+            $ree = Db::table('mbs_xiaofei')
+                ->where('customer_id', intval($_GET['id']))
+                ->find();
+            if ($ree) {
+                $dataxf['firvisit'] = 2;
+            } else {
+                $dataxf['firvisit'] = 1;
+            }
             if (intval($dataxf['total_money']) > 0) {
                 //有消费
                 $data['update_time'] = date('Y-m-d h:i:s', time());
@@ -1139,7 +1147,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                                 $re4 = Db::table('mbs_xiaofei_log')
                                     ->insert($logdata);
                                 //添加消费
-                                $dataxf['firvisit'] = 1;
                                 $dataxf['card_id'] = intval($cardinfo['card_id']);
                                 $dataxf['hk_caozuoid'] = intval($re3);
                                 $dataxf['customer_id'] = intval($_GET['id']);
@@ -1252,7 +1259,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                                 ->insert($loghkdata);
 
                             //添加消费
-                            $dataxf['firvisit'] = 1;
                             $dataxf['card_id'] = intval($re7);
                             $dataxf['cz_caozuoid'] = intval($re1);
                             $dataxf['hk_caozuoid'] = intval($re3);
@@ -1308,7 +1314,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                             $dataxf['card_id'] = intval($cardinfo['card_id']);
                             Db::startTrans();
                             try {
-                                $dataxf['firvisit'] = 1;
                                 $dataxf['customer_id'] = intval($_GET['id']);
                                 $dataxf['customer_name'] = trim($data['name']);
                                 $dataxf['create_time'] = date('Y-m-d H:m:s', time());
@@ -1392,7 +1397,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                                     ->insert($logcadata);
 
                                 //添加消费
-                                $dataxf['firvisit'] = 1;
                                 $dataxf['customer_id'] = intval($_GET['id']);
                                 $dataxf['card_id'] = intval($re7);
                                 $dataxf['customer_name'] = trim($data['name']);
@@ -1442,7 +1446,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                             ->update($data);
                         Db::startTrans();
                         try {
-                            $dataxf['firvisit'] = 1;
                             $dataxf['customer_id'] = intval($_GET['id']);
                             $dataxf['customer_name'] = trim($data['name']);
                             $dataxf['create_time'] = date('Y-m-d H:m:s', time());
@@ -1536,7 +1539,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                                 $re4 = Db::table('mbs_xiaofei_log')
                                     ->insert($logdata);
                                 //添加消费
-                                $dataxf['firvisit'] = 1;
                                 $dataxf['card_id'] = intval($cardinfo['card_id']);
                                 $dataxf['hk_caozuoid'] = intval($re3);
                                 $dataxf['customer_id'] = intval($_GET['id']);
@@ -1629,7 +1631,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                                     $re4 = Db::table('mbs_xiaofei_log')
                                         ->insert($logdata);
                                     //添加消费
-                                    $dataxf['firvisit'] = 1;
                                     $dataxf['card_id'] = intval($re7);
                                     $dataxf['hk_caozuoid'] = intval($re3);
                                     $dataxf['customer_id'] = intval($_GET['id']);

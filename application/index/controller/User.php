@@ -53,6 +53,7 @@ class User extends Base
         } else {
             if ($_SESSION['GID'] == 1 || $_SESSION['GID'] == $cheif) {
                 //总院长和超级管理员没有所属门店
+                $this->assign('sign',1);
             } else {
                 return redirect('/index.php/index/login');
             }
@@ -110,6 +111,24 @@ class User extends Base
 
     public function edituser()
     {
+        $config = config('group');
+        $grade = config('grade');
+        if ($_SESSION['GID'] == $config['dean']) {
+            //院长
+            $this->assign('sign', 3);
+            $this->assign('cid', $_SESSION['CID']);
+        } else if ($_SESSION['GID'] == $config['admin']) {
+            //超级管理员
+            $this->assign('sign', 1);
+        }else if ($_SESSION['GID'] == $config['chief_dean']) {
+            //总院长
+            $this->assign('sign', 2);
+        }else{
+            $this->assign('sign', 5);
+        }
+        $this->assign('group', $config);
+        $this->assign('grade', $grade);
+
         $id = intval($_GET['id']);
         if ($id > 0) {
             $userinfo = Db::table('mbs_user')

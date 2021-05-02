@@ -84,22 +84,26 @@
         margin-right: 0px;
         margin-left: 0px;
     }
+
     @media (min-width: 992px) {
         .col-md-3 {
             width: 25%;
         }
     }
-        @media (min-width: 992px){
-             .col-md-3, .col-md-6  {
-                float: left;
-            }
-           .col-md-3,.col-md-6, .col-sm-6 {
-                position: relative;
-                min-height: 1px;
-                padding-right: 10px;
-                padding-left: 10px;
-            }
+
+    @media (min-width: 992px) {
+        .col-md-3, .col-md-6 {
+            float: left;
+        }
+
+        .col-md-3, .col-md-6, .col-sm-6 {
+            position: relative;
+            min-height: 1px;
+            padding-right: 10px;
+            padding-left: 10px;
+        }
     }
+
     .sm-st {
         background: #fff;
         padding: 20px;
@@ -113,21 +117,22 @@
         box-shadow: 0 1px 0px rgba(0, 0, 0, 0.05);
     }
 
-     .sm-st-icon {
-         width: 60px;
-         height: 60px;
-         display: inline-block;
-         line-height: 60px;
-         text-align: center;
-         font-size: 30px;
-         background: #eee;
-         -webkit-border-radius: 5px;
-         -moz-border-radius: 5px;
-         border-radius: 5px;
-         float: left;
-         margin-right: 10px;
-         color: #fff;
-     }
+    .sm-st-icon {
+        width: 60px;
+        height: 60px;
+        display: inline-block;
+        line-height: 60px;
+        text-align: center;
+        font-size: 30px;
+        background: #eee;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        float: left;
+        margin-right: 10px;
+        color: #fff;
+    }
+
     .fa {
         display: inline-block;
         font: normal normal normal 14px/1 FontAwesome;
@@ -136,15 +141,18 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
+
     .sm-st-info {
         font-size: 12px;
         padding-top: 2px;
     }
+
     .sm-st-info span {
         display: block;
         font-size: 24px;
         font-weight: 600;
     }
+
     .st-red {
         background: #F05050;
     }
@@ -152,13 +160,16 @@
     .st-violet {
         background-color: #7266ba;
     }
+
     .st-blue {
         background-color: #23b7e5;
     }
+
     .st-green {
         background-color: #4ECDC4;
     }
-    .mdshuju td,.mdshuju th{
+
+    .mdshuju td, .mdshuju th {
         border-top: 1px solid #ccc;
         border-left: 1px solid #ccc;
         border-right: 1px solid #ccc;
@@ -166,187 +177,195 @@
         vertical-align: middle;
         width: 16%;
     }
+
     .mdshuju .sjruz {
-    width: 20%;
+        width: 20%;
     }
 
 </style>
 <div class="content" style="background: #f3f8fb;">
     {include file="template/navbar.html"}
-
-    <div class="sousuo"    {if condition="(isset($sign) && $sign == '1' )"}{else/}style="displayt:none"{/if}>
-        <form action="" method="get">
-            <div class="form_sub">
-                <!--                <div class="sousuo_form">-->
-                <!--                    门店： <input type="text" name="chain_name">-->
-                <!--                </div>-->
-                <div class="sousuo_form">
+    <div class="sousuo"
+         {if condition="(isset($sign) && $sign == '1' )" }
+         {else/}style="display:none"{/if}>
+    <form action="" method="get">
+        <div class="form_sub">
+            <!--                <div class="sousuo_form">-->
+            <!--                    门店： <input type="text" name="chain_name">-->
+            <!--                </div>-->
+            <div class="sousuo_form">
                      <span>
-                           <select style="" class="shichang" name="shichang" autocomplete="off" onchange="changechain(this);" >
-                                <option value="" >请选择市场
+                           <select style="" class="shichang" name="shichang" autocomplete="off"
+                                   onchange="changechain(this);">
+                                <option value="">请选择市场
                                </option>
                                {foreach $shichanglist as $k }
-                               <option value="{$k.city}" {if condition="(!empty($Think.get.shichang) && $Think.get.shichang==$k.city)"} selected {/if}>{$k.city}
+                               <option value="{$k.city}" {if
+                                       condition="(!empty($Think.get.shichang) && $Think.get.shichang==$k.city)" }
+                                       selected {/if}>{$k.city}
                                </option>
                                {/foreach}
                            </select>
                      </span>
-                </div>
-                <div class="sousuo_form">
+            </div>
+            <div class="sousuo_form">
                      <span>
                            <select style="" class="chain_id" name="chain_id" autocomplete="off">
-                                <option value="" >请选择门店
+                                <option value="">请选择门店
                                </option>
                                {foreach $chain as $k }
-                               <option value="{$k.id}" {if condition="(!empty($Think.get.chain_id) && $Think.get.chain_id == $k.id)" } selected {/if}>{$k.name}
+                               <option value="{$k.id}" {if
+                                       condition="(!empty($Think.get.chain_id) && $Think.get.chain_id == $k.id)" }
+                                       selected {/if}>{$k.name}
                                </option>
                                {/foreach}
                            </select>
                      </span>
-                </div>
-                <!--                <div class="sousuo_form">-->
-                <!--                    电话：<br/><input type="text" value="{$Think.get.phone}" name="phone" autocomplete="off">-->
-                <!--                </div>-->
-                <!--                <div class="sousuo_form">-->
-                <!--                    订单编号：<br/><input type="text" value="{$Think.get.server_no}" name="server_no" autocomplete="off">-->
-                <!--                </div>-->
-
-                <div class="sousuo_form" style="width: 80px;text-align: center;background: #39435C;color: #fff;cursor:pointer; ">
-                    <span class="suosou_btn" onclick="onconfirm();">搜索</span>
-                </div>
-                <!--                <div class="sousuo_form">-->
-                <!--                    技师名称：<br/><input type="text" value="{$Think.get.server_name}" name="server_name" autocomplete="off">-->
-                <!--                </div>-->
             </div>
-        </form>
-    </div>
-    <div class="main-content" style="background: #f3f8fb;border: none">
+            <!--                <div class="sousuo_form">-->
+            <!--                    电话：<br/><input type="text" value="{$Think.get.phone}" name="phone" autocomplete="off">-->
+            <!--                </div>-->
+            <!--                <div class="sousuo_form">-->
+            <!--                    订单编号：<br/><input type="text" value="{$Think.get.server_no}" name="server_no" autocomplete="off">-->
+            <!--                </div>-->
 
-        <div class="row" style="overflow: hidden;" >
-            <div style="border:1px solid #ddd;padding: 2px">
-                <div class="echarts" id="echarts-bar-chart" style="width: 100%;height:418px;"></div>
+            <div class="sousuo_form"
+                 style="width: 80px;text-align: center;background: #39435C;color: #fff;cursor:pointer; ">
+                <span class="suosou_btn" onclick="onconfirm();">搜索</span>
             </div>
+            <!--                <div class="sousuo_form">-->
+            <!--                    技师名称：<br/><input type="text" value="{$Think.get.server_name}" name="server_name" autocomplete="off">-->
+            <!--                </div>-->
+        </div>
+    </form>
+</div>
+<div class="main-content" style="background: #f3f8fb;border: none">
 
-            <div style="border:1px solid #ddd;padding: 2px;overflow: hidden;margin-top: 5px">
+    <div class="row" style="overflow: hidden;">
+        <div style="border:1px solid #ddd;padding: 2px">
+            <div class="echarts" id="echarts-bar-chart" style="width: 100%;height:418px;"></div>
+        </div>
+
+        <div style="border:1px solid #ddd;padding: 2px;overflow: hidden;margin-top: 5px">
             {if condition='isset($chainlist)'}
             {foreach $chainlist as $k}
-            <div class="col-sm-6 mobile_left" style="min-width: 330px;overflow: hidden;margin: 8px 0px" >
+            <div class="col-sm-6 mobile_left" style="min-width: 330px;overflow: hidden;margin: 8px 0px">
                 <div class="panel panel-default" style="margin-bottom: 0px">
-                <table class="dataintable table" style="width: 100%">
-                    <tr>
-                        <th colspan="7"> {$k.name}</th>
-                    </tr>
-                    <tr>
-                        <th style="width: 14%">日期</th>
-                        <th>消费</th>
-                        <th>欠费</th>
-                        <th>退费</th>
-                        <th>还款</th>
-                        <th>借店支付</th>
-                        <th>代店支付</th>
-                    </tr>
-                    <tr>
-                        <td>今天</td>
-                        <td>{$dayarr[$k.id]['xiaofei'] ?? '0'}</td>
-                        <td>{$dayarr[$k.id]['owe'] ?? '0'}</td>
-                        <td>{$dayarr[$k.id]['tuifei'] ?? '0'}</td>
-                        <td>{$dayarr[$k.id]['huankuan'] ?? '0'}</td>
-                        <td>{$dayarr[$k.id]['jiedian'] ?? '0'}</td>
-                        <td>{$dayarr[$k.id]['daishou'] ?? '0'}</td>
-                    </tr>
-                    <tr>
-                        <td>昨天</td>
-                        <td>{$yestodayarr[$k.id]['xiaofei'] ?? '0'}</td>
-                        <td>{$yestodayarr[$k.id]['owe'] ?? '0'}</td>
-                        <td>{$yestodayarr[$k.id]['tuifei'] ?? '0'}</td>
-                        <td>{$yestodayarr[$k.id]['huankuan'] ?? '0'}</td>
-                        <td>{$yestodayarr[$k.id]['jiedian'] ?? '0'}</td>
-                        <td>{$yestodayarr[$k.id]['daishou'] ?? '0'}</td>
-                    </tr>
-                    <tr>
-                        <td>本月</td>
-                        <td>{$montharr[$k.id]['xiaofei'] ?? '0'}</td>
-                        <td>{$montharr[$k.id]['owe'] ?? '0'}</td>
-                        <td>{$montharr[$k.id]['tuifei'] ?? '0'}</td>
-                        <td>{$montharr[$k.id]['huankuan'] ?? '0'}</td>
-                        <td>{$montharr[$k.id]['jiedian'] ?? '0'}</td>
-                        <td>{$montharr[$k.id]['daishou'] ?? '0'}</td>
-                    </tr>
-                    <tr>
-                        <td>上月</td>
-                        <td>{$premontharr[$k.id]['xiaofei'] ?? '0'}</td>
-                        <td>{$premontharr[$k.id]['owe'] ?? '0'}</td>
-                        <td>{$premontharr[$k.id]['tuifei'] ?? '0'}</td>
-                        <td>{$premontharr[$k.id]['huankuan'] ?? '0'}</td>
-                        <td>{$premontharr[$k.id]['jiedian'] ?? '0'}</td>
-                        <td>{$premontharr[$k.id]['daishou'] ?? '0'}</td>
-                    </tr>
+                    <table class="dataintable table" style="width: 100%">
+                        <tr>
+                            <th colspan="7"> {$k.name}</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 14%">日期</th>
+                            <th>消费</th>
+                            <th>欠费</th>
+                            <th>退费</th>
+                            <th>还款</th>
+                            <th>借店支付</th>
+                            <th>代店支付</th>
+                        </tr>
+                        <tr>
+                            <td>今天</td>
+                            <td>{$dayarr[$k.id]['xiaofei'] ?? '0'}</td>
+                            <td>{$dayarr[$k.id]['owe'] ?? '0'}</td>
+                            <td>{$dayarr[$k.id]['tuifei'] ?? '0'}</td>
+                            <td>{$dayarr[$k.id]['huankuan'] ?? '0'}</td>
+                            <td>{$dayarr[$k.id]['jiedian'] ?? '0'}</td>
+                            <td>{$dayarr[$k.id]['daishou'] ?? '0'}</td>
+                        </tr>
+                        <tr>
+                            <td>昨天</td>
+                            <td>{$yestodayarr[$k.id]['xiaofei'] ?? '0'}</td>
+                            <td>{$yestodayarr[$k.id]['owe'] ?? '0'}</td>
+                            <td>{$yestodayarr[$k.id]['tuifei'] ?? '0'}</td>
+                            <td>{$yestodayarr[$k.id]['huankuan'] ?? '0'}</td>
+                            <td>{$yestodayarr[$k.id]['jiedian'] ?? '0'}</td>
+                            <td>{$yestodayarr[$k.id]['daishou'] ?? '0'}</td>
+                        </tr>
+                        <tr>
+                            <td>本月</td>
+                            <td>{$montharr[$k.id]['xiaofei'] ?? '0'}</td>
+                            <td>{$montharr[$k.id]['owe'] ?? '0'}</td>
+                            <td>{$montharr[$k.id]['tuifei'] ?? '0'}</td>
+                            <td>{$montharr[$k.id]['huankuan'] ?? '0'}</td>
+                            <td>{$montharr[$k.id]['jiedian'] ?? '0'}</td>
+                            <td>{$montharr[$k.id]['daishou'] ?? '0'}</td>
+                        </tr>
+                        <tr>
+                            <td>上月</td>
+                            <td>{$premontharr[$k.id]['xiaofei'] ?? '0'}</td>
+                            <td>{$premontharr[$k.id]['owe'] ?? '0'}</td>
+                            <td>{$premontharr[$k.id]['tuifei'] ?? '0'}</td>
+                            <td>{$premontharr[$k.id]['huankuan'] ?? '0'}</td>
+                            <td>{$premontharr[$k.id]['jiedian'] ?? '0'}</td>
+                            <td>{$premontharr[$k.id]['daishou'] ?? '0'}</td>
+                        </tr>
 
-                </table>
+                    </table>
                 </div>
             </div>
             {/foreach}
-                {/if}
-            </div>
-
-
+            {/if}
         </div>
 
-        <footer>
-            <hr>
 
-            <!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
-            <p class="pull-right">A <a href="http://www.portnine.com/bootstrap-themes" target="_blank">Free Bootstrap
-                Theme</a> by <a href="http://www.portnine.com" target="_blank">Portnine</a></p>
-            <p>© 2014 <a href="http://www.portnine.com" target="_blank">Portnine</a></p>
-        </footer>
     </div>
+
+    <footer>
+        <hr>
+
+        <!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
+        <p class="pull-right">A <a href="http://www.portnine.com/bootstrap-themes" target="_blank">Free Bootstrap
+            Theme</a> by <a href="http://www.portnine.com" target="_blank">Portnine</a></p>
+        <p>© 2014 <a href="http://www.portnine.com" target="_blank">Portnine</a></p>
+    </footer>
+</div>
 </div>
 
 
 {include file="template/footer.html"}
 <script src="{$Think.const.STATIC_URL}/lib/echarts/echarts-all.js"></script>
 <script>
-    $(function() {
+    $(function () {
         var i = echarts.init(document.getElementById("echarts-bar-chart"));
         var q = {
-            title : {
+            title: {
                 subtext: {$date_riqi_s} - {$date_riqi_e}
             },
             tooltip: {
                 trigger: "axis"
             },
             legend: {
-                data:['消费','欠款','退款']
+                data: ['消费', '欠款', '退款']
             },
             grid: {
                 x: {$left},
                 x2: {$left},
                 y2: 24,
-                containLabel:true,
+                containLabel: true,
             },
             toolbox: {
-                show : true,
-                feature : {
-                    mark : {show: false},
-                    dataView : {show: false, readOnly: false},
-                    magicType : {show: true, type: ['line', 'bar']},
-                    restore : {show: false},
-                    saveAsImage : {show: true}
+                show: true,
+                feature: {
+                    mark: {show: false},
+                    dataView: {show: false, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: false},
+                    saveAsImage: {show: true}
                 }
             },
             calculable: true,
             xAxis: [{
                 type: "category",
-                data : [{$date_riqi}]
+                data: [{$date_riqi}]
             }],
             yAxis: [
                 {
                     type: 'value',
                     show: true,
-                    axisLabel:{
-                        interval:0,
-                        roate:0
+                    axisLabel: {
+                        interval: 0,
+                        roate: 0
                     }
                 }
             ],
@@ -354,9 +373,11 @@
                 name: "消费",
                 type: "bar",
                 data: [{$tenxiaofeiarr}],
-                itemStyle: {normal: {
-                        label : {show: true}
-                    }},
+                itemStyle: {
+                    normal: {
+                        label: {show: true}
+                    }
+                },
                 markPoint: {
                     data: [{
                         type: "max",
@@ -378,9 +399,11 @@
                     name: "欠款",
                     type: "bar",
                     data: [{$tenowearr}],
-                    itemStyle: {normal: {
-                            label : {show: true}
-                        }},
+                    itemStyle: {
+                        normal: {
+                            label: {show: true}
+                        }
+                    },
                     markPoint: {
                         data: [{
                             type: "max",
@@ -402,9 +425,11 @@
                     name: "退款",
                     type: "bar",
                     data: [{$tentuifeiarr}],
-                    itemStyle: {normal: {
-                            label : {show: true}
-                        }},
+                    itemStyle: {
+                        normal: {
+                            label: {show: true}
+                        }
+                    },
                     markPoint: {
                         data: [{
                             type: "max",
@@ -426,6 +451,7 @@
         i.setOption(q);
         window.onresize = i.resize;
     });
+
     function changechain(e) {
         var sc = $(e).val().replace(/(^\s*)|(\s*$)/g, "");
         $.ajax({
@@ -436,7 +462,7 @@
             success: function (data) {
                 if (data) {
                     var data = JSON.parse(data);
-                    var ss ='  <option value="" >请选择门店</option>';
+                    var ss = '  <option value="" >请选择门店</option>';
 
                     if (data.code == "200") { //判断返回值，这里根据的业务内容可做调整
                         var chainlist = data.chainlist;
@@ -457,6 +483,7 @@
             }
         });
     }
+
     function onconfirm() {
         $('form').submit();
     }

@@ -133,10 +133,8 @@ class Index extends Base
                     $tbtfwhere .= ' AND serchain_id =' . $chain_id;
 
                 }
-
                 $this->assign('sign', 1);
-            }
-            if (isset($_SESSION['CID']) && $_SESSION['CID'] == $config['dean']) {
+            }else if (isset($_SESSION['CID']) && $_SESSION['GID'] == $config['dean']) {
                 //院长 可以看所属门店的所有消费
                 $xfwhere .= ' AND serchain_id = ' . $_SESSION['CID'];
                 $tfwhere .= ' AND serchain_id = ' . $_SESSION['CID'];
@@ -144,7 +142,7 @@ class Index extends Base
                 $dswhere .= ' AND xfchain_id = ' . $_SESSION['CID'];
                 $tbxfwhere .= ' AND serchain_id  = ' . $_SESSION['CID'];
                 $tbtfwhere .= ' AND serchain_id  = ' . $_SESSION['CID'];
-
+                $this->assign('sign', 3);
             } else {
                 if ((isset($_SESSION['CID']) && $_SESSION['GID'] != $config['chief_dean']) && $_SESSION['GID'] != 1) {
 
@@ -170,6 +168,7 @@ class Index extends Base
                         $tbxfwhere .= ' AND customer_id in( ' . $custidsstr . ')';
                         $tbtfwhere .= ' AND customer_id in( ' . $custidsstr . ')';
                     }
+                    $this->assign('sign', 4);
 
                 }
             }
@@ -200,11 +199,13 @@ class Index extends Base
             $montharr = [];
             $premontharr = [];
             $chainids = [];
-            $dayxflist = Db::query('SELECT total_money xiaofei,serchain_id,xfchain_id,if_local,owe FROM mbs_xiaofei WHERE 1=1   ' . $xfwhere . $todayxfwhere . ' GROUP BY serchain_id ');
+            $dayxflist = Db::query('SELECT SUM(total_money) xiaofei,serchain_id,xfchain_id,if_local,SUM(owe) owe FROM mbs_xiaofei WHERE 1=1   ' . $xfwhere . $todayxfwhere . ' GROUP BY serchain_id ');
             $daydslist = Db::query('SELECT SUM(total_money) daishou,serchain_id,xfchain_id,if_local  FROM mbs_xiaofei WHERE 1=1 AND if_local=2 AND serchain_id!=xfchain_id  ' . $dswhere . $todaydswhere . ' GROUP BY serchain_id ');
             $daytflist = Db::query('SELECT SUM(total_money) tuifei,serchain_id FROM mbs_tuifei WHERE 1=1   ' . $tfwhere . $todaytfwhere . ' GROUP BY serchain_id ');
             $dayhklist = Db::query('SELECT SUM(h.huan_money) huankuan,x.serchain_id serchain_id FROM mbs_xfhuankuan h INNER JOIN mbs_xiaofei x WHERE h.status=1 and x.status=1  ' . $hkwhere . $todayhkwhere . ' GROUP BY x.serchain_id ');
 
+//            echo 'SELECT total_money xiaofei,serchain_id,xfchain_id,if_local,owe FROM mbs_xiaofei WHERE 1=1   ' . $xfwhere . $todayxfwhere . ' GROUP BY serchain_id';
+//            echo '<pre/>';var_dump($dayxflist); die();
             foreach ($dayxflist as $k => $v) {
                 //消费
                 $chainids[] = $v['serchain_id'];
@@ -255,7 +256,7 @@ class Index extends Base
             $this->assign('dayarr', $dayarr);
 
             //昨日消费，欠费，退费，还款，借店支付，代店支付
-            $yestodayxflist = Db::query('SELECT total_money xiaofei,serchain_id,xfchain_id,if_local,owe FROM mbs_xiaofei WHERE 1=1   ' . $xfwhere . $yestodayxfwhere . ' GROUP BY serchain_id ');
+            $yestodayxflist = Db::query('SELECT SUM(total_money) xiaofei,serchain_id,xfchain_id,if_local,SUM(owe) owe FROM mbs_xiaofei WHERE 1=1   ' . $xfwhere . $yestodayxfwhere . ' GROUP BY serchain_id ');
             $yestodaydslist = Db::query('SELECT SUM(total_money) daishou,serchain_id,xfchain_id,if_local  FROM mbs_xiaofei WHERE 1=1 AND if_local=2 AND serchain_id!=xfchain_id  ' . $dswhere . $yestodaydswhere . ' GROUP BY serchain_id ');
             $yestodaytflist = Db::query('SELECT SUM(total_money) tuifei,serchain_id FROM mbs_tuifei WHERE 1=1   ' . $tfwhere . $yestodaytfwhere . ' GROUP BY serchain_id ');
             $yestodayhklist = Db::query('SELECT SUM(h.huan_money) huankuan,x.serchain_id serchain_id FROM mbs_xfhuankuan h INNER JOIN mbs_xiaofei x WHERE h.status=1 and x.status=1  ' . $hkwhere . $yestodayhkwhere . ' GROUP BY x.serchain_id ');
@@ -308,7 +309,7 @@ class Index extends Base
             }
             $this->assign('yestodayarr', $yestodayarr);
             //本月消费，欠费，退费，还款，借店支付，代店支付
-            $monthxflist = Db::query('SELECT total_money xiaofei,serchain_id,xfchain_id,if_local,owe FROM mbs_xiaofei WHERE 1=1   ' . $xfwhere . $monthxfwhere . ' GROUP BY serchain_id ');
+            $monthxflist = Db::query('SELECT SUM(total_money) xiaofei,serchain_id,xfchain_id,if_local,SUM(owe) owe FROM mbs_xiaofei WHERE 1=1   ' . $xfwhere . $monthxfwhere . ' GROUP BY serchain_id ');
             $monthdslist = Db::query('SELECT SUM(total_money) daishou,serchain_id,xfchain_id,if_local  FROM mbs_xiaofei WHERE 1=1 AND if_local=2 AND serchain_id!=xfchain_id  ' . $dswhere . $monthdswhere . ' GROUP BY serchain_id ');
             $monthtflist = Db::query('SELECT SUM(total_money) tuifei,serchain_id FROM mbs_tuifei WHERE 1=1   ' . $tfwhere . $monthtfwhere . ' GROUP BY serchain_id ');
             $monthhklist = Db::query('SELECT SUM(h.huan_money) huankuan,x.serchain_id serchain_id FROM mbs_xfhuankuan h INNER JOIN mbs_xiaofei x WHERE h.status=1 and x.status=1  ' . $hkwhere . $monthhkwhere . ' GROUP BY x.serchain_id ');
@@ -361,7 +362,7 @@ class Index extends Base
             }
             $this->assign('montharr', $montharr);
             //上月消费，欠费，退费，还款，借店支付，代店支付
-            $premonthxflist = Db::query('SELECT total_money xiaofei,serchain_id,xfchain_id,if_local,owe FROM mbs_xiaofei WHERE 1=1   ' . $xfwhere . $premonthxfwhere . ' GROUP BY serchain_id ');
+            $premonthxflist = Db::query('SELECT SUM(total_money) xiaofei,serchain_id,xfchain_id,if_local,SUM(owe) owe FROM mbs_xiaofei WHERE 1=1   ' . $xfwhere . $premonthxfwhere . ' GROUP BY serchain_id ');
             $premonthdslist = Db::query('SELECT SUM(total_money) daishou,serchain_id,xfchain_id,if_local  FROM mbs_xiaofei WHERE 1=1 AND if_local=2 AND serchain_id!=xfchain_id  ' . $dswhere . $premonthdswhere . ' GROUP BY serchain_id ');
             $premonthtflist = Db::query('SELECT SUM(total_money) tuifei,serchain_id FROM mbs_tuifei WHERE 1=1   ' . $tfwhere . $premonthtfwhere . ' GROUP BY serchain_id ');
             $premonthhklist = Db::query('SELECT SUM(h.huan_money) huankuan,x.serchain_id serchain_id FROM mbs_xfhuankuan h INNER JOIN mbs_xiaofei x WHERE h.status=1 and x.status=1  ' . $hkwhere . $premonthhkwhere . ' GROUP BY x.serchain_id ');
@@ -439,7 +440,6 @@ class Index extends Base
             $this->assign('date_riqi_e', substr($date_riqi[9], 1, strlen($date_riqi[0] - 2)));
             $tenxiaofeire = Db::query('SELECT DATE_FORMAT(create_time, \'%Y-%m-%d\') AS time, sum(total_money) xiaofei,sum(owe) owe FROM mbs_xiaofei WHERE status=1 ' . $tbxfwhere . ' AND create_time > \'' . substr($date_riqi[0], 1, strlen($date_riqi[0]) - 2) . ' 00:00:00\' AND create_time < \'' . substr($date_riqi[9], 1, strlen($date_riqi[9]) - 2) . ' 23:59:59\'  GROUP BY time ORDER BY create_time ASC');
 //            echo '<pre/>';var_dump($date_riqi);die();
-
             foreach ($tenxiaofeire as $k) {
                 switch ($k['time']) {
                     case substr($date_riqi[0], 1, strlen($date_riqi[0]) - 2):

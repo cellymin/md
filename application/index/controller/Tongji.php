@@ -100,7 +100,7 @@ class Tongji extends Base
             $tuifeiwhere .= ' AND xfchain_id =\' ' . $cid . '\' ';
             $daituiwhere .= ' AND xfchain_id =\' ' . $cid . '\' AND serchain_id!=xfchain_id ';
         } else {
-//            $cid=2;//示例后期删除
+
         }
         $cust = [];
         $custxf = [];
@@ -116,7 +116,7 @@ class Tongji extends Base
         $feihuan = [];
         $ifexist = [];
         $xiaofeitotal = 0;
-        $xiaofeilist = Db::query('SELECT x.total_money xiaofei,x.xiaofei_id,h.huankuan_id,x.owe,x.huakou,h.huan_money huankuan,x.customer_id customer_id,x.payway_id xfpayway_id,h.payway_id hkpayway_id,x.firvisit,x.package_id,x.jishi_id,x.jishi_name,x.serchain_id,x.xfchain_id,h.status hstatus,x.create_time,h.create_time hcreate_time FROM mbs_xiaofei x LEFT JOIN mbs_xfhuankuan h ON x.xiaofei_id = h.xiaofei_id WHERE x.status=1 ' . $xfwhere . ' ORDER BY x.xiaofei_id ASC');
+        $xiaofeilist = Db::query('SELECT x.total_money xiaofei,x.xiaofei_id,h.huankuan_id,x.owe,x.huakou,h.huan_money huankuan,x.customer_id customer_id,x.payway_id xfpayway_id,h.payway_id hkpayway_id,x.firvisit,x.package_id,x.jishi_id,x.jishi_name,x.serchain_id,x.xfchain_id,h.status hstatus,x.create_time,h.create_time hcreate_time FROM mbs_xiaofei x LEFT JOIN mbs_xfhuankuan h ON x.xiaofei_id = h.xiaofei_id and h.status=1 WHERE x.status=1 ' . $xfwhere . ' ORDER BY x.xiaofei_id ASC');
         $star_tstr = strtotime($star_t);
         $end_tstr = strtotime($end_t);
         foreach ($xiaofeilist as $k => $v) {
@@ -245,7 +245,7 @@ class Tongji extends Base
             }
 
         }
-//        echo '<pre/>';var_dump($custxflist);die();
+//        echo '<pre/>';var_dump($xfc);die();
         //当天之内多次还款
         foreach ($xfc as $k => $v) {
             $aa = count($v);

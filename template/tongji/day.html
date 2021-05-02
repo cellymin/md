@@ -186,7 +186,6 @@
                     <tr class="fivtr contenttr" xfpayid="{$kk.xfpayway_id}" hkpayid="{$kk.hkpayway_id}"  jdpayid="{$kk.jdpayway_id ?? ''}"
                         xf="{$kk.xiaofei}" hk="{$kk.huankuan}" jd="{$kk.jdxiaofei ?? ''}">
                         <td class="xuhao"></td>
-
                         {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
                         <td class="chuzhen">{if condition="($kk.firvisit==1)"}√{/if}</td>
                         <td class="fuzhen">{if condition="($kk.firvisit==2)"}√{/if}</td>
@@ -196,7 +195,8 @@
                         <td class="mingxi"></td>
                         <td class="kfje">{$kk.kfje}</td>
                         <td class="huakje">{$kk.huakou}</td>
-                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+
+                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && isset($xfcount[$kk.xiaofei_id][$kk.huankuan_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
                         <td class="chuzhen" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
                             rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{if condition="($kk.firvisit==1)"}√{/if}</td>
                         <td class="fuzhen" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
@@ -230,7 +230,7 @@
                         <td class="xf_{$xfpay.mhfq} xfmhfq"></td>
                         <td class="xf_{$xfpay.msfq} xfmsfq"></td>
                         <td class="xf_{$xfpay.jxfq} xfjxfq"></td>
-                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && isset($xfcount[$kk.xiaofei_id][$kk.huankuan_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
                         <td class="xf_{$xfpay.xj} xfxj" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
                             rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
                         </td>
@@ -274,7 +274,7 @@
                         <td class="xf_{$xfpay.bbfq} xfbbfq"></td>
                         <td class="xf_{$xfpay.qt1} xfqt1"></td>
                         <td class="xf_{$xfpay.qt2} xfqt2"></td>
-                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && isset($xfcount[$kk.xiaofei_id][$kk.huankuan_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
                         <td class="xiaofeichain" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
                             rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>
                         {if condition="($kk.xfchain_id != $kk.serchain_id)"} {$chainlist[$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['xfchain_id']]['name'] ?? ''}{/if}</td>
@@ -296,7 +296,7 @@
 
                         {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
                         <td class="qiankuan">{$customowe[$k.id][$kk.xiaofei_id]['owe'] ?? ''}</td>
-                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && isset($xfcount[$kk.xiaofei_id][$kk.huankuan_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
                         <td class="qiankuan" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
                             rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['owe'] ?? ''}</td>
                         {/if}
@@ -309,11 +309,10 @@
 
                         {if condition="(!isset($xfcount[$kk.xiaofei_id]))"}
                         <td>{$kk.jishi_name}</td>
-                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
+                        {elseif condition="(isset($xfcount[$kk.xiaofei_id]) && isset($xfcount[$kk.xiaofei_id][$kk.huankuan_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" /}
                         <td {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
                             rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{$kk.jishi_name}</td>
                         {/if}
-
                     </tr>
                     {/foreach}
                     {/if}

@@ -78,12 +78,23 @@
                     <div class="right_form">
                         <label>职级：</label>
                         <select name="user_grade" class="user_grade">
+                            {if condition="($sign==1 || $sign==2)"}
                             {volist name="gradelist" id="v"}
                             <option value="{$v.title}" attid="{$v.id}"
                                     {if condition="(isset($userinfo) && $userinfo.grade_id == $v.id)" }selected="selected" {/if} >
                             {$v.title}
                             </option>
                             {/volist}
+                            {elseif condition="($sign==3)"/}
+                            {volist name="gradelist" id="v"}
+                            {if condition="($v.id!=$grade.admin && $v.id!=$grade.chief_dean && $v.id!=$grade.dean)"}
+                            <option value="{$v.title}" attid="{$v.id}"
+                                    {if condition="(isset($userinfo) && $userinfo.grade_id == $v.id)" }selected="selected" {/if} >
+                            {$v.title}
+                            </option>
+                            {/if}
+                            {/volist}
+                            {/if}
                         </select>
 
 
@@ -113,23 +124,45 @@
                     <label>所属门店：</label>
                     <select name="user_chain" class="user_chain">
                         <option value="">请选择所属门店</option>
+                        {if condition="($sign==1 || $sign==2)"}
                         {volist name="chainlist" id="v"}
                         <option value="{$v.name}" attid="{$v.id}"
                                 {if condition="(isset($userinfo) && $userinfo.chain_id == $v.id)" }selected="selected" {/if}>
                         {$v.name}
                         </option>
                         {/volist}
+                        {elseif condition="($sign==3)"/}
+                        {volist name="chainlist" id="v"}
+                        {if condition="($v.id==$cid) && isset($cid)"}
+                        <option value="{$v.name}" attid="{$v.id}"
+                                {if condition="(isset($cid) && $cid == $v.id)" }selected="selected" {/if}>
+                        {$v.name}
+                        </option>
+                        {/if}
+                        {/volist}
+                        {/if}
                     </select>
                 </div>
                 <div class="form-group">
                     <label>所属分组：</label>
                     <select name="user_group" class="user_group">
+                        {if condition="($sign==1 || $sign==2)"}
                         {volist name="grouplist" id="v"}
                         <option value="{$v.group_name}" attid="{$v.group_id}"
                                 {if condition="(isset($userinfo) && $userinfo.user_group == $v.group_id)" }selected="selected" {/if} >
                         {$v.group_name}
                         </option>
                         {/volist}
+                        {elseif condition="($sign==3)"/}
+                        {volist name="grouplist" id="v"}
+                        {if condition="($v.group_id!=$group.admin && $v.group_id!=$group.chief_dean && $v.group_id!=$group.dean)"}
+                        <option value="{$v.group_name}" attid="{$v.group_id}"
+                                {if condition="(isset($userinfo) && $userinfo.user_group == $v.group_id)" }selected="selected" {/if} >
+                        {$v.group_name}
+                        </option>
+                        {/if}
+                        {/volist}
+                        {/if}
                     </select>
                 </div>
             </form>

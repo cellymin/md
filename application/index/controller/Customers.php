@@ -2163,6 +2163,7 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                             $dataxf['firvisit'] = 1;
                             $dataxf['card_id'] = intval($re7);
                             $dataxf['cz_caozuoid'] = intval($re1);
+                            $dataxf['hk_caozuoid'] = intval($re3);
                             $dataxf['customer_id'] = intval($re);
                             $dataxf['customer_name'] = trim($data['name']);
                             $dataxf['create_time'] = date('Y-m-d H:m:s', time());
@@ -3471,7 +3472,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                             $rexf = Db::table('mbs_xiaofei')
                                 ->where('xiaofei_id', $xiaofei_id)
                                 ->update($dataxf);
-
                             //添加消费日志
                             $logdata['xf_id'] = intval($rexf);
                             $logdata['user_id'] = $_SESSION['UID'];
@@ -3548,13 +3548,13 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                                 ->where('card_id', intval($cardinfo['card_id']))
                                 ->where('status', 1)
                                 ->update($xgdata);
+
                             //修改卡划扣操作
                             $cdata['money'] = intval($dataxf['huakou']);
                             $re3 = Db::table('mbs_caozuocard')
-                                ->where('caozuo_id', intval($cardinfo['hk_caozuoid']))
+                                ->where('caozuo_id', intval($xiaofeiinfo['hk_caozuoid']))
                                 ->where('status', 1)
                                 ->update($cdata);
-
                             //添加卡划扣值日志
                             $loghkdata['xf_id'] = intval($re3);
                             $loghkdata['user_id'] = $_SESSION['UID'];
@@ -3882,8 +3882,18 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             ->where('a.status', 1)
             ->order('a.create_time desc')
             ->select();
+        $hkxiaofeilist = Db::table('mbs_xfhuankuan')
+            ->alias('a')
+            ->join('mbs_customers c', 'a.customer_id = c.id', 'LEFT')
+            ->join('mbs_payway p', 'a.payway_id = p.payway_id', 'LEFT')
+            ->field('a.*,c.phone,p.payway_name')
+            ->where('a.customer_id', $customer_id)
+            ->where('a.status', 1)
+            ->order('a.create_time desc')
+            ->select();
         $this->assign('xiaofeilist', $xiaofeilist);
         $this->assign('tfxiaofeilist', $tfxiaofeilist);
+        $this->assign('hkxiaofeilist', $hkxiaofeilist);
 
         $payway = Db::table('mbs_payway')
             ->where('status', 1)
@@ -4078,6 +4088,71 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
         }
     }
 
+    public function delhuankuan(){
+        $huankuan_id = intval($_POST['id']);
+        if ($huankuan_id > 0) {
+            $huankuaninfo = Db::table('mbs_xfhuankuan')
+                ->alias('h')
+                ->join('mbs_xiaofei x','h.xiaofei_id = x.xiaofei_id','left')
+                ->field('h.*,x.total_money,x.owe oldowe')
+                ->where('h.huankuan_id', $huankuan_id)
+                ->where('h.status', 1)
+                ->where('x.status', 1)
+                ->find();
+            if(empty($huankuaninfo)){
+
+            }else{
+                $oldowe = intval($huankuaninfo['oldowe']) ;//现在的欠款
+                $newowe = $oldowe + intval($huankuaninfo['huan_money']);
+                $newxfdata['owe'] = $newowe;
+                $newxfdata['update_time'] = date('Y-m-d H:i:s');
+            }
+            Db::startTrans();
+            try {
+                $re = Db::table('mbs_xfhuankuan')
+                    ->where('huankuan_id', $huankuan_id)
+                    ->update(['status' => 0]);
+
+                $re2 =  Db::table('mbs_xiaofei')
+                    ->where('xiaofei_id', $huankuaninfo['xiaofei_id'])
+                    ->update($newxfdata);
+
+                $logdata['xf_id'] = $huankuan_id;
+                $logdata['user_id'] = $_SESSION['UID'];
+                $logdata['customer_id'] = $huankuaninfo['customer_id'];
+                $logdata['logType'] = 3;
+                $logdata['logContent'] = '作废还款，作废金额' . intval($huankuaninfo['huan_money']);
+                $logdata['money'] = $huankuaninfo['huan_money'];
+                $logdata['createTime'] = date('Y-m-d H:i:s', time());
+
+                $re1 = Db::table('mbs_xiaofei_log')
+                    ->insert($logdata);
+
+                if ($re && $re1 && $re2) {
+                    Db::commit();
+                    $data['code'] = 200;
+                    $data['msg'] = "删除成功！";
+                    return json_encode($data);
+                } else {
+                    Db::rollback();
+                    $data['code'] = 1;
+                    $data['msg'] = "删除失败！";
+                    return json_encode($data);
+                }
+            } catch (\Exception $e) {
+                Db::rollback();//回滚事务
+                unset($data);
+                $data['code'] = 0;
+                $data['msg'] = '保存失败';
+                return json_encode($data);
+            }
+
+        } else {
+            $data['code'] = -1;
+            $data['msg'] = '没有可操作的对象';
+            return json_encode($data);
+        }
+    }
 
     public function addclean()
     {
@@ -4088,6 +4163,11 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             $xfinfo = Db::table('mbs_xiaofei')
                 ->where('xiaofei_id', $id)
                 ->find();
+            if(intval($xfinfo['owe'])<intval($money)){
+                $data['code'] = 0;
+                $data['msg'] = '还款金额大于欠款，请核实！';
+                return json_encode($data);
+            }
             $data['xiaofei_id'] = $id;
             $data['payway_id'] = $payway_id;
             $data['customer_id'] = $xfinfo['customer_id'];
@@ -4317,7 +4397,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
         if (isset($_POST['serid'])) {
             $server_id = intval($_POST['serid']);
         }
-
         $customerspost = $_POST['customers'];
 
         //附加用户信息
@@ -4385,7 +4464,6 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                 $sserinfo = json_decode($_POST['sserinfo'], true);
             }
             $list = [];
-
             //        启动事务
             Db::startTrans();
             try {
@@ -4501,13 +4579,17 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
 
     public function editserver()
     {
-        $config = config('grade');
+        $config = config('group');
         if ($_SESSION['GID'] == $config['chief_dean']) {
             //总院长
             $this->assign('sign', 2);
         } else if ($_SESSION['GID'] == $config['admin']) {
             //超级管理员
             $this->assign('sign', 1);
+        }else if($_SESSION['GID'] == $config['dean']){
+            $this->assign('sign', 2);
+        }else{
+            $this->assign('sign', 3);
         }
         $serid = intval($_GET['id']);
         $cid = intval($_SESSION['CID']);
@@ -4671,17 +4753,32 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
     {
         $customer_id = intval($_POST['cust_id']);
         $card_no = trim($_POST['card_no']);
+        $phone = trim($_POST['phone']);
+        $money = trim($_POST['chargemoney']);
+        $carddata = array();
+        $custinfo =  Db::table('mbs_customers')
+            ->where('id', $customer_id)
+            ->where('status', 1)
+            ->find();
+
+        //是否有卡
         $card_info = Db::table('mbs_customer_card')
             ->where('customer_id', $customer_id)
             ->where('card_no', $card_no)
             ->where('status', 1)
             ->find();
 
+        //卡号是否重复
         $card = Db::table('mbs_customer_card')
-            ->where('customer_id', $customer_id)
-            ->where('card_no!=\'' . $card_no . '\'')
+            ->where('customer_id!='.$customer_id)
+            ->where('card_no' ,$card_no )
             ->where('status', 1)
             ->select();
+        if (empty($custinfo)) {
+            $data['code'] = 0;
+            $data['msg'] = '用户不存在，请核实';
+            return json_encode($data);
+        }
         if (!empty($card)) {
             $data['code'] = 0;
             $data['msg'] = '卡号不对，请核实';
@@ -4690,21 +4787,34 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
 
         Db::startTrans();
         try {
+            if(empty($card_info)){
+                $carddata['customer_id'] = intval($customer_id);
+                $carddata['card_no'] = time() . mt_rand(1, 100);;
+                $carddata['phone'] = $phone;
+                $carddata['money'] = $money;
+                $carddata['chain_id'] = $custinfo['chain_id'];
+                $carddata['add_user'] = intval($_SESSION['UID']);
+                $carddata['type'] = 1;
+                $carddata['create_time'] = date('Y-m-d h:i:s', time());
+                $re3 = Db::table('mbs_customer_card')
+                    ->insertGetId($carddata);
+                $card_id = intval($re3);
+
+            }else{
+                $carddata['money'] = intval($_POST['chargemoney']) + intval($card_info['money']);
+                $re3 = Db::table('mbs_customer_card')
+                    ->where('card_id', $card_info['card_id'])
+                    ->update($carddata);
+                $card_id = $card_info['card_id'];
+            }
             //总值增加
-            $custmoney = Db::table('mbs_customers')
-                ->where('id', $customer_id)
-                ->find();
-            $custdata['money'] = intval($_POST['chargemoney']) + intval($custmoney['money']);
+            $custdata['money'] = intval($_POST['chargemoney']) + intval($custinfo['money']);
             $re1 = Db::table('mbs_customers')
                 ->where('id', $customer_id)
                 ->update($custdata);
 
-            $re3 = Db::table('mbs_customer_card')
-                ->where('customer_id', $customer_id)
-                ->update($custdata);
-
             //充值操作
-            $data['card_id'] = $card_info['card_id'];
+            $data['card_id'] = $card_id;
             $data['customer_id'] = $customer_id;
             $data['chain_id'] = intval($_POST['chain_id']);
             $data['type'] = 1;

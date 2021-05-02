@@ -198,7 +198,7 @@
                                 <a style="color: #999" href=" {$Think.const.DQURL}index/customers/editcustinfo?id={$k.xiaofei_id}">编辑</a>
                                 {/if}
                                 {if condition="($k.clean==2 && ($usign==1 || $usign==2))"}
-                                <span onclick="addown(this,'{$k.xiaofei_id}');" attrid="{$k.xiaofei_id}">|还款</span>
+                                <span onclick="addown(this,'{$k.xiaofei_id}');"  attrid="{$k.xiaofei_id}" >|还款</span>
                                 {/if}
                                 {if condition="$sessiongid==1"}
                                 <span onclick="delxiaofei(this);" attrid="{$k.xiaofei_id}"> |删除</span>
@@ -220,7 +220,9 @@
                             <th>时间</th>
                             <th>金额</th>
                             <th>备注</th>
+                            {if condition="($sessiongid==1)"}
                             <th>操作</th>
+                            {/if}
                         </tr>
                         </thead>
                         <tbody>
@@ -233,11 +235,49 @@
                             <td>{$k.create_time|substr=0,10}</td>
                             <td>{$k.total_money}</td>
                             <td>{$k.xfbeizhu}</td>
+                            {if condition="($sessiongid==1)"}
                             <td class="caozuo">
-                                {if condition="($sessiongid==1)"}
                                 <span onclick="deltuifei(this);" attrid="{$k.tuifei_id}"> 删除</span>
-                                {/if}
                             </td>
+                            {/if}
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    <div class="detail_bt" style="background: #e5e5e5 ;">
+                        <h1 class="page" style="">还款列表</h1>
+                    </div>
+                    <table class="dataintable table">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;">序号</th>
+                            <th>姓名</th>
+                            <th>手机</th>
+                            <th>时间</th>
+                            <th>金额</th>
+                            <th>还款方式</th>
+                            <th>备注</th>
+                            {if condition="($sessiongid==1)"}
+                            <th>操作</th>
+                            {/if}
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {foreach $hkxiaofeilist as $k }
+                        <tr>
+                            <td>{$k.huankuan_id}</td>
+                            <td>{$k.customer_name}</td>
+                            <td>{$k.phone}</td>
+                            <td>{$k.create_time|substr=0,10}</td>
+                            <td>{$k.huan_money}</td>
+                            <td>{$k.payway_name}</td>
+                            <td>{$k.xfbeizhu}</td>
+                            {if condition="($sessiongid==1)"}
+                            <td class="caozuo">
+                                <span onclick="delhuankuan(this);" attrid="{$k.huankuan_id}"> 作废</span>
+                            </td>
+                            {/if}
                         </tr>
                         {/foreach}
                         </tbody>
@@ -485,6 +525,7 @@
                         $('.clean' + id).parent().parent().find('.clean').text(data.owe);
                     }
                     $('#xiugaiyynn').hide()
+                    parent.window.location.reload();
                 } else {
                     layer.msg(data.msg);
                 }
@@ -570,6 +611,37 @@
             return false;
         }
     }
+    function delhuankuan(e) {
+        var id = $(e).attr('attrid');
+        var msg = "您真的确定要作废还款吗？\n\n请确认！";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '{$Think.const.DQURL}index/customers/delhuankuan',// 获取自己系统后台用户信息接口
+                data: {"id": id},
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        var data = JSON.parse(data);
+                        if (data.code == 200) { //判断返回值，这里根据的业务内容可做调整
+                            layer.msg(data.msg);
+                            window.location.reload();
+                        } else {
+                            alert(data.msg);
+                            $(e).removeAttr('disabled');
+                            return false;
+                        }
+                    }
+                },
+                error: function (data) {
+                    $(e).removeAttr('disabled');
+                    console.log(data.message);
+                }
+            });
+        } else {
+            return false;
+        }
+    }
     function confirmcharge() {
         var id = parseInt($('.cust_id').val());
         var chain_id = $('.chain_id').val().replace(/(^\s*)|(\s*$)/g, "");
@@ -611,7 +683,7 @@
                         ' </td>';
                     ss += ' </tr>' ;
                     var mm = Number($('.custtotal').text()) + Number(chargemoney);
-                    $('.addchargetable tr').eq(1).before(ss);
+                    $('.addchargetable tr').eq(0).after(ss);
                     $('.custtotal').text(mm);
 
                 } else {

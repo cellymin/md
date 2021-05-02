@@ -102,6 +102,7 @@
                         <th>姓名</th>
                         <th>来源</th>
                         <th>电话</th>
+                        <th>划扣</th>
                         <th>消费</th>
                         <th>欠费</th>
                         <th>退费</th>
@@ -122,6 +123,9 @@
                         <td>{if condition="($k.name != '') "} {$k.phone}
                             {elseif condition="$k.nickname !='' "/}无
                             {/if}</td>
+                        <td>
+                            {$cust['tj'][$k.id]['huakou'] ?? '' }
+                        </td>
                         <td>
                             {$cust['tj'][$k.id]['xiaofei'] ?? '' }
                         </td>

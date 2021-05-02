@@ -728,10 +728,11 @@ class Tongji extends Base
         $cust = array();
         $customers = Db::query('SELECT * FROM mbs_customers WHERE status=1' . $where . ' ORDER BY id ASC');
 
-        $res = Db::query('SELECT customer_id,SUM(total_money) xiaofei,SUM(owe) owe FROM `mbs_xiaofei` WHERE status=1 ' . $tjwhere . ' GROUP BY customer_id  ORDER BY customer_id ASC');
+        $res = Db::query('SELECT customer_id,SUM(total_money) xiaofei,SUM(owe) owe,SUM(huakou) huakou  FROM `mbs_xiaofei` WHERE status=1 ' . $tjwhere . ' GROUP BY customer_id  ORDER BY customer_id ASC');
         foreach ($res as $k) {
             $cust['tj'][$k['customer_id']]['xiaofei'] = $k['xiaofei'];
             $cust['tj'][$k['customer_id']]['owe'] = $k['owe'];
+            $cust['tj'][$k['customer_id']]['huakou'] = $k['huakou'];
         }
         $res1 = Db::query('SELECT customer_id,SUM(total_money) tuifei FROM `mbs_tuifei` WHERE status=1 ' . $tjwhere . ' GROUP BY customer_id  ORDER BY customer_id ASC');
         foreach ($res1 as $k) {

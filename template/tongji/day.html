@@ -192,7 +192,7 @@
                         <td class="custname">{$k.name}</td>
                         <td class="laiyuan">{$k.source_from}</td>
                         <td class="xiangmu">{$package[$kk.package_id]['package_name'] ?? ''}</td>
-                        <td class="mingxi"></td>
+                        <td class="mingxi">{$kk.xfbeizhu}</td>
                         <td class="kfje">{$kk.kfje}</td>
                         <td class="huakje">{$kk.huakou}</td>
 
@@ -208,7 +208,7 @@
                         <td class="xiangmu" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
                             rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{$package[$kk.package_id]['package_name'] ?? ''}</td>
                         <td class="mingxi" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
-                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}></td>
+                            rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}>{$kk.xfbeizhu}</td>
                         <td class="kfje" {if condition="(isset($xfcount[$kk.xiaofei_id]) && $xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']>0)" }
                             rowspan="{$xfcount[$kk.xiaofei_id][$kk.huankuan_id]['row']}" {/if}> {$xfcount[$kk.xiaofei_id]['kfje'][$kk.xiaofei_id]['kfje'] ?? ''}
                         </td>
@@ -326,7 +326,7 @@
                         <td class="custname">{$k.name}</td>
                         <td class="laiyuan">{$k.source_from}</td>
                         <td class="xiangmu">退款</td>
-                        <td class="mingxi"></td>
+                        <td class="mingxi">{$kk.xfbeizhu}</td>
                         <td class="kfje"></td>
                         <td class="huakje"></td>
                         <td class="xf_{$xfpay.xj} xfxj"></td>

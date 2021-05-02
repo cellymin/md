@@ -116,7 +116,7 @@ class Tongji extends Base
         $feihuan = [];
         $ifexist = [];
         $xiaofeitotal = 0;
-        $xiaofeilist = Db::query('SELECT x.total_money xiaofei,x.xiaofei_id,h.huankuan_id,x.owe,x.huakou,h.huan_money huankuan,x.customer_id customer_id,x.payway_id xfpayway_id,h.payway_id hkpayway_id,x.firvisit,x.package_id,x.jishi_id,x.jishi_name,x.serchain_id,x.xfchain_id,h.status hstatus,x.create_time,h.create_time hcreate_time FROM mbs_xiaofei x LEFT JOIN mbs_xfhuankuan h ON x.xiaofei_id = h.xiaofei_id and h.status=1 WHERE x.status=1 ' . $xfwhere . ' ORDER BY x.xiaofei_id ASC');
+        $xiaofeilist = Db::query('SELECT x.total_money xiaofei,x.xiaofei_id,h.huankuan_id,x.owe,x.huakou,h.huan_money huankuan,x.customer_id customer_id,x.payway_id xfpayway_id,h.payway_id hkpayway_id,x.firvisit,x.package_id,x.jishi_id,x.jishi_name,x.serchain_id,x.xfchain_id,h.status hstatus,x.create_time,h.create_time hcreate_time,x.xfbeizhu FROM mbs_xiaofei x LEFT JOIN mbs_xfhuankuan h ON x.xiaofei_id = h.xiaofei_id and h.status=1 WHERE x.status=1 ' . $xfwhere . ' ORDER BY x.xiaofei_id ASC');
         $star_tstr = strtotime($star_t);
         $end_tstr = strtotime($end_t);
         foreach ($xiaofeilist as $k => $v) {
@@ -164,6 +164,7 @@ class Tongji extends Base
                     $custxflist[$v['customer_id']][$k]['jishi_name'] = $v['jishi_name'];
                     $custxflist[$v['customer_id']][$k]['serchain_id'] = $v['serchain_id'];
                     $custxflist[$v['customer_id']][$k]['xfchain_id'] = $v['xfchain_id'];
+                    $custxflist[$v['customer_id']][$k]['xfbeizhu'] = $v['xfbeizhu'];
                     if (!empty($v['hstatus'])) {
                         $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huankuan'] + $v['huakou'];
                     } else {
@@ -200,6 +201,7 @@ class Tongji extends Base
                         $custxflist[$v['customer_id']][$k]['jishi_name'] = $v['jishi_name'];
                         $custxflist[$v['customer_id']][$k]['serchain_id'] = $v['serchain_id'];
                         $custxflist[$v['customer_id']][$k]['xfchain_id'] = $v['xfchain_id'];
+                        $custxflist[$v['customer_id']][$k]['xfbeizhu'] = $v['xfbeizhu'];
                         $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huakou'];
                     }
                 }
@@ -233,6 +235,7 @@ class Tongji extends Base
                 $custxflist[$v['customer_id']][$k]['jishi_name'] = $v['jishi_name'];
                 $custxflist[$v['customer_id']][$k]['serchain_id'] = $v['serchain_id'];
                 $custxflist[$v['customer_id']][$k]['xfchain_id'] = $v['xfchain_id'];
+                $custxflist[$v['customer_id']][$k]['xfbeizhu'] = $v['xfbeizhu'];
                 if (!empty($v['hstatus'])) {
                     $custxflist[$v['customer_id']][$k]['kfje'] = $v['xiaofei'] + $v['owe'] + $v['huankuan'] + $v['huakou'];
                 } else {
@@ -280,7 +283,7 @@ class Tongji extends Base
         $jishitf = [];
         $tuitotal = 0;
 
-        $tuifeilist = Db::query('SELECT total_money tuifei,tuifei_id,customer_id,payway_id xfpayway_id,firvisit,jishi_id,jishi_name,serchain_id,xfchain_id FROM mbs_tuifei WHERE status=1 ' . $tfwhere . ' ORDER BY customer_id ASC');
+        $tuifeilist = Db::query('SELECT total_money tuifei,tuifei_id,customer_id,payway_id xfpayway_id,firvisit,jishi_id,jishi_name,serchain_id,xfchain_id,xfbeizhu FROM mbs_tuifei WHERE status=1 ' . $tfwhere . ' ORDER BY customer_id ASC');
         foreach ($tuifeilist as $k => $v) {
             if ($v['tuifei'] > 0) {
                 $tuitotal = $tuitotal + $v['tuifei'];
@@ -294,6 +297,7 @@ class Tongji extends Base
             $custtflist[$v['customer_id']][$k]['jishi_name'] = $v['jishi_name'];
             $custtflist[$v['customer_id']][$k]['serchain_id'] = $v['serchain_id'];
             $custtflist[$v['customer_id']][$k]['xfchain_id'] = $v['xfchain_id'];
+            $custtflist[$v['customer_id']][$k]['xfbeizhu'] = $v['xfbeizhu'];
         }
         $this->assign('custtflist', $custtflist);
 

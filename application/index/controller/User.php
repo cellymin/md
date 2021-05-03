@@ -159,6 +159,7 @@ class User extends Base
     public function group_list()
     {
         $group_list = Db::table('mbs_user_group')
+            ->where('status', '1')
             ->select();
         return $group_list;
     }
@@ -166,6 +167,7 @@ class User extends Base
     public function get_grade()
     {
         $user_grade = Db::table('mbs_grade')
+            ->where('status', '1')
             ->select();
         return $user_grade;
     }

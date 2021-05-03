@@ -38,7 +38,7 @@ class Chain extends Base
         $re = Db::table('mbs_chain')
             ->field('c.*,u.name uname')
             ->alias('c')
-            ->join('mbs_user u','u.id = c.dean_id','LEFT')
+            ->join('mbs_user u','u.chain_id = c.id and u.grade_id='.$config['dean'],'LEFT')
             ->where($map)
             ->whereOr('(u.status is null and c.status=1)')
             ->select();
@@ -52,9 +52,8 @@ class Chain extends Base
 
         if($id>0){
             $re = Db::table('mbs_chain')
-                ->field('c.*,u.name uname')
+                ->field('c.*')
                 ->alias('c')
-                ->join('mbs_user u','c.dean_id = u.id','LEFT')
                 ->where('c.id',$id)
                 ->find();
             $this->assign('chaininfo',$re);

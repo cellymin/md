@@ -99,16 +99,7 @@
                                  placeholder=""></span>
                 </div>
 
-                <div class="form-group">
 
-                    <label>院长：</label>
-                    <select name="dean_id" class="user_chain dean_id">
-                        {foreach $deanlist as $k=>$v}
-                        <option value="{$v.id}" attid=""  {if condition="(isset($chaininfo) && $chaininfo.dean_id == $v.id)" }selected="selected" {/if}>{$v.name}</option>
-                        {/foreach}
-
-                    </select>
-                </div>
 
             </form>
         </div>

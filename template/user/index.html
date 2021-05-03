@@ -127,6 +127,7 @@
                       <tr>
                         <th style="width: 50px;">#</th>
                         <th>姓名</th>
+                        <th>门店</th>
                         <th>职位</th>
                         <th>电话</th>
                         <th>操作</th>
@@ -137,6 +138,7 @@
                     <tr>
                         <td>{$k.id}</td>
                         <td>{$k.name}
+                        <td>{if condition="isset($k.chain_id) && !empty($k.chain_id)"} {$chain[$k.chain_id]['name']}{/if}</td>
                         <td>{$k.job_name}</td>
                         <td>{$k.phone}</td>
                         <td>

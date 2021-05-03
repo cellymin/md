@@ -237,11 +237,11 @@
             $(e).removeAttr('disabled');
             return false;
         }
-        if(!user_sex >0){
-            alert("请选择性别！");
-            $(e).removeAttr('disabled');
-            return false;
-        }
+        // if(!user_sex >0){
+        //     alert("请选择性别！");
+        //     $(e).removeAttr('disabled');
+        //     return false;
+        // }
         if(user_email !='' && user_email!=null && user_email!=undefined){
             var myreg = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
             if(!myreg.test(user_email)){

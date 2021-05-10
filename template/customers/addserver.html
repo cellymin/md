@@ -417,8 +417,8 @@
         var customer_sign = $('.cus_sign_ok').attr('src').replace(/(^\s*)|(\s*$)/g, "");
         var dean_sign = $('.dean_sign_ok').attr('src').replace(/(^\s*)|(\s*$)/g, "");
         if(!customer_sign.length>1){
-            alert('顾客签字不能为空！');
-            return false;
+           // alert('顾客签字不能为空！');
+           // return false;
         }
         var customer_name = $('#user_name').val().replace(/(^\s*)|(\s*$)/g, "");
         //技师名称
@@ -454,8 +454,8 @@
         if(is_marry>0){
             addinfo =  'cusismarry*' + is_marry + ',';
         }else{
-            alert('请勾选是否已婚！');
-            return false;
+           // alert('请勾选是否已婚！');
+          //  return false;
         }
         if(cus_job != null && cus_job != undefined && cus_job != ""){
             addinfo = addinfo + 'cusjob*'+cus_job+','
@@ -466,28 +466,28 @@
                 customers = customers + 'surgery_detail*'+sur_deyail+',';
             }
         }else{
-            alert('请勾选是否微整！');
-            return false;
+           // alert('请勾选是否微整！');
+           // return false;
         }
 
         if(if_huli>0){
             customers =  customers + 'done_skincare*' + if_huli + ','
         }else{
-            alert('请勾选护理信息！');
-            return falsep;
+           // alert('请勾选护理信息！');
+           // return falsep;
         }
 
         if(solution != null && solution != undefined && solution != ""){
             customers = customers + 'solution*'+solution+','
         }else{
-            alert('请填写解决方案');
-            return  false;
+           // alert('请填写解决方案');
+          //  return  false;
         }
         if(use_product != null && use_product != undefined && use_product != ""){
             customers = customers + 'product*'+use_product+','
         }else{
-            alert('请填写产品');
-            return false;
+          //  alert('请填写产品');
+          //  return false;
         }
         //客户状态评测信息
         var check_skin_cate = '';//皮肤类型
@@ -499,8 +499,8 @@
         $("input[name='skin_cate']:checked").each(function (i) {
             var my_val = $(this).val();
             if (my_val == null || my_val == undefined || my_val == "") {
-                alert('你未选择皮肤类型，请选择！')
-                return false;
+              //  alert('你未选择皮肤类型，请选择！')
+               // return false;
             } else {
                 if (check_skin_cate.length > 0) {
                     check_skin_cate = check_skin_cate + ',' + my_val;
@@ -513,8 +513,8 @@
         $("input[name='health_info']:checked").each(function (i) {
             var health_val = $(this).val();
             if (health_val == null || health_val == undefined || health_val == "") {
-                alert('你未选择身体状况，请选择！')
-                return false;
+              //  alert('你未选择身体状况，请选择！')
+               // return false;
             } else {
                 if (check_health.length > 0) {
                     check_health = check_health + ',' + health_val;
@@ -527,8 +527,8 @@
         $("input[name='freckle_experience']:checked").each(function (i) {
             var freckle_val = $(this).val();
             if (freckle_val == null || freckle_val == undefined || freckle_val == "") {
-                alert('你未选择祛斑经历，请选择！')
-                return false;
+              //  alert('你未选择祛斑经历，请选择！')
+              //  return false;
             } else {
                 if (check_freckle_experience.length > 0) {
                     check_freckle_experience = check_freckle_experience + ',' + freckle_val;
@@ -541,8 +541,8 @@
         $("input[name='stains_cate']:checked").each(function (i) {
             var stains_val = $(this).val();
             if (stains_val == null || stains_val == undefined || stains_val == "") {
-                alert('你未选择色斑类型，请选择！')
-                return false;
+              //  alert('你未选择色斑类型，请选择！')
+             //   return false;
             } else {
                 if (check_stains_cate.length > 0) {
                     check_stains_cate = check_stains_cate + ',' + stains_val;

@@ -4398,12 +4398,15 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
             $server_id = intval($_POST['serid']);
         }
         $customerspost = $_POST['customers'];
+        $exdcusinfo = array();
 
         //附加用户信息
         $addinfoexd = $_POST['addinfos'];
         $exdcusarr = array_filter(explode(',', $addinfoexd));
-        foreach ($exdcusarr as $k => $v) {
-            $exdcusinfo[substr($v, 0, strrpos($v, '*'))] = substr($v, strripos($v, "*") + 1);
+        if(!empty($exdcusarr)){
+            foreach ($exdcusarr as $k => $v) {
+                $exdcusinfo[substr($v, 0, strrpos($v, '*'))] = substr($v, strripos($v, "*") + 1);
+            }
         }
         if (isset($_POST['cussrc']) && $_POST['cussrc'] != '') {
             //图片
@@ -4536,8 +4539,7 @@ WHERE a.status=1 ' . $orwhere . $where . ' ORDER BY a.id DESC ' . $page->limit);
                     $data['msg'] = '已有服务单';
                     return json_encode($data);
                 }
-
-                Db::table('mbs_customers')
+                $re = Db::table('mbs_customers')
                     ->where("id", $addinfo['customer_id'])
                     ->update($exdcusinfo);
 

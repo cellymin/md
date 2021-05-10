@@ -132,6 +132,9 @@
                             {if condition="($k.name != '') "} {$k.name}
                             {elseif condition="$k.nickname !='' "/}{$k.nickname}
                             {/if}
+                            <span class="text-sm" style="margin-left: 10px"> <a
+                                    href="javascript:void(0)" attrid="{$k.id}"
+                                    data-toggle="modal" onclick="deleteuser(this)"><i class="fa fa-trash-o "></i> 删除</a></span>
                         </td>
                         <td>{$chain[$k.chain_id]['name'] ?? ''}</td>
                         <td>
